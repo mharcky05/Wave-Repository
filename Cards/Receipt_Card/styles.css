@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.receipt-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    padding: 30px;
+    margin: 20px;
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto;
+    gap: 20px;
+}
+
+.header {
+    text-align: center;
+    border-bottom: 2px solid #191852;
+    padding-bottom: 15px;
+}
+
+.header img {
+    max-width: 150px;
+    height: auto;
+}
+
+.header h1 {
+    margin: 10px 0;
+    color: #333;
+}
+
+.booking-id {
+    font-size: 0.9em;
+    color: #666;
+    font-weight: bold;
+}
+
+.section {
+    display: grid;
+    gap: 10px;
+}
+
+.section h2 {
+    font-size: 1.1em;
+    color: #191852;
+    margin: 0 0 5px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.detail-row strong {
+    color: #333;
+}
+
+.charges {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.total {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+    text-align: right;
+    border-top: 2px solid #191852;
+    padding-top: 10px;
+}
+
+.footer {
+    text-align: center;
+    font-size: 0.9em;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+@media print {
+    body { 
+        background: white; 
+        padding: 0; 
+    }
+    .receipt-card { 
+        box-shadow: none; 
+        max-width: none; 
+    }
+}
+
+@media (max-width: 600px) {
+    .receipt-card { 
+        padding: 20px; 
+        margin: 10px; 
+    }
+}

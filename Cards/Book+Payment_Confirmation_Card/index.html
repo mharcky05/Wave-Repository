@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking & Payment Confirmation - L’escapade Private Villa</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="resort-name">L’escapade Private Villa</div>
+      <button class="btn-logout">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="confirmation-card">
+      <h2>Booking & Payment Confirmation</h2>
+      <p class="thank-you">Thank you for booking with us!</p>
+
+      <div class="summary-section">
+        <h3>Reservation Details</h3>
+        <p><strong>Guest Name:</strong> Mharcky Conquilla</p>
+        <p><strong>Package:</strong> Daytime</p>
+        <p><strong>Check-in:</strong> October 13, 2025 (9:00 AM)</p>
+        <p><strong>Check-out:</strong> October 13, 2025 (5:00 PM)</p>
+        <p><strong>Additional Pax:</strong> 1</p>
+        <p><strong>Additional Hours:</strong> 1</p>
+      </div>
+
+      <div class="payment-summary">
+        <h3>Payment Summary</h3>
+        <p><strong>Payment Method:</strong> GCash</p>
+        <p><strong>Reference No.:</strong> GC123456789</p>
+        <p><strong>Total Amount:</strong> PHP 6,100.00</p>
+        <p><strong>Amount Paid:</strong> PHP 6,100.00</p>
+        <p><strong>Balance:</strong> PHP 0.00</p>
+      </div>
+
+      <div class="confirmation-actions">
+        <button class="btn-back" onclick="goBack()">Back to Home</button>
+        <button class="btn-print" id="printBtn">Download Receipt</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <p>Downloading receipt...</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

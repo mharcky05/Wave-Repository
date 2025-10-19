@@ -1,0 +1,26 @@
+:root{--navy:#1b1a55;--muted:#f7f8fc;--card:#fff;--accent:#1a6bac}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter, Poppins, Arial, sans-serif;background:var(--muted);color:#222}
+.container{max-width:1100px;margin:0 auto;padding:18px}
+
+/* header same look */
+.site-header{background:var(--navy);color:#fff;padding:14px 0}
+.header-inner{display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:700;padding-left:6px}
+.header-right{display:flex;gap:12px;align-items:center}
+
+/* centered card */
+.centered{display:flex;justify-content:center;align-items:flex-start;padding-top:22px}
+.review-card{width:100%;max-width:680px;background:var(--card);padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(20,20,60,0.04)}
+.card-head h2{margin-bottom:10px}
+.form-row{margin-bottom:14px}
+.form-row label{display:block;font-weight:600;margin-bottom:8px}
+select{width:100%;padding:10px;border-radius:8px;border:1px solid #eef2fb}
+.stars{display:flex;gap:8px}
+.star{font-size:22px;padding:8px;border-radius:6px;border:1px solid #eef2fb;background:#fafbff;cursor:pointer}
+.star.active{background:linear-gradient(90deg,var(--accent),#0e4e82);color:#fff;border-color:transparent}
+.textarea{min-height:120px;padding:12px;border-radius:8px;border:1px solid #eef2fb;background:#fff}
+.actions{display:flex;justify-content:flex-end;gap:8px}
+.btn{padding:10px 14px;border-radius:8px;border:none;background:#f2f4ff}
+.btn.primary{background:var(--navy);color:#fff}
+@media(max-width:700px){.review-card{padding:16px}}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Now | L’escapade Private Villa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>L’escapade Private Villa</h1>
+    <button class="logout-btn">Logout</button>
+  </header>
+
+  <main class="booking-container">
+    <div class="card">
+      <div class="villa-header">
+        <img src="villa-sample.jpg" alt="Villa Image" class="villa-image">
+        <div class="villa-info">
+          <h2>One-Day Package</h2>
+          <p>Enjoy a relaxing stay by the sea with luxurious amenities and a private pool.</p>
+          <span class="price">₱9,000 / overnight</span>
+        </div>
+      </div>
+
+      <form class="booking-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="checkin">Check-In Date</label>
+            <input type="date" id="checkin" required>
+          </div>
+          <div class="form-group">
+            <label for="checkin-time">Check-In Time</label>
+            <input type="time" id="checkin-time" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="checkout">Check-Out Date</label>
+            <input type="date" id="checkout" required>
+          </div>
+          <div class="form-group">
+            <label for="checkout-time">Check-Out Time</label>
+            <input type="time" id="checkout-time" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guests">Guests</label>
+            <input type="number" id="guests" placeholder="No. of Guests" min="1">
+          </div>
+          <div class="form-group">
+            <label for="additional-pax">Additional Pax</label>
+            <input type="number" id="additional-pax" placeholder="0" min="0">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="additional-hour">Additional Hour</label>
+            <input type="number" id="additional-hour" placeholder="0" min="0">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="notes">Additional Requests</label>
+          <textarea id="notes" rows="3" placeholder="Enter any special requests here..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn confirm">Confirm Booking</button>
+          <button type="reset" class="btn cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

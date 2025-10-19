@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Write a Review — L'escapade</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">L’escapade</div>
+      <div class="header-right">
+        <div class="user-bubble">MC</div>
+        <div class="username">Mharcky Conquilla</div>
+        <button class="btn-logout">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container centered">
+    <div class="card review-card">
+      <div class="card-head"><h2>Write a Review</h2></div>
+
+      <div class="form-row">
+        <label>Choose stay (editable)</label>
+        <select contenteditable="true">
+          <option>Ocean View Suite - Jun 15 2023</option>
+          <option>Garden Villa - Mar 20 2023</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Rating</label>
+        <div class="stars" role="radiogroup" aria-label="rating">
+          <button class="star" aria-checked="false">☆</button>
+          <button class="star" aria-checked="false">☆</button>
+          <button class="star" aria-checked="false">☆</button>
+          <button class="star" aria-checked="false">☆</button>
+          <button class="star" aria-checked="false">☆</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Review</label>
+        <div contenteditable="true" class="textarea" placeholder="Share your experience...">
+            <textarea placeholder="Tell us about your stay..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Upload photos</label>
+        <input type="file" multiple>
+      </div>
+
+      <div class="form-row actions">
+        <button class="btn">Cancel</button>
+        <button class="btn primary">Submit Review</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
