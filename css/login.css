@@ -150,31 +150,6 @@
     border-bottom: 1px solid #aaa;
 }
 
-.divider::before {
-    margin-right: 10px;
-}
-
-.divider::after {
-    margin-left: 10px;
-}
-
-/* Google Login */
-.login-google {
-    background: transparent;
-    color: #44627a;
-    border: 1px solid #5b85a8;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.login-google:hover {
-    background: #eaeaea;
-    color: #5b85a8;
-}
-
 /* Signup Switch */
 .signup {
     font-size: 13px;
