@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Card | L’escapade Private Villa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="resort-name">L’escapade Private Villa</div>
+      <button class="btn-logout">Logout</button>
+    </div>
+  </header>
+
+  <section class="notification-section">
+    <h2>🔔 Notifications</h2>
+
+    <div class="notif-controls">
+      <button id="markAllBtn">Mark All as Read</button>
+      <button id="clearAllBtn">Clear All</button>
+    </div>
+
+    <div class="notification-list" id="notificationList">
+      <div class="notification unread">
+        <div class="notif-icon">💸</div>
+        <div class="notif-content">
+          <h3>Payment Confirmed</h3>
+          <p>Your payment of PHP 6,100.00 for the Deluxe Villa has been received (Ref: GC123456789).</p>
+          <span class="time">Oct 16, 2025 – 2:15 PM</span>
+        </div>
+      </div>
+
+      <div class="notification unread">
+        <div class="notif-icon">🏠</div>
+        <div class="notif-content">
+          <h3>Booking Approved</h3>
+          <p>Your booking for Oct 20–22, 2025 is now confirmed. We look forward to hosting you!</p>
+          <span class="time">Oct 15, 2025 – 5:42 PM</span>
+        </div>
+      </div>
+
+      <div class="notification read">
+        <div class="notif-icon">📧</div>
+        <div class="notif-content">
+          <h3>Inquiry Response</h3>
+          <p>Admin replied to your question about villa amenities. Check your inbox for details.</p>
+          <span class="time">Oct 14, 2025 – 9:30 AM</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
