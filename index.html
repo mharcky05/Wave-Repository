@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LEscapade Private Villa</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/hero.css" />
+    <link rel="stylesheet" href="./css/login.css" />
+    <link rel="stylesheet" href="./css/signup.css" />
+    <link rel="stylesheet" href="./css/account.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <h1 class="logo">LESCAPADE</h1>
+      <nav class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Packages</a>
+        <a href="#">Amenities</a>
+        <a href="#">Calendar</a>
+        <a href="#">Ratings</a>
+        <a href="#">About Us</a>
+      </nav>
+      <div class="auth-buttons">
+        <button id="loginBtn" class="login-btn">Login</button>
+        <button id="signupBtn" class="signup-btn">Signup</button>
+        <button id="accountBtn" class="account-btn">My Account</button>
+      </div>
+    </header>
+
+    <!-- ===== HERO / CAROUSEL ===== -->
+    <section class="hero">
+      <img
+        src="images/hero1.jpg"
+        class="carousel-image active"
+        alt="Hero Image 1"
+      />
+      <img src="images/hero2.jpg" class="carousel-image" alt="Hero Image 2" />
+      <img src="images/hero3.jpg" class="carousel-image" alt="Hero Image 3" />
+      <img src="images/hero2.jpg" class="carousel-image" alt="Hero Image 4" />
+      <img src="images/hero3.jpg" class="carousel-image" alt="Hero Image 5" />
+
+      <h2>LESCAPADE</h2>
+      <span>PRIVATE VILLA</span>
+      <div class="book-btn">
+        <button class="book-now">Book Now</button>
+      </div>
+
+      <!-- Left/Right Buttons -->
+      <button class="carousel-btn prev">&#10094;</button>
+      <button class="carousel-btn next">&#10095;</button>
+
+      <!-- Dots -->
+      <div class="carousel-dots">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+        <span class="dot" data-index="3"></span>
+        <span class="dot" data-index="4"></span>
+      </div>
+    </section>
+    <!-- ===== WELCOME SECTION ===== -->
+    <section class="about-info">
+      <div class="about-card">
+        <div class="about-details">
+          <h2>ABOUT US</h2>
+
+          <div class="contact-info">
+            <h3>Contact Information</h3>
+            <p><strong>Phone:</strong> 0969 326 6380</p>
+            <p><strong>Email:</strong> lescapadeprivatevilla@gmail.com</p>
+            <p><strong>Facebook:</strong> Lescapade Private Villa</p>
+          </div>
+
+          <div class="location">
+            <h3>Location</h3>
+            <p>
+              855 Saint Martin Subdivision, Ibayo, Marilao, Bulacan, Philippines
+            </p>
+            <button class="view-location">VIEW LOCATION</button>
+          </div>
+        </div>
+
+        <div class="about-map">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.2730811430556!2d120.95741301087175!3d14.75363887325166!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b36591f847ed%3A0xd389e916c692c89c!2sL&#39;escapade%20Private%20Villa!5e0!3m2!1sen!2sph!4v1760575811551!5m2!1sen!2sph"
+            width="600"
+            height="450"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PACKAGES ===== -->
+    <section class="packages-section" id="packages">
+      <h2>Our Packages</h2>
+      <div class="packages-container">
+        <div class="package-card">
+          <img src="images/hero1.jpg" alt="Daytime Package" />
+          <div class="package-info">
+            <h3>Daytime Package</h3>
+            <p class="time">9:00 AM - 5:00 PM</p>
+            <p class="pax">20 PAX Maximum</p>
+
+            <div class="add-ons">
+              <div class="addon">
+                <p>Additional per Head</p>
+                <p class="addon-price">₱150.00</p>
+              </div>
+              <div class="addon">
+                <p>Additional per Hour</p>
+                <p class="addon-price">₱500.00</p>
+              </div>
+            </div>
+
+            <div class="bottom-info">
+              <p class="total">₱5,500.00</p>
+              <button class="reserve-btn">Reserve</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="package-card">
+          <img src="images/hero1.jpg" alt="Overnight Package" />
+          <div class="package-info">
+            <h3>Overnight Package</h3>
+            <p class="time">7:00 PM - 7:00 AM</p>
+            <p class="pax">15 PAX Maximum</p>
+
+            <div class="add-ons">
+              <div class="addon">
+                <p>Additional per Head</p>
+                <p class="addon-price">₱150.00</p>
+              </div>
+              <div class="addon">
+                <p>Additional per Hour</p>
+                <p class="addon-price">₱500.00</p>
+              </div>
+            </div>
+
+            <div class="bottom-info">
+              <p class="total">₱6,500.00</p>
+              <button class="reserve-btn">Reserve</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="package-card">
+          <img src="images/hero1.jpg" alt="One-Day Package" />
+          <div class="package-info">
+            <h3>One-Day Package</h3>
+            <p class="time">9:00 AM - 7:00 AM</p>
+            <p class="pax">15 PAX Maximum</p>
+
+            <div class="add-ons">
+              <div class="addon">
+                <p>Additional per Head</p>
+                <p class="addon-price">₱150.00</p>
+              </div>
+              <div class="addon">
+                <p>Additional per Hour</p>
+                <p class="addon-price">₱500.00</p>
+              </div>
+            </div>
+
+            <div class="bottom-info">
+              <p class="total">₱9,000.00</p>
+              <button class="reserve-btn">Reserve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== AMENITIES ===== -->
+    <section class="amenities" id="amenities">
+      <h2>Featured Amenities</h2>
+      <div class="amenities-grid">
+        <!-- Row 1 -->
+        <div class="amenity-card">
+          <img src="images/swimming.png" alt="Pool" />
+          <p>3 ft to 5 ft Swimming Pool</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/internet.png" alt="WiFi" />
+          <p>WiFi Access</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/acRoom.png" alt="Room" />
+          <p>1 AC Room with CR/Toilet</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/gym.png" alt="Gym" />
+          <p>Gym Equipment</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/microwave.png" alt="Microwave" />
+          <p>Microwave Oven</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/minibar.png" alt="Minibar" />
+          <p>Minibar</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/mattress.png" alt="Mattress" />
+          <p>Extra Mattresses</p>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="amenity-card">
+          <img src="images/grill.png" alt="Griller" />
+          <p>Charcoal Griller</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/parking.png" alt="Parking" />
+          <p>Free Parking</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/karaoke.png" alt="Karaoke" />
+          <p>Karaoke</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/game.png" alt="Game Room" />
+          <p>Game Room: Billiards, Ping Pong, Darts</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/stove.png" alt="Gas Stove" />
+          <p>Gas Stove</p>
+        </div>
+        <div class="amenity-card">
+          <img src="images/smartTV.png" alt="Refrigerator" />
+          <p>65' LED SMART TV</p>
+        </div>
+
+        <!-- Last Card: View All Button -->
+        <div class="amenity-card view-all-card">
+          <img src="images/right-arrow.png" alt="View All" />
+          <p>View All Amenities</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FEEDBACK SECTION ===== -->
+    <section class="feedback" id="feedback">
+      <div class="feedback-container">
+        <!-- Left Side: Review Form -->
+        <div class="feedback-left">
+          <h3>Write a Review</h3>
+          <textarea
+            placeholder="Share your experience..."
+            rows="8"
+            cols="40"
+          ></textarea>
+          <br />
+          <button class="review-btn">Submit Review</button>
+        </div>
+
+        <!-- Right Side: Feedbacks Card -->
+        <div class="feedback-right">
+          <h2>Recent Feedbacks</h2>
+
+          <div class="feedback-item">
+            <div class="feedback-content">
+              <h4>Anfernee Cruz</h4>
+              <p class="stars">⭐⭐⭐⭐⭐</p>
+              <p>Yes Galing! Taina!</p>
+            </div>
+            <img
+              src="images/icon1.jpg"
+              alt="Anfernee Profile"
+              class="profile-pic"
+            />
+          </div>
+
+          <div class="feedback-item">
+            <div class="feedback-content">
+              <h4>Mharcky Conquilla</h4>
+              <p class="stars">⭐⭐⭐⭐⭐</p>
+              <p>Ang galinghayna! Sulit na sulithayna!</p>
+            </div>
+            <img
+              src="images/icon2.jpg"
+              alt="Mharcky Profile"
+              class="profile-pic"
+            />
+          </div>
+
+          <div class="feedback-item">
+            <div class="feedback-content">
+              <h4>Quirsten Durion</h4>
+              <p class="stars">⭐⭐⭐⭐⭐</p>
+              <p>
+                Ano? Kanina pa ako babad na babad dito oh! Huy anong kanina pa
+                babad na babad!
+              </p>
+            </div>
+            <img
+              src="images/icon3.jpg"
+              alt="Quirsten Profile"
+              class="profile-pic"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+      <p>&copy; 2025 Lescapade Private Villa. All rights reserved.</p>
+    </footer>
+
+    <!-- ===== LOGIN / SIGNUP / ACCOUNT MODALS ===== -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- LOGIN -->
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeLogin" data-close="login-modal"
+          >&times;</span
+        >
+        <h2>Login</h2>
+
+        <form id="loginForm" class="form">
+          <!-- Email -->
+          <input
+            class="username"
+            type="email"
+            id="login-email"
+            placeholder="Email"
+            required
+          />
+
+          <!-- Password -->
+          <input
+            class="password"
+            id="login-password"
+            type="password"
+            placeholder="Password"
+            required
+          />
+
+          <!-- Show Password + Forgot -->
+          <div class="show-pass">
+            <label>
+              <input type="checkbox" id="login-showPass" /> Show Password
+            </label>
+            <div class="forgot">
+              <a href="#">Forgot Password?</a>
+            </div>
+          </div>
+
+          <!-- Login Button -->
+          <button type="submit" class="submit-btn login">Login</button>
+
+          <!-- Divider -->
+          <div class="divider">
+            <span>or</span>
+          </div>
+
+          <!-- Google Login -->
+          <button type="button" class="login-google">
+            Continue with Google
+          </button>
+
+          <!-- Switch to Signup -->
+          <p class="signup">
+            Don't have an account?
+            <span
+              class="switch"
+              data-switch="signup-modal"
+              onclick="toggleSignup()"
+            >
+              Sign up
+            </span>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="signup-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeSignup" data-close="signup-modal"
+          >&times;</span
+        >
+        <h2>Sign Up</h2>
+
+        <form id="signupForm" class="form">
+          <!-- Name Fields -->
+          <input
+            class="name"
+            type="text"
+            id="signup-fname"
+            placeholder="First Name"
+            required
+          />
+          <input
+            class="name"
+            type="text"
+            id="signup-lname"
+            placeholder="Last Name"
+            required
+          />
+          <input
+            class="name"
+            type="text"
+            id="signup-contact"
+            placeholder="Contact No."
+            required
+          />
+
+          <!-- Email -->
+          <input
+            class="email"
+            type="email"
+            id="signup-email"
+            placeholder="Email Address"
+            required
+          />
+
+          <!-- Password -->
+          <input
+            class="password"
+            type="password"
+            id="signup-password"
+            placeholder="Password"
+            required
+          />
+          <input
+            class="confirm"
+            type="password"
+            id="signupc-password"
+            placeholder="Confirm Password"
+            required
+          />
+
+          <!-- Show Password -->
+          <div class="show-pass">
+            <label>
+              <input type="checkbox" id="signup-showPass" /> Show Password
+            </label>
+          </div>
+
+          <!-- Terms -->
+          <p class="terms">
+            By signing up, I agree to the Terms and Conditions.
+          </p>
+
+          <!-- Submit Button -->
+          <button type="submit" class="submit-btn submit">Sign Up</button>
+
+          <!-- Switch to Login -->
+          <p class="old-account">
+            Already have an account?
+            <span
+              class="switch"
+              data-switch="login-modal"
+              onclick="toggleLogin()"
+              >Login</span
+            >
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div id="account-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeAccount" data-close="account-modal"
+          >&times;</span
+        >
+        <h2>My Account</h2>
+
+        <form id="accountForm" class="form">
+          <p>Welcome! You are logged in.</p>
+          <button type="submit" class="submit-btn logout-btn">Logout</button>
+        </form>
+      </div>
+    </div>
+  </body>
+  <!-- JS -->
+  <script src="./js/auth.js"></script>
+  <script src="./js/hero.js"></script>
+</html>
