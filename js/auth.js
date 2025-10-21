@@ -155,6 +155,9 @@ accountForm?.addEventListener("submit", (e) => {
   e.preventDefault();
   closeModal(accountModal);
 
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("userEmail"); // optional, for reference
+
   // Restore buttons
   toggleVisibility(loginBtn, true);
   toggleVisibility(signupBtn, true);
