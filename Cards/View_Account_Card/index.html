@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>L'escapade Private Villa — My Account</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">L'escapade</div>
+        <div class="header-right">
+          <div class="user-chip">MC</div>
+          <div class="header-name">Mharcky Conquilla</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <aside class="left-card">
+        <div class="profile-top">
+          <div class="avatar-wrap">
+            <img
+              id="leftAvatar"
+              src="https://via.placeholder.com/100/efefef/444?text=MC"
+              alt="avatar"
+            />
+          </div>
+          <div class="left-name">Mharcky Conquilla</div>
+          <div class="left-email">mharcky@gmail.com</div>
+        </div>
+
+        <nav class="left-nav" aria-label="Main navigation">
+          <button class="nav-btn active" data-target="account">
+            My Account
+          </button>
+          <button class="nav-btn" data-target="upcoming">Upcoming Stays</button>
+          <button class="nav-btn" data-target="history">Booking History</button>
+          <button class="nav-btn" data-target="payments">
+            Payment Methods
+          </button>
+        </nav>
+
+        <div class="left-actions">
+          <button class="action btn-logout">Log out</button>
+          <button class="action btn-delete">Delete account</button>
+        </div>
+      </aside>
+
+      <section class="right-card">
+        <div class="card-top">
+          <h2 class="page-title">My Account</h2>
+          <div class="card-controls">
+            <button id="editProfile" class="control-btn">Edit Profile</button>
+            <button class="control-btn outline">Change Password</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div id="account" class="tab active">
+            <h3 class="section-title">
+              <span class="icon">👤</span> Profile Information
+            </h3>
+            <div class="two-col">
+              <div class="field">
+                <label>First Name</label>
+                <input type="text" id="firstName" value="Mharcky" disabled />
+              </div>
+              <div class="field">
+                <label>Last Name</label>
+                <input type="text" id="lastName" value="Conquilla" disabled />
+              </div>
+
+              <div class="field">
+                <label>Contact Number</label>
+                <input
+                  type="text"
+                  id="contact"
+                  value="+63 933 532 4613"
+                  disabled
+                />
+              </div>
+              <div class="field">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  value="mharcky@gmail.com"
+                  disabled
+                />
+              </div>
+
+              <div class="field">
+                <label>Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  value="mharcky_pogi"
+                  disabled
+                />
+              </div>
+              <div class="field">
+                <label>Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  value="password"
+                  disabled
+                />
+              </div>
+            </div>
+
+            <h3 class="section-title">
+              <span class="icon">📊</span> Booking Statistics
+            </h3>
+            <div class="stats-row">
+              <div class="stat">
+                <div class="stat-num">5</div>
+                <div class="stat-label">Total Bookings</div>
+              </div>
+              <div class="stat">
+                <div class="stat-num">1</div>
+                <div class="stat-label">Upcoming</div>
+              </div>
+              <div class="stat">
+                <div class="stat-num">3</div>
+                <div class="stat-label">Completed</div>
+              </div>
+              <div class="stat">
+                <div class="stat-num">1</div>
+                <div class="stat-label">Cancelled</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="upcoming" class="tab">
+            <h3 class="section-title">
+              <span class="icon">📅</span> Upcoming Stays
+            </h3>
+            <div class="booking-card">
+              <div class="booking-left">
+                <div class="pkg-image"></div>
+              </div>
+              <div class="booking-right">
+                <h4>L'escapade Private Resort</h4>
+                <p><strong>Dates:</strong> Oct 5 - Oct 6, 2025</p>
+                <p><strong>Guests:</strong> 2 Adults</p>
+                <p><strong>Confirmation:</strong> #LES-2025-12345</p>
+                <div class="booking-actions">
+                  <button class="btn-primary">View Details</button>
+                  <button class="btn-outline">Modify</button>
+                  <button class="btn-outline">Check-in Online</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="history" class="tab">
+            <h3 class="section-title">
+              <span class="icon">🕑</span> Booking History
+            </h3>
+            <div class="history-list">
+              <div class="history-item">
+                <div>
+                  <strong>Daytime Package</strong>
+                  <div class="muted">Oct 10-10, 2024</div>
+                </div>
+                <div class="history-actions">
+                  <div class="muted">₱5,500.00</div>
+                  <button class="btn-primary">View Receipt</button>
+                </div>
+              </div>
+
+              <div class="history-item">
+                <div>
+                  <strong>One-Day Package</strong>
+                  <div class="muted">Oct 5-6, 2025</div>
+                </div>
+                <div class="history-actions">
+                  <div class="muted">₱9,000.00</div>
+                  <button class="btn-primary">Book Again</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="payments" class="tab">
+            <h3 class="section-title">
+              <span class="icon">💳</span> Payment Methods
+            </h3>
+            <div class="payment-item">
+              <div>
+                <strong>Visa</strong>
+                <div class="muted">ending in 4321 — Expires 06/2026</div>
+              </div>
+              <div>
+                <button class="btn-outline">Edit</button>
+                <button class="btn-outline">Remove</button>
+              </div>
+            </div>
+
+            <div class="payment-item">
+              <div>
+                <strong>PayPal</strong>
+                <div class="muted">mharcky@gmail.com</div>
+              </div>
+              <div>
+                <button class="btn-outline">Edit</button>
+                <button class="btn-outline">Remove</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px">
+              <button class="btn-primary">Add Payment Method</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+  <script defer src="script.js"></script>
+</html>
