@@ -74,42 +74,78 @@ signupShow?.addEventListener("change", () => {
 });
 
 // ===============================
-// SIGNUP VALIDATION
+// SIGNUP VALIDATION + BACKEND CONNECT
 // ===============================
-signupForm?.addEventListener("submit", (e) => {
-  const password = signupPwd.value;
-  const confirm = signupCPwd.value;
-  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+signupForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  if (!regex.test(password)) {
-    e.preventDefault();
-    alert("Password must be at least 8 characters with uppercase, lowercase, number, and special character.");
-    return;
-  }
+  const firstName = document.getElementById("signup-fname").value;
+  const lastName = document.getElementById("signup-lname").value;
+  const contactNo = document.getElementById("signup-contact").value;
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
+  const confirm = document.getElementById("signupc-password").value;
+
   if (password !== confirm) {
-    e.preventDefault();
     alert("Passwords do not match!");
     return;
   }
 
-  closeModal(signupModal);
-  alert("Account created! You may now log in.");
-  signupForm.reset();
+  try {
+    const res = await fetch("http://localhost:3000/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ firstName, lastName, contactNo, email, password })
+  });
+
+
+    const data = await res.json();
+    alert(data.message);
+    if (res.ok) {
+      closeModal(signupModal);
+      signupForm.reset();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Signup failed.");
+  }
 });
 
 // ===============================
-// LOGIN BEHAVIOR
+// LOGIN BACKEND CONNECT
 // ===============================
-loginForm?.addEventListener("submit", (e) => {
+loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  closeModal(loginModal);
 
-  // Hide login/signup buttons, show account
-  toggleVisibility(loginBtn, false);
-  toggleVisibility(signupBtn, false);
-  toggleVisibility(accountBtn, true);
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
 
-  loginForm.reset();
+  try {
+    const res = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    if (res.ok) {
+
+
+      // ✅ Save login status locally
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("userEmail", data.user.email); // optional, for reference
+
+      closeModal(loginModal);
+      toggleVisibility(loginBtn, false);
+      toggleVisibility(signupBtn, false);
+      toggleVisibility(accountBtn, true);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Login failed.");
+  }
 });
 
 // ===============================
