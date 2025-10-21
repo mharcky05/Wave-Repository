@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../css/signup.css" />
   <link rel="stylesheet" href="../css/account.css" />
   <link rel="stylesheet" href="../css/book-now.css" />
-
+  <link rel="stylesheet" href="../css/amenities.css" />
   <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet" />
 </head>
 
@@ -234,7 +234,7 @@
       </div>
 
       <!-- Last Card: View All Button -->
-      <div class="amenity-card view-all-card">
+      <div class="amenity-card view-all-card" id="view-all-card">
         <img src="../images/right-arrow.png" alt="View All" />
         <p>View All Amenities</p>
       </div>
@@ -535,9 +535,35 @@
     </div>
   </div>
 
+  <!-- ===== AMENITIES MODAL ===== -->
+  <div id="amenities-modal" class="modal">
+    <div class="modal-content amenities-modal">
+      <span class="close-btn" id="closeAmenities">&times;</span>
+      <h2>All Amenities</h2>
 
+      <ul class="amenities-list">
+        <li>3 ft to 5 ft Swimming Pool</li>
+        <li>WiFi Access</li>
+        <li>1 AC Room with CR/Toilet</li>
+        <li>Gym Equipment</li>
+        <li>Microwave Oven</li>
+        <li>Minibar</li>
+        <li>Extra Mattresses</li>
+        <li>Charcoal Griller</li>
+        <li>Free Parking</li>
+        <li>Karaoke</li>
+        <li>Game Room (Billiards, Ping Pong, Darts)</li>
+        <li>Gas Stove</li>
+        <li>65" LED Smart TV</li>
+        <li>Refrigerator</li>
+        <li>Outdoor Shower Area</li>
+        <li>24/7 CCTV Security</li>
+      </ul>
+    </div>
+  </div>
 </body>
 <!-- JS -->
+ <script src="../js/amenities.js"></script>
 <script src="../js/book-now.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/hero.js"></script>
