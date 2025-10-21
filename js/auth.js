@@ -20,7 +20,6 @@ const closeAccount = document.getElementById("closeAccount");
 // Forms
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
-const accountForm = document.getElementById("accountForm");
 
 // Password toggles
 const loginPwd = document.getElementById("login-password");
@@ -30,27 +29,29 @@ const signupCPwd = document.getElementById("signupc-password");
 const signupShow = document.getElementById("signup-showPass");
 
 // ===============================
-// EVENT LISTENERS
+// OPEN MODALS
 // ===============================
-
-// --- OPEN MODALS ---
 loginBtn?.addEventListener("click", () => showModal(loginModal));
 signupBtn?.addEventListener("click", () => showModal(signupModal));
 accountBtn?.addEventListener("click", () => showModal(accountModal));
 
-// --- CLOSE MODALS ---
+// ===============================
+// CLOSE MODALS
+// ===============================
 closeLogin?.addEventListener("click", () => closeModal(loginModal));
 closeSignup?.addEventListener("click", () => closeModal(signupModal));
 closeAccount?.addEventListener("click", () => closeModal(accountModal));
 
-// --- CLICK OUTSIDE TO CLOSE ---
+// Close when clicking outside
 window.addEventListener("click", (e) => {
   [loginModal, signupModal, accountModal].forEach((modal) => {
     if (modal && e.target === modal) closeModal(modal);
   });
 });
 
-// --- SWITCH BETWEEN LOGIN & SIGNUP ---
+// ===============================
+// SWITCH BETWEEN LOGIN & SIGNUP
+// ===============================
 function toggleSignup() {
   closeModal(loginModal);
   showModal(signupModal);
@@ -66,7 +67,6 @@ function toggleLogin() {
 loginShow?.addEventListener("change", () => {
   loginPwd.type = loginShow.checked ? "text" : "password";
 });
-
 signupShow?.addEventListener("change", () => {
   const type = signupShow.checked ? "text" : "password";
   signupPwd.type = type;
@@ -104,7 +104,6 @@ loginForm?.addEventListener("submit", (e) => {
   e.preventDefault();
   closeModal(loginModal);
 
-  // Hide login/signup buttons, show account
   toggleVisibility(loginBtn, false);
   toggleVisibility(signupBtn, false);
   toggleVisibility(accountBtn, true);
@@ -115,17 +114,11 @@ loginForm?.addEventListener("submit", (e) => {
 // ===============================
 // LOGOUT BEHAVIOR
 // ===============================
-accountForm?.addEventListener("submit", (e) => {
-  e.preventDefault();
+document.querySelector('#account-modal .logout-btn')?.addEventListener('click', () => {
   closeModal(accountModal);
-
-  // Restore buttons
   toggleVisibility(loginBtn, true);
   toggleVisibility(signupBtn, true);
   toggleVisibility(accountBtn, false);
-
-  loginForm?.reset();
-  signupForm?.reset();
 });
 
 // ===============================
@@ -147,5 +140,4 @@ function toggleVisibility(element, show) {
 // ===============================
 // INITIAL STATE
 // ===============================
-// Hide the "My Account" button by default
-toggleVisibility(accountBtn, false);
+toggleVisibility(accountBtn, false); // hide account button by default
