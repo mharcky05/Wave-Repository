@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 // ===== BOOK-NOW SCRIPT (with Login Check) =====
+=======
+// ===== MODAL SCRIPTS =====
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
 (() => {
-  // Elements
-  const overlay = document.getElementById("overlay");
+  // ----- BOOK NOW -----
   const modal = document.getElementById("book-modal");
   const bookingModal = document.querySelector(".booking-modal");
   const packageSection = document.getElementById("modal-package-selection");
@@ -9,13 +12,11 @@
   const packageCards = document.querySelectorAll(".modal-package-card");
   const cancelBooking = document.getElementById("cancelBooking");
 
-  // display elements in form
   const packageNameEl = document.getElementById("selected-package-name");
   const packageTimeEl = document.getElementById("selected-package-time");
   const packagePaxEl = document.getElementById("selected-package-pax");
   const packagePriceEl = document.getElementById("selected-package-price");
   const packageImageEl = document.getElementById("selected-package-image");
-
   const checkinDateEl = document.getElementById("checkin-date");
   const checkoutDateEl = document.getElementById("checkout-date");
   const checkinTimeEl = document.getElementById("checkin-time");
@@ -28,10 +29,10 @@
   const oneDayOptionRow = document.getElementById("one-day-option-row");
   const oneDayOptionSelect = document.getElementById("one-day-option");
 
-  // constants
   const PRICE_PER_PERSON = 150;
   const PRICE_PER_HOUR = 500;
 
+<<<<<<< HEAD
   // ========== LOGIN CHECK ==========
   async function checkLoginStatus() {
     try {
@@ -55,6 +56,11 @@
     if (!p) return 0;
     const n = p.replace(/[^0-9.]/g, "");
     return Number(n) || 0;
+=======
+  function parsePriceString(p) {
+    if (!p) return 0;
+    return Number(p.replace(/[^0-9.]/g, "")) || 0;
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   }
 
   function formatPHP(n) {
@@ -75,20 +81,30 @@
       checkoutDateEl.value = "";
       return;
     }
+<<<<<<< HEAD
     checkoutDateEl.value = (duration === "same-day")
       ? checkinDateStr
       : addDays(checkinDateStr, 1);
+=======
+    checkoutDateEl.value = duration === "same-day" ? checkinDateStr : addDays(checkinDateStr, 1);
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   }
 
   function computeTotal() {
     const base = Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
     const addPax = Number(additionalPaxEl.value) || 0;
     const addHrs = Number(additionalHoursEl.value) || 0;
+<<<<<<< HEAD
     const total = base + (addPax * PRICE_PER_PERSON) + (addHrs * PRICE_PER_HOUR);
     totalPriceEl.value = "₱" + total.toLocaleString("en-PH", { minimumFractionDigits: 0 });
   }
 
   // Open modal
+=======
+    totalPriceEl.value = formatPHP(base + (addPax * PRICE_PER_PERSON) + (addHrs * PRICE_PER_HOUR));
+  }
+
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   function openModal() {
     modal.classList.add("show");
     bookingModal.classList.remove("step2");
@@ -97,13 +113,20 @@
     document.body.classList.add("modal-open");
   }
 
+<<<<<<< HEAD
   // Close modal
+=======
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   function closeModal() {
     modal.classList.remove("show");
     bookingModal.classList.remove("step2");
     packageSection.style.display = "block";
     formSection.style.display = "none";
     document.body.classList.remove("modal-open");
+<<<<<<< HEAD
+=======
+
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
     additionalPaxEl.value = 0;
     additionalHoursEl.value = 0;
     basePriceEl.value = "";
@@ -114,6 +137,7 @@
     oneDayOptionSelect.innerHTML = "";
   }
 
+<<<<<<< HEAD
 
   // ========= CHECK LOGIN STATUS =========
 function checkLoginStatus() {
@@ -156,13 +180,23 @@ document.querySelectorAll(".book-now").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
 
+=======
+  document.querySelectorAll(".book-now").forEach(btn => btn.addEventListener("click", openModal));
+
+  packageCards.forEach(card => {
+    const btn = card.querySelector(".choose-package-btn");
+    btn.addEventListener("click", () => {
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
       const name = card.dataset.name || "";
       const time = card.dataset.time || "";
       const pax = card.dataset.pax || "";
       const price = card.dataset.price || "";
       const duration = card.dataset.duration || "same-day";
+<<<<<<< HEAD
       const aTime = card.dataset.optionATime || card.dataset["option-a-time"];
       const bTime = card.dataset.optionBTime || card.dataset["option-b-time"];
+=======
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
 
       packageNameEl.textContent = name;
       packageTimeEl.textContent = time;
@@ -173,6 +207,7 @@ document.querySelectorAll(".book-now").forEach(btn => {
       const baseNum = parsePriceString(price);
       basePriceEl.value = formatPHP(baseNum);
       bookingModal.dataset.currentBase = baseNum;
+<<<<<<< HEAD
 
       // Handle time options
       if (aTime && bTime) {
@@ -201,11 +236,43 @@ document.querySelectorAll(".book-now").forEach(btn => {
       numGuestsEl.value = pax;
       additionalPaxEl.value = 0;
       additionalHoursEl.value = 0;
+=======
+      bookingModal.dataset.currentDuration = duration;
+
+      numGuestsEl.value = pax;
+      additionalPaxEl.value = 0;
+      additionalHoursEl.value = 0;
+
+      // Handle One-Day dropdown
+      if (card.dataset.optionATime && card.dataset.optionBTime) {
+        oneDayOptionRow.style.display = "block";
+        oneDayOptionSelect.innerHTML = "";
+        const optA = document.createElement("option");
+        optA.value = "option-a";
+        optA.textContent = card.dataset.optionATime;
+        const optB = document.createElement("option");
+        optB.value = "option-b";
+        optB.textContent = card.dataset.optionBTime;
+        oneDayOptionSelect.appendChild(optA);
+        oneDayOptionSelect.appendChild(optB);
+
+        const selectedTime = oneDayOptionSelect.value === "option-a" ? card.dataset.optionATime : card.dataset.optionBTime;
+        checkinTimeEl.value = selectedTime.split(" - ")[0] || selectedTime;
+        checkoutTimeEl.value = selectedTime.split(" - ")[1] || "";
+        bookingModal.dataset.currentDuration = "next-day";
+      } else {
+        oneDayOptionRow.style.display = "none";
+        checkinTimeEl.value = time.split(" - ")[0] || time;
+        checkoutTimeEl.value = time.split(" - ")[1] || "";
+      }
+
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
       computeTotal();
 
       packageSection.style.display = "none";
       formSection.style.display = "block";
       bookingModal.classList.add("step2");
+<<<<<<< HEAD
 
       modal.classList.add("show");
       document.body.classList.add("modal-open");
@@ -217,21 +284,28 @@ document.querySelectorAll(".book-now").forEach(btn => {
   });
 
   // ========= OPTION CHANGE & FORM EVENTS =========
+=======
+    });
+  });
+
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   oneDayOptionSelect.addEventListener("change", () => {
     const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
     const parts = selectedText.split(" - ");
     checkinTimeEl.value = parts[0] ? parts[0].trim() : "";
     checkoutTimeEl.value = parts[1] ? parts[1].trim() : "";
     bookingModal.dataset.currentDuration = "next-day";
+<<<<<<< HEAD
     if (checkinDateEl.value) {
       setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
     }
+=======
+    if (checkinDateEl.value) setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   });
 
   checkinDateEl.addEventListener("change", (e) => {
-    const cd = e.target.value;
-    const duration = bookingModal.dataset.currentDuration || "same-day";
-    setCheckoutDateFrom(cd, duration);
+    setCheckoutDateFrom(e.target.value, bookingModal.dataset.currentDuration || "same-day");
   });
 
   additionalPaxEl.addEventListener("input", computeTotal);
@@ -245,13 +319,18 @@ document.querySelectorAll(".book-now").forEach(btn => {
     oneDayOptionRow.style.display = "none";
   });
 
+<<<<<<< HEAD
   modal.addEventListener("click", (e) => {
     if (e.target === modal) closeModal();
   });
 
   // ========= FORM SUBMIT =========
+=======
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   const bookingForm = document.getElementById("bookingForm");
-  bookingForm.addEventListener("submit", (e) => {
+  bookingForm.addEventListener("submit", e => {
     e.preventDefault();
     const payload = {
       package: packageNameEl.textContent,
@@ -266,9 +345,27 @@ document.querySelectorAll(".book-now").forEach(btn => {
       total_price: totalPriceEl.value,
       remarks: document.getElementById("remarks").value || ""
     };
+<<<<<<< HEAD
 
     console.log("Booking payload:", payload);
+=======
+    console.log("Booking payload:", payload);
+    closeModal();
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
     alert("Booking request submitted (demo). Check console for payload.");
     closeModal();
   });
+<<<<<<< HEAD
+=======
+
+  // ----- AMENITIES -----
+  const viewAllCard = document.querySelector(".view-all-card");
+  const amenitiesModal = document.getElementById("amenities-modal");
+  const closeAmenities = document.getElementById("closeAmenities");
+
+  if (viewAllCard) viewAllCard.addEventListener("click", () => amenitiesModal.classList.add("active"));
+  if (closeAmenities) closeAmenities.addEventListener("click", () => amenitiesModal.classList.remove("active"));
+  window.addEventListener("click", e => { if (e.target === amenitiesModal) amenitiesModal.classList.remove("active"); });
+
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
 })();

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 document.querySelectorAll('.nav-btn').forEach(btn=>{
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
@@ -45,12 +46,20 @@ editBtn.addEventListener('click', () => {
 });
 
 // change profile photo only when editing: wire upload input
+=======
+const editBtn = document.getElementById('editProfile');
+const inputs = document.querySelectorAll('.two-col input');
+const avatar = document.getElementById('avatar');
+
+let editing = false;
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
 const uploadInput = document.createElement('input');
 uploadInput.type = 'file';
 uploadInput.accept = 'image/*';
 uploadInput.style.display = 'none';
 document.body.appendChild(uploadInput);
 
+<<<<<<< HEAD
 const leftAvatar = document.getElementById('leftAvatar');
 const profileImage = document.getElementById('profileImage');
 const changePhotoBtn = document.getElementById('editProfile'); // only trigger when editing
@@ -72,5 +81,24 @@ uploadInput.addEventListener('change', (e) => {
     leftAvatar.src = ev.target.result;
     profileImage.src = ev.target.result;
   };
+=======
+editBtn.addEventListener('click', () => {
+  editing = !editing;
+  inputs.forEach(i => (i.disabled = !editing));
+  editBtn.textContent = editing ? 'Save Changes' : 'Edit Profile';
+  if (!editing) alert('Profile updated successfully!');
+});
+
+avatar.addEventListener('click', () => {
+  if (!editing) return;
+  uploadInput.click();
+});
+
+uploadInput.addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => (avatar.src = ev.target.result);
+>>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   r.readAsDataURL(f);
 });
