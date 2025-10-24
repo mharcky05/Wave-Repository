@@ -1,3 +1,4 @@
+
 // ===============================
 // AUTHENTICATION MODALS SCRIPT
 // ===============================
@@ -111,7 +112,7 @@ signupForm?.addEventListener("submit", async (e) => {
 });
 
 // ===============================
-// LOGIN BACKEND
+// LOGIN BACKEND (Guest + Admin)
 // ===============================
 loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -129,18 +130,26 @@ loginForm?.addEventListener("submit", async (e) => {
     const data = await res.json();
     alert(data.message);
 
-  if (res.ok && data.user) {
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("guestID", data.user.guestID); // <- important for booking
-    localStorage.setItem("userEmail", data.user.email);
-    localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
-    localStorage.setItem("userContact", data.user.contactNo);
-    console.log("✅ guestID saved:", data.user.guestID);
+    if (res.ok && data.user) {
+      if (data.user.isAdmin) {
+        // Admin login → redirect to admin dashboard
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("adminEmail", data.user.email);
+        closeModal(loginModal);
+        window.location.href = "/admin.html";
+      } else {
+        // Guest login
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("guestID", data.user.guestID);
+        localStorage.setItem("userEmail", data.user.email);
+        localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
+        localStorage.setItem("userContact", data.user.contactNo);
+        console.log("✅ guestID saved:", data.user.guestID);
 
-    closeModal(loginModal);
-    updateNavbarState(true);
-  } else {  
-      // Login failed
+        closeModal(loginModal);
+        updateNavbarState(true);
+      }
+    } else {
       alert("❌ Login failed: " + (data.message || "Unknown error"));
     }
   } catch (err) {
@@ -158,6 +167,7 @@ logoutBtn?.addEventListener("click", () => {
   localStorage.removeItem("userEmail");
   localStorage.removeItem("userName");
   localStorage.removeItem("userContact");
+  localStorage.removeItem("adminEmail");
 
   closeModal(accountModal);
   updateNavbarState(false);
@@ -262,12 +272,13 @@ function toggleVisibility(element, show) {
   element.style.display = show ? "inline-block" : "none";
 }
 
-function updateNavbarState(isLoggedIn) {
+function updateNavbarState(isLoggedIn, isAdmin = false) {
   toggleVisibility(loginBtn, !isLoggedIn);
   toggleVisibility(signupBtn, !isLoggedIn);
-  toggleVisibility(accountBtn, isLoggedIn);
+  toggleVisibility(accountBtn, isLoggedIn && !isAdmin);
 }
 
+// Clear localStorage on localhost reload
 if (window.location.hostname === "localhost") {
   window.addEventListener("load", () => {
     localStorage.removeItem("isLoggedIn");
@@ -275,6 +286,7 @@ if (window.location.hostname === "localhost") {
     localStorage.removeItem("userEmail");
     localStorage.removeItem("userName");
     localStorage.removeItem("userContact");
+    localStorage.removeItem("adminEmail");
     updateNavbarState(false);
   });
 }
@@ -283,4 +295,38 @@ if (window.location.hostname === "localhost") {
 // INITIAL STATE
 // ===============================
 const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-updateNavbarState(isLoggedIn);
+const isAdmin = !!localStorage.getItem("adminEmail");
+updateNavbarState(isLoggedIn, isAdmin);
+
+
+const adminLoginForm = document.getElementById("adminLoginForm");
+
+adminLoginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("admin-email").value.trim();
+  const password = document.getElementById("admin-password").value.trim();
+
+  try {
+    const res = await fetch("http://localhost:3000/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    if (res.ok && data.admin) {
+      localStorage.setItem("isAdminLoggedIn", "true");
+      localStorage.setItem("adminEmail", data.admin.email);
+      localStorage.setItem("adminID", data.admin.adminID);
+
+      // Redirect to admin dashboard
+      window.location.href = "/admin.html";
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("❌ Admin login failed due to network/server error.");
+  }
+});

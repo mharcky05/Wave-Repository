@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Dashboard — L'escapade Private Villa</title>
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="admin-header">
+      <div class="header-left">
+        <div class="brand">
+          <span class="logo-accent">LESCAPADE</span>
+        </div>
+
+        <div class="header-stats">
+          <div class="stat">
+            <strong id="statGuests">0</strong><small>Guests</small>
+          </div>
+          <div class="stat">
+            <strong id="statRes">0</strong><small>Reservations</small>
+          </div>
+          <div class="stat">
+            <strong id="statRev">₱0</strong><small>Revenue</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="notif-wrap">
+          <button id="notifBtn" class="icon-btn" title="Notifications">
+            🔔 <span id="notifCount" class="badge">0</span>
+          </button>
+          <div id="notifDropdown" class="notif-dropdown hidden">
+            <div class="notif-header">
+              <span>Notifications</span>
+              <button id="clearNotifSmall" class="link-btn">Clear</button>
+            </div>
+            <div id="notifItems" class="notif-items"></div>
+            <div class="notif-actions">
+              <button id="markAllRead" class="small-btn">Mark all read</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="logoutBtn" class="btn-gold">Logout</button>
+      </div>
+    </header>
+
+    <div class="admin-wrap">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav class="menu">
+          <button class="menu-link active" data-target="dashboard">
+            Dashboard
+          </button>
+          <button class="menu-link" data-target="reservations">
+            Manage Reservations
+          </button>
+          <button class="menu-link" data-target="payments">
+            Manage Payments
+          </button>
+          <button class="menu-link" data-target="guests">Manage Guests</button>
+          <button class="menu-link" data-target="packages">
+            Manage Packages
+          </button>
+          <button class="menu-link" data-target="amenities">
+            Manage Amenities
+          </button>
+          <button class="menu-link" data-target="gallery">
+            Manage Gallery
+          </button>
+          <button class="menu-link" data-target="reviews">
+            Manage Reviews
+          </button>
+          <button class="menu-link" data-target="inquiries">
+            Manage Inquiries
+          </button>
+          <button class="menu-link" data-target="reports">Reports</button>
+          <button class="menu-link" data-target="profile">Admin Profile</button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <small>Admin: <strong>admin@lescapade</strong></small>
+        </div>
+      </aside>
+
+      <!-- MAIN AREA -->
+      <main class="main-area">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="panel active-panel">
+          <h2>Overview</h2>
+          <div class="cards-grid">
+            <div class="card">
+              <h3>Total Guests</h3>
+              <p id="cardGuests">0</p>
+              <button class="card-action" id="viewGuestsBtn">
+                View Guests
+              </button>
+            </div>
+
+            <div class="card">
+              <h3>Reservations</h3>
+              <p id="cardRes">0</p>
+              <button class="card-action" id="viewResBtn">
+                View Reservations
+              </button>
+            </div>
+
+            <div class="card">
+              <h3>Revenue</h3>
+              <p id="cardRevenue">₱0</p>
+              <button class="card-action" id="viewPaymentsBtn">
+                View Payments
+              </button>
+            </div>
+
+            <div class="card premium">
+              <h3>Quick Actions</h3>
+              <div class="quick-actions">
+                <button id="addPackage">Add Package</button>
+                <button id="newReservation">Simulate Reservation</button>
+                <button id="sendAnnouncement">Send Announcement</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Manage Reservations -->
+        <section id="reservations" class="panel">
+          <h2>Manage Reservations</h2>
+          <div class="panel-actions">
+            <button id="resRefresh">Refresh</button>
+            <button id="resExport">Export CSV</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="resTable">
+              <thead>
+                <tr>
+                  <th>ReserveID</th>
+                  <th>Guest</th>
+                  <th>Package</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Guests</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Manage Payments -->
+        <section id="payments" class="panel">
+          <h2>Manage Payments</h2>
+          <div class="panel-actions">
+            <button id="payRefresh">Refresh</button>
+            <button id="payVerifyAll">Verify All Pending</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="paymentsTable">
+              <thead>
+                <tr>
+                  <th>PaymentID</th>
+                  <th>ReserveID</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Manage Guests -->
+        <section id="guests" class="panel">
+          <h2>Manage Guests</h2>
+          <div class="panel-actions">
+            <button id="guestRefresh">Refresh</button>
+            <button id="addGuestBtn">Add Guest</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="guestsTable">
+              <thead>
+                <tr>
+                  <th>GuestID</th>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Packages -->
+        <section id="packages" class="panel">
+          <h2>Manage Packages</h2>
+          <div class="panel-actions">
+            <button id="pkgAddBtn">Add Package</button>
+          </div>
+          <div id="packagesList" class="cards-grid"></div>
+        </section>
+
+        <!-- Amenities -->
+        <section id="amenities" class="panel">
+          <h2>Manage Amenities</h2>
+          <div class="panel-actions">
+            <button id="amenAddBtn">Add Amenity</button>
+          </div>
+          <div id="amenList" class="cards-grid"></div>
+        </section>
+
+        <!-- Gallery -->
+        <section id="gallery" class="panel">
+          <h2>Manage Gallery</h2>
+          <div class="panel-actions">
+            <button id="galleryAdd">Upload Media</button>
+          </div>
+          <div id="galleryGrid" class="cards-grid"></div>
+        </section>
+
+        <!-- Reviews -->
+        <section id="reviews" class="panel">
+          <h2>Manage Reviews</h2>
+          <div class="panel-actions">
+            <button id="reviewsRefresh">Refresh</button>
+          </div>
+          <div id="reviewsList" class="cards-grid"></div>
+        </section>
+
+        <!-- Inquiries -->
+        <section id="inquiries" class="panel">
+          <h2>Manage Inquiries</h2>
+          <div class="panel-actions">
+            <button id="inqRefresh">Refresh</button>
+          </div>
+          <div id="inqList" class="cards-grid"></div>
+        </section>
+
+        <!-- Reports -->
+        <section id="reports" class="panel">
+          <h2>Reports</h2>
+          <div class="panel-actions">
+            <button id="genMonthly">Monthly Bookings</button>
+            <button id="genRevenue">Revenue Report</button>
+          </div>
+          <div id="reportArea"></div>
+        </section>
+
+        <!-- Profile -->
+        <form id="adminLoginForm">
+          <label>Email:</label>
+          <input type="email" id="admin-email" required />
+          <label>Password:</label>
+          <input type="password" id="admin-password" required />
+          <button type="submit">Login</button>
+        </form>
+      </main>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-body">
+        <button id="closeModal" class="modal-close" title="Close">
+          &times;
+        </button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+
+  </body>
+</html>
