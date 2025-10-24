@@ -20,7 +20,14 @@ const closeAccount = document.getElementById("closeAccount");
 // Forms
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
-const accountForm = document.getElementById("accountForm");
+
+// Logout button (NEW)
+const logoutBtn = document.querySelector(".logout-btn");
+
+// Account info fields
+const accName = document.getElementById("acc-name");
+const accEmail = document.getElementById("acc-email");
+const accContact = document.getElementById("acc-contact");
 
 // Password toggles
 const loginPwd = document.getElementById("login-password");
@@ -36,7 +43,10 @@ const signupShow = document.getElementById("signup-showPass");
 // --- OPEN MODALS ---
 loginBtn?.addEventListener("click", () => showModal(loginModal));
 signupBtn?.addEventListener("click", () => showModal(signupModal));
-accountBtn?.addEventListener("click", () => showModal(accountModal));
+accountBtn?.addEventListener("click", () => {
+  showModal(accountModal);
+  loadAccountInfo(); // show user info when modal opens
+});
 
 // --- CLOSE MODALS ---
 closeLogin?.addEventListener("click", () => closeModal(loginModal));
@@ -93,14 +103,14 @@ signupForm?.addEventListener("submit", async (e) => {
 
   try {
     const res = await fetch("http://localhost:3000/auth/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ firstName, lastName, contactNo, email, password })
-  });
-
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName, contactNo, email, password })
+    });
 
     const data = await res.json();
     alert(data.message);
+
     if (res.ok) {
       closeModal(signupModal);
       signupForm.reset();
@@ -131,16 +141,14 @@ loginForm?.addEventListener("submit", async (e) => {
     alert(data.message);
 
     if (res.ok) {
-
-
-      // ✅ Save login status locally
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userEmail", data.user.email); // optional, for reference
+      // ✅ Save login data locally
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userEmail", data.user.email);
+      localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
+      localStorage.setItem("userContact", data.user.contactNo);
 
       closeModal(loginModal);
-      toggleVisibility(loginBtn, false);
-      toggleVisibility(signupBtn, false);
-      toggleVisibility(accountBtn, true);
+      updateNavbarState(true);
     }
   } catch (err) {
     console.error(err);
@@ -149,26 +157,33 @@ loginForm?.addEventListener("submit", async (e) => {
 });
 
 // ===============================
-// LOGOUT BEHAVIOR
+// LOGOUT BEHAVIOR (NEW)
 // ===============================
-accountForm?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  closeModal(accountModal);
-
+logoutBtn?.addEventListener("click", () => {
   localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("userEmail"); // optional, for reference
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userContact");
 
-  // Restore buttons
-  toggleVisibility(loginBtn, true);
-  toggleVisibility(signupBtn, true);
-  toggleVisibility(accountBtn, false);
-
-  loginForm?.reset();
-  signupForm?.reset();
+  closeModal(accountModal);
+  updateNavbarState(false);
 });
 
 // ===============================
-// UTILITY FUNCTIONS
+// ACCOUNT INFO LOADER
+// ===============================
+function loadAccountInfo() {
+  const name = localStorage.getItem("userName") || "—";
+  const email = localStorage.getItem("userEmail") || "—";
+  const contact = localStorage.getItem("userContact") || "—";
+
+  accName.textContent = name;
+  accEmail.textContent = email;
+  accContact.textContent = contact;
+}
+
+// ===============================
+// HELPER FUNCTIONS
 // ===============================
 function showModal(modal) {
   if (modal) modal.style.display = "flex";
@@ -183,8 +198,14 @@ function toggleVisibility(element, show) {
   element.style.display = show ? "inline-block" : "none";
 }
 
+function updateNavbarState(isLoggedIn) {
+  toggleVisibility(loginBtn, !isLoggedIn);
+  toggleVisibility(signupBtn, !isLoggedIn);
+  toggleVisibility(accountBtn, isLoggedIn);
+}
+
 // ===============================
 // INITIAL STATE
 // ===============================
-// Hide the "My Account" button by default
-toggleVisibility(accountBtn, false);
+const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+updateNavbarState(isLoggedIn);

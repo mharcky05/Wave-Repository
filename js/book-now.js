@@ -75,17 +75,17 @@
       checkoutDateEl.value = "";
       return;
     }
-    checkoutDateEl.value = (duration === "same-day")
-      ? checkinDateStr
-      : addDays(checkinDateStr, 1);
+    checkoutDateEl.value =
+      duration === "same-day" ? checkinDateStr : addDays(checkinDateStr, 1);
   }
 
   function computeTotal() {
-    const base = Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
+    const base =
+      Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
     const addPax = Number(additionalPaxEl.value) || 0;
     const addHrs = Number(additionalHoursEl.value) || 0;
-    const total = base + (addPax * PRICE_PER_PERSON) + (addHrs * PRICE_PER_HOUR);
-    totalPriceEl.value = "₱" + total.toLocaleString("en-PH", { minimumFractionDigits: 0 });
+    const total = base + addPax * PRICE_PER_PERSON + addHrs * PRICE_PER_HOUR;
+    totalPriceEl.value = formatPHP(total);
   }
 
   // Open modal
@@ -114,44 +114,35 @@
     oneDayOptionSelect.innerHTML = "";
   }
 
+  // ========= BOOK NOW BUTTON BEHAVIOR =========
+  document.querySelectorAll(".book-now").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-  // ========= CHECK LOGIN STATUS =========
-function checkLoginStatus() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return isLoggedIn;
-}
+      // Check login before opening modal
+      const isLoggedIn = await checkLoginStatus();
+      if (!isLoggedIn) {
+        alert("⚠️ Please log in first before booking.");
 
+        // ✅ Show login modal instead of redirecting
+        setTimeout(() => {
+          const loginModal = document.getElementById("login-modal");
+          if (loginModal) {
+            loginModal.style.display = "flex";
+          } else {
+            console.error("⚠️ login-modal not found!");
+          }
+        }, 300);
 
- // ========= BOOK NOW BUTTON BEHAVIOR =========
-document.querySelectorAll(".book-now").forEach(btn => {
-  btn.addEventListener("click", async (e) => {
-    e.preventDefault();
+        return;
+      }
 
-    // Check login before opening modal
-    const isLoggedIn = await checkLoginStatus();
-    if (!isLoggedIn) {
-      alert("⚠️ Please log in first before booking.");
-
-      // ✅ show login modal instead of redirecting
-      setTimeout(() => {
-        const loginModal = document.getElementById("login-modal");
-        if (loginModal) {
-          loginModal.style.display = "flex";
-        } else {
-          console.error("⚠️ login-modal not found!");
-        }
-      }, 300);
-
-      return;
-    }
-
-    openModal();
+      openModal();
+    });
   });
-});
-
 
   // ========= PACKAGE SELECTION =========
-  packageCards.forEach(card => {
+  packageCards.forEach((card) => {
     const btn = card.querySelector(".choose-package-btn");
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -211,20 +202,27 @@ document.querySelectorAll(".book-now").forEach(btn => {
       document.body.classList.add("modal-open");
 
       if (checkinDateEl.value) {
-        setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
+        setCheckoutDateFrom(
+          checkinDateEl.value,
+          bookingModal.dataset.currentDuration
+        );
       }
     });
   });
 
   // ========= OPTION CHANGE & FORM EVENTS =========
   oneDayOptionSelect.addEventListener("change", () => {
-    const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
+    const selectedText =
+      oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
     const parts = selectedText.split(" - ");
     checkinTimeEl.value = parts[0] ? parts[0].trim() : "";
     checkoutTimeEl.value = parts[1] ? parts[1].trim() : "";
     bookingModal.dataset.currentDuration = "next-day";
     if (checkinDateEl.value) {
-      setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
+      setCheckoutDateFrom(
+        checkinDateEl.value,
+        bookingModal.dataset.currentDuration
+      );
     }
   });
 
@@ -264,7 +262,7 @@ document.querySelectorAll(".book-now").forEach(btn => {
       additional_hours: Number(additionalHoursEl.value) || 0,
       base_price: Number(bookingModal.dataset.currentBase || 0),
       total_price: totalPriceEl.value,
-      remarks: document.getElementById("remarks").value || ""
+      remarks: document.getElementById("remarks").value || "",
     };
 
     console.log("Booking payload:", payload);
