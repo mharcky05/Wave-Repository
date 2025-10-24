@@ -1,4 +1,4 @@
-// ===== BOOK-NOW SCRIPT (with Login Check) =====
+// ===== BOOK-NOW SCRIPT (with Login Check & Backend Booking) =====
 (() => {
   // Elements
   const overlay = document.getElementById("overlay");
@@ -8,8 +8,9 @@
   const formSection = document.getElementById("modal-booking-form");
   const packageCards = document.querySelectorAll(".modal-package-card");
   const cancelBooking = document.getElementById("cancelBooking");
+  const bookingForm = document.getElementById("bookingForm");
 
-  // display elements in form
+  // Display elements in form
   const packageNameEl = document.getElementById("selected-package-name");
   const packageTimeEl = document.getElementById("selected-package-time");
   const packagePaxEl = document.getElementById("selected-package-pax");
@@ -35,7 +36,6 @@
   // ========== LOGIN CHECK ==========
   async function checkLoginStatus() {
     try {
-      // Try backend check (if you have /api/check-session)
       const res = await fetch("/api/check-session", { credentials: "include" });
       if (res.ok) {
         const data = await res.json();
@@ -44,8 +44,6 @@
     } catch (err) {
       console.warn("Backend login check failed:", err);
     }
-
-    // Fallback: localStorage-based login (for front-end testing)
     const loggedIn = localStorage.getItem("isLoggedIn");
     return loggedIn === "true";
   }
@@ -80,12 +78,12 @@
   }
 
   function computeTotal() {
-    const base =
-      Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
+    const base = Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
     const addPax = Number(additionalPaxEl.value) || 0;
     const addHrs = Number(additionalHoursEl.value) || 0;
     const total = base + addPax * PRICE_PER_PERSON + addHrs * PRICE_PER_HOUR;
-    totalPriceEl.value = formatPHP(total);
+    totalPriceEl.value = total;
+    basePriceEl.value = formatPHP(base);
   }
 
   // Open modal
@@ -118,25 +116,13 @@
   document.querySelectorAll(".book-now").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
-
-      // Check login before opening modal
       const isLoggedIn = await checkLoginStatus();
       if (!isLoggedIn) {
         alert("⚠️ Please log in first before booking.");
-
-        // ✅ Show login modal instead of redirecting
-        setTimeout(() => {
-          const loginModal = document.getElementById("login-modal");
-          if (loginModal) {
-            loginModal.style.display = "flex";
-          } else {
-            console.error("⚠️ login-modal not found!");
-          }
-        }, 300);
-
+        const loginModal = document.getElementById("login-modal");
+        if (loginModal) loginModal.style.display = "flex";
         return;
       }
-
       openModal();
     });
   });
@@ -146,7 +132,6 @@
     const btn = card.querySelector(".choose-package-btn");
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-
       const name = card.dataset.name || "";
       const time = card.dataset.time || "";
       const pax = card.dataset.pax || "";
@@ -165,7 +150,6 @@
       basePriceEl.value = formatPHP(baseNum);
       bookingModal.dataset.currentBase = baseNum;
 
-      // Handle time options
       if (aTime && bTime) {
         oneDayOptionRow.style.display = "block";
         oneDayOptionSelect.innerHTML = "";
@@ -197,39 +181,29 @@
       packageSection.style.display = "none";
       formSection.style.display = "block";
       bookingModal.classList.add("step2");
-
       modal.classList.add("show");
       document.body.classList.add("modal-open");
 
       if (checkinDateEl.value) {
-        setCheckoutDateFrom(
-          checkinDateEl.value,
-          bookingModal.dataset.currentDuration
-        );
+        setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
       }
     });
   });
 
   // ========= OPTION CHANGE & FORM EVENTS =========
   oneDayOptionSelect.addEventListener("change", () => {
-    const selectedText =
-      oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
+    const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
     const parts = selectedText.split(" - ");
     checkinTimeEl.value = parts[0] ? parts[0].trim() : "";
     checkoutTimeEl.value = parts[1] ? parts[1].trim() : "";
     bookingModal.dataset.currentDuration = "next-day";
     if (checkinDateEl.value) {
-      setCheckoutDateFrom(
-        checkinDateEl.value,
-        bookingModal.dataset.currentDuration
-      );
+      setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
     }
   });
 
   checkinDateEl.addEventListener("change", (e) => {
-    const cd = e.target.value;
-    const duration = bookingModal.dataset.currentDuration || "same-day";
-    setCheckoutDateFrom(cd, duration);
+    setCheckoutDateFrom(e.target.value, bookingModal.dataset.currentDuration || "same-day");
   });
 
   additionalPaxEl.addEventListener("input", computeTotal);
@@ -247,26 +221,48 @@
     if (e.target === modal) closeModal();
   });
 
-  // ========= FORM SUBMIT =========
-  const bookingForm = document.getElementById("bookingForm");
-  bookingForm.addEventListener("submit", (e) => {
+  // ========= FORM SUBMIT (POST TO BACKEND) =========
+  bookingForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const payload = {
-      package: packageNameEl.textContent,
-      checkin_date: checkinDateEl.value,
-      checkout_date: checkoutDateEl.value,
-      checkin_time: checkinTimeEl.value,
-      checkout_time: checkoutTimeEl.value,
-      pax_max: numGuestsEl.value,
-      additional_persons: Number(additionalPaxEl.value) || 0,
-      additional_hours: Number(additionalHoursEl.value) || 0,
-      base_price: Number(bookingModal.dataset.currentBase || 0),
-      total_price: totalPriceEl.value,
-      remarks: document.getElementById("remarks").value || "",
+
+    const guestID = localStorage.getItem("guestID");
+    if (!guestID) {
+      alert("⚠️ Please log in first.");
+      return;
+    }
+
+    const bookingData = {
+      guestID,
+      packageName: packageNameEl.textContent,
+      checkinDate: checkinDateEl.value,
+      checkoutDate: checkoutDateEl.value,
+      checkinTime: checkinTimeEl.value,
+      checkoutTime: checkoutTimeEl.value,
+      numGuests: Number(numGuestsEl.value) || 0,
+      additionalPax: Number(additionalPaxEl.value) || 0,
+      additionalHours: Number(additionalHoursEl.value) || 0,
+      basePrice: Number(bookingModal.dataset.currentBase || 0),
+      totalPrice: parseFloat(totalPriceEl.value.replace(/[^0-9.]/g, "")) || 0,
     };
 
-    console.log("Booking payload:", payload);
-    alert("Booking request submitted (demo). Check console for payload.");
-    closeModal();
+    try {
+      const response = await fetch("/api/bookings/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("✅ " + result.message);
+        closeModal();
+        bookingForm.reset();
+      } else {
+        alert("❌ " + result.message);
+      }
+    } catch (err) {
+      console.error("Booking submit error:", err);
+      alert("⚠️ Something went wrong while saving your booking.");
+    }
   });
 })();

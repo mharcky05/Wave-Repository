@@ -129,19 +129,23 @@ loginForm?.addEventListener("submit", async (e) => {
     const data = await res.json();
     alert(data.message);
 
-    if (res.ok) {
-      // ✅ Save login data locally
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userEmail", data.user.email);
-      localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
-      localStorage.setItem("userContact", data.user.contactNo);
+  if (res.ok && data.user) {
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("guestID", data.user.guestID); // <- important for booking
+    localStorage.setItem("userEmail", data.user.email);
+    localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
+    localStorage.setItem("userContact", data.user.contactNo);
+    console.log("✅ guestID saved:", data.user.guestID);
 
-      closeModal(loginModal);
-      updateNavbarState(true);
+    closeModal(loginModal);
+    updateNavbarState(true);
+  } else {  
+      // Login failed
+      alert("❌ Login failed: " + (data.message || "Unknown error"));
     }
   } catch (err) {
-    console.error(err);
-    alert("Login failed.");
+    console.error("Login error:", err);
+    alert("❌ Login failed due to network or server error.");
   }
 });
 
@@ -150,6 +154,7 @@ loginForm?.addEventListener("submit", async (e) => {
 // ===============================
 logoutBtn?.addEventListener("click", () => {
   localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("guestID");
   localStorage.removeItem("userEmail");
   localStorage.removeItem("userName");
   localStorage.removeItem("userContact");
@@ -261,6 +266,17 @@ function updateNavbarState(isLoggedIn) {
   toggleVisibility(loginBtn, !isLoggedIn);
   toggleVisibility(signupBtn, !isLoggedIn);
   toggleVisibility(accountBtn, isLoggedIn);
+}
+
+if (window.location.hostname === "localhost") {
+  window.addEventListener("load", () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("guestID");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userContact");
+    updateNavbarState(false);
+  });
 }
 
 // ===============================
