@@ -109,4 +109,58 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// === GET ACCOUNT INFO ===
+router.get("/user/:email", (req, res) => {
+  const { email } = req.params;
+
+  db.query("SELECT firstName, lastName, email, contactNo FROM tbl_guests WHERE email = ?", [email], (err, results) => {
+    if (err) {
+      console.error("❌ DB select error:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = results[0];
+    res.json({ 
+      message: "User fetched successfully",
+      user: {
+        fullName: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        contactNo: user.contactNo
+      }
+    });
+  });
+});
+
+// === UPDATE PROFILE ===
+router.put("/update-profile", (req, res) => {
+  const { fullName, email, contact } = req.body;
+
+  if (!email || !fullName || !contact)
+    return res.status(400).json({ message: "All fields required." });
+
+  const [firstName, ...lastParts] = fullName.split(" ");
+  const lastName = lastParts.join(" ");
+
+  db.query(
+    "UPDATE tbl_guests SET firstName = ?, lastName = ?, contactNo = ? WHERE email = ?",
+    [firstName, lastName, contact, email],
+    (err, result) => {
+      if (err) {
+        console.error("❌ DB update error:", err);
+        return res.status(500).json({ message: "Database update failed." });
+      }
+
+      if (result.affectedRows === 0)
+        return res.status(404).json({ message: "User not found." });
+
+      res.json({ message: "Profile updated successfully." });
+    }
+  );
+});
+
+
 module.exports = router;

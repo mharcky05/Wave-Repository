@@ -21,20 +21,13 @@ const closeAccount = document.getElementById("closeAccount");
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 
-// Logout button (NEW)
-const logoutBtn = document.querySelector(".logout-btn");
-
-// Account info fields
+// Account Info Fields
 const accName = document.getElementById("acc-name");
 const accEmail = document.getElementById("acc-email");
 const accContact = document.getElementById("acc-contact");
 
-// Password toggles
-const loginPwd = document.getElementById("login-password");
-const loginShow = document.getElementById("login-showPass");
-const signupPwd = document.getElementById("signup-password");
-const signupCPwd = document.getElementById("signupc-password");
-const signupShow = document.getElementById("signup-showPass");
+// Logout Button
+const logoutBtn = document.getElementById("logoutBtn");
 
 // ===============================
 // EVENT LISTENERS
@@ -45,7 +38,7 @@ loginBtn?.addEventListener("click", () => showModal(loginModal));
 signupBtn?.addEventListener("click", () => showModal(signupModal));
 accountBtn?.addEventListener("click", () => {
   showModal(accountModal);
-  loadAccountInfo(); // show user info when modal opens
+  loadAccountInfo();
 });
 
 // --- CLOSE MODALS ---
@@ -60,19 +53,15 @@ window.addEventListener("click", (e) => {
   });
 });
 
-// --- SWITCH BETWEEN LOGIN & SIGNUP ---
-function toggleSignup() {
-  closeModal(loginModal);
-  showModal(signupModal);
-}
-function toggleLogin() {
-  closeModal(signupModal);
-  showModal(loginModal);
-}
-
 // ===============================
 // PASSWORD TOGGLE
 // ===============================
+const loginPwd = document.getElementById("login-password");
+const loginShow = document.getElementById("login-showPass");
+const signupPwd = document.getElementById("signup-password");
+const signupCPwd = document.getElementById("signupc-password");
+const signupShow = document.getElementById("signup-showPass");
+
 loginShow?.addEventListener("change", () => {
   loginPwd.type = loginShow.checked ? "text" : "password";
 });
@@ -84,17 +73,17 @@ signupShow?.addEventListener("change", () => {
 });
 
 // ===============================
-// SIGNUP VALIDATION + BACKEND CONNECT
+// SIGNUP BACKEND
 // ===============================
 signupForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const firstName = document.getElementById("signup-fname").value;
-  const lastName = document.getElementById("signup-lname").value;
-  const contactNo = document.getElementById("signup-contact").value;
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
-  const confirm = document.getElementById("signupc-password").value;
+  const firstName = document.getElementById("signup-fname").value.trim();
+  const lastName = document.getElementById("signup-lname").value.trim();
+  const contactNo = document.getElementById("signup-contact").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value.trim();
+  const confirm = document.getElementById("signupc-password").value.trim();
 
   if (password !== confirm) {
     alert("Passwords do not match!");
@@ -105,7 +94,7 @@ signupForm?.addEventListener("submit", async (e) => {
     const res = await fetch("http://localhost:3000/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, lastName, contactNo, email, password })
+      body: JSON.stringify({ firstName, lastName, contactNo, email, password }),
     });
 
     const data = await res.json();
@@ -122,19 +111,19 @@ signupForm?.addEventListener("submit", async (e) => {
 });
 
 // ===============================
-// LOGIN BACKEND CONNECT
+// LOGIN BACKEND
 // ===============================
 loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value.trim();
 
   try {
     const res = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
@@ -157,7 +146,7 @@ loginForm?.addEventListener("submit", async (e) => {
 });
 
 // ===============================
-// LOGOUT BEHAVIOR (NEW)
+// LOGOUT
 // ===============================
 logoutBtn?.addEventListener("click", () => {
   localStorage.removeItem("isLoggedIn");
@@ -172,15 +161,85 @@ logoutBtn?.addEventListener("click", () => {
 // ===============================
 // ACCOUNT INFO LOADER
 // ===============================
-function loadAccountInfo() {
-  const name = localStorage.getItem("userName") || "—";
-  const email = localStorage.getItem("userEmail") || "—";
-  const contact = localStorage.getItem("userContact") || "—";
+async function loadAccountInfo() {
+  const email = localStorage.getItem("userEmail");
+  if (!email) return;
 
-  accName.textContent = name;
-  accEmail.textContent = email;
-  accContact.textContent = contact;
+  try {
+    const res = await fetch(`http://localhost:3000/auth/user/${email}`);
+    const data = await res.json();
+
+    if (res.ok && data.user) {
+      accName.textContent = data.user.fullName;
+      accEmail.textContent = data.user.email;
+      accContact.textContent = data.user.contactNo;
+    } else {
+      console.warn("⚠️ Could not load account info:", data.message);
+    }
+  } catch (err) {
+    console.error("❌ Error loading account info:", err);
+  }
 }
+
+// ===============================
+// EDIT PROFILE FEATURE
+// ===============================
+const editProfileBtn = document.getElementById("editProfileBtn");
+const editForm = document.getElementById("edit-profile-form");
+const accountView = document.getElementById("account-view");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+if (editProfileBtn) {
+  editProfileBtn.addEventListener("click", () => {
+    document.getElementById("editFullName").value = accName.textContent;
+    document.getElementById("editEmail").value = accEmail.textContent;
+    document.getElementById("editContact").value = accContact.textContent;
+
+    accountView.style.display = "none";
+    editForm.style.display = "flex";
+  });
+}
+
+if (cancelEditBtn) {
+  cancelEditBtn.addEventListener("click", () => {
+    editForm.style.display = "none";
+    accountView.style.display = "block";
+  });
+}
+
+editForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const fullName = document.getElementById("editFullName").value.trim();
+  const email = document.getElementById("editEmail").value.trim();
+  const contact = document.getElementById("editContact").value.trim();
+
+  try {
+    const res = await fetch("http://localhost:3000/auth/update-profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, email, contact }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem("userName", fullName);
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userContact", contact);
+
+      loadAccountInfo();
+      editForm.style.display = "none";
+      accountView.style.display = "block";
+      alert("✅ Profile updated successfully!");
+    } else {
+      alert("⚠️ " + data.message);
+    }
+  } catch (err) {
+    console.error("❌ Error updating profile:", err);
+    alert("Something went wrong while saving changes.");
+  }
+});
 
 // ===============================
 // HELPER FUNCTIONS
