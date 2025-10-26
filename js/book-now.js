@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // ===== BOOK-NOW SCRIPT (with Login Check) =====
 =======
 // ===== MODAL SCRIPTS =====
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
+=======
+// ===== BOOK-NOW SCRIPT (with Login Check & Backend Booking) =====
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
 (() => {
   // ----- BOOK NOW -----
   const modal = document.getElementById("book-modal");
@@ -11,7 +15,12 @@
   const formSection = document.getElementById("modal-booking-form");
   const packageCards = document.querySelectorAll(".modal-package-card");
   const cancelBooking = document.getElementById("cancelBooking");
+  const bookingForm = document.getElementById("bookingForm");
 
+<<<<<<< HEAD
+=======
+  // Display elements in form
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
   const packageNameEl = document.getElementById("selected-package-name");
   const packageTimeEl = document.getElementById("selected-package-time");
   const packagePaxEl = document.getElementById("selected-package-pax");
@@ -36,7 +45,6 @@
   // ========== LOGIN CHECK ==========
   async function checkLoginStatus() {
     try {
-      // Try backend check (if you have /api/check-session)
       const res = await fetch("/api/check-session", { credentials: "include" });
       if (res.ok) {
         const data = await res.json();
@@ -45,8 +53,6 @@
     } catch (err) {
       console.warn("Backend login check failed:", err);
     }
-
-    // Fallback: localStorage-based login (for front-end testing)
     const loggedIn = localStorage.getItem("isLoggedIn");
     return loggedIn === "true";
   }
@@ -82,12 +88,17 @@
       return;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     checkoutDateEl.value = (duration === "same-day")
       ? checkinDateStr
       : addDays(checkinDateStr, 1);
 =======
     checkoutDateEl.value = duration === "same-day" ? checkinDateStr : addDays(checkinDateStr, 1);
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
+=======
+    checkoutDateEl.value =
+      duration === "same-day" ? checkinDateStr : addDays(checkinDateStr, 1);
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
   }
 
   function computeTotal() {
@@ -95,8 +106,14 @@
     const addPax = Number(additionalPaxEl.value) || 0;
     const addHrs = Number(additionalHoursEl.value) || 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
     const total = base + (addPax * PRICE_PER_PERSON) + (addHrs * PRICE_PER_HOUR);
     totalPriceEl.value = "₱" + total.toLocaleString("en-PH", { minimumFractionDigits: 0 });
+=======
+    const total = base + addPax * PRICE_PER_PERSON + addHrs * PRICE_PER_HOUR;
+    totalPriceEl.value = total;
+    basePriceEl.value = formatPHP(base);
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
   }
 
   // Open modal
@@ -138,6 +155,7 @@
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   // ========= CHECK LOGIN STATUS =========
 function checkLoginStatus() {
@@ -158,27 +176,29 @@ document.querySelectorAll(".book-now").forEach(btn => {
 
       // ✅ show login modal instead of redirecting
       setTimeout(() => {
+=======
+  // ========= BOOK NOW BUTTON BEHAVIOR =========
+  document.querySelectorAll(".book-now").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const isLoggedIn = await checkLoginStatus();
+      if (!isLoggedIn) {
+        alert("⚠️ Please log in first before booking.");
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
         const loginModal = document.getElementById("login-modal");
-        if (loginModal) {
-          loginModal.style.display = "flex";
-        } else {
-          console.error("⚠️ login-modal not found!");
-        }
-      }, 300);
-
-      return;
-    }
-
-    openModal();
+        if (loginModal) loginModal.style.display = "flex";
+        return;
+      }
+      openModal();
+    });
   });
-});
-
 
   // ========= PACKAGE SELECTION =========
-  packageCards.forEach(card => {
+  packageCards.forEach((card) => {
     const btn = card.querySelector(".choose-package-btn");
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
+<<<<<<< HEAD
 
 =======
   document.querySelectorAll(".book-now").forEach(btn => btn.addEventListener("click", openModal));
@@ -187,6 +207,8 @@ document.querySelectorAll(".book-now").forEach(btn => {
     const btn = card.querySelector(".choose-package-btn");
     btn.addEventListener("click", () => {
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
+=======
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
       const name = card.dataset.name || "";
       const time = card.dataset.time || "";
       const pax = card.dataset.pax || "";
@@ -209,7 +231,6 @@ document.querySelectorAll(".book-now").forEach(btn => {
       bookingModal.dataset.currentBase = baseNum;
 <<<<<<< HEAD
 
-      // Handle time options
       if (aTime && bTime) {
         oneDayOptionRow.style.display = "block";
         oneDayOptionSelect.innerHTML = "";
@@ -273,7 +294,10 @@ document.querySelectorAll(".book-now").forEach(btn => {
       formSection.style.display = "block";
       bookingModal.classList.add("step2");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
       modal.classList.add("show");
       document.body.classList.add("modal-open");
 
@@ -324,6 +348,7 @@ document.querySelectorAll(".book-now").forEach(btn => {
     if (e.target === modal) closeModal();
   });
 
+<<<<<<< HEAD
   // ========= FORM SUBMIT =========
 =======
   modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
@@ -331,22 +356,34 @@ document.querySelectorAll(".book-now").forEach(btn => {
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
   const bookingForm = document.getElementById("bookingForm");
   bookingForm.addEventListener("submit", e => {
+=======
+  // ========= FORM SUBMIT (POST TO BACKEND) =========
+  bookingForm.addEventListener("submit", async (e) => {
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
     e.preventDefault();
-    const payload = {
-      package: packageNameEl.textContent,
-      checkin_date: checkinDateEl.value,
-      checkout_date: checkoutDateEl.value,
-      checkin_time: checkinTimeEl.value,
-      checkout_time: checkoutTimeEl.value,
-      pax_max: numGuestsEl.value,
-      additional_persons: Number(additionalPaxEl.value) || 0,
-      additional_hours: Number(additionalHoursEl.value) || 0,
-      base_price: Number(bookingModal.dataset.currentBase || 0),
-      total_price: totalPriceEl.value,
-      remarks: document.getElementById("remarks").value || ""
+
+    const guestID = localStorage.getItem("guestID");
+    if (!guestID) {
+      alert("⚠️ Please log in first.");
+      return;
+    }
+
+    const bookingData = {
+      guestID,
+      packageName: packageNameEl.textContent,
+      checkinDate: checkinDateEl.value,
+      checkoutDate: checkoutDateEl.value,
+      checkinTime: checkinTimeEl.value,
+      checkoutTime: checkoutTimeEl.value,
+      numGuests: Number(numGuestsEl.value) || 0,
+      additionalPax: Number(additionalPaxEl.value) || 0,
+      additionalHours: Number(additionalHoursEl.value) || 0,
+      basePrice: Number(bookingModal.dataset.currentBase || 0),
+      totalPrice: parseFloat(totalPriceEl.value.replace(/[^0-9.]/g, "")) || 0,
     };
 <<<<<<< HEAD
 
+<<<<<<< HEAD
     console.log("Booking payload:", payload);
 =======
     console.log("Booking payload:", payload);
@@ -354,6 +391,27 @@ document.querySelectorAll(".book-now").forEach(btn => {
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
     alert("Booking request submitted (demo). Check console for payload.");
     closeModal();
+=======
+    try {
+      const response = await fetch("/api/bookings/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("✅ " + result.message);
+        closeModal();
+        bookingForm.reset();
+      } else {
+        alert("❌ " + result.message);
+      }
+    } catch (err) {
+      console.error("Booking submit error:", err);
+      alert("⚠️ Something went wrong while saving your booking.");
+    }
+>>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
   });
 <<<<<<< HEAD
 =======

@@ -1,0 +1,225 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #b81d24;
+  line-height: 1.6;
+}
+
+/* ===============================
+   ADMIN HEADER FINAL DESIGN
+   =============================== */
+.admin-header {
+  background-color: #fff;
+  color: #000;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 70px;
+}
+
+.admin-header {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 30px;
+}
+
+/* --- CENTER NAVIGATION --- */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+
+  gap: 25px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: #b22222;
+}
+
+/* --- RIGHT SIDE (Notif + Logout) --- */
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* --- NOTIFICATION --- */
+.notif-wrapper {
+  position: relative;
+}
+
+.notif-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1.4rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.notif-count {
+  background: #d00;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  position: absolute;
+  top: -5px;
+  right: -8px;
+}
+
+/* --- LOGOUT BUTTON (same as guest LOGIN button) --- */
+.logout-btn {
+  background-color: white;
+  border: 1.5px solid #b22222;
+  color: black;
+  padding: 0.55rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #b22222;
+  color: white;
+  transform: scale(1.05);
+}
+
+
+/* MAIN CONTENT */
+.admin-main {
+  padding: 1.5rem;
+}
+
+.tab-section {
+  display: none;
+}
+
+.tab-section.active {
+  display: block;
+}
+
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* TABLES */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  background-color: rgba(207, 96, 92, 0.5);
+  color: white;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.modal-content input {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-content button {
+  background: #3c6382;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background: #60a3bc;
+}
+
+/* POPUP */
+.popup-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 2000;
+}
+
+.popup {
+  background: white;
+  border-left: 5px solid #60a3bc;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

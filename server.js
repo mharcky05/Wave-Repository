@@ -5,12 +5,15 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const db = require("./db");
+const bookingRoutes = require("./routes/bookingRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/admin", adminRoutes);
 
 // ✅ Serve your static files correctly
 app.use(express.static(path.join(__dirname, "html")));
@@ -20,6 +23,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 // API routes
 app.use("/auth", authRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // Default route — serve index.html
 app.get("/", (req, res) => {
@@ -28,3 +32,4 @@ app.get("/", (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+
