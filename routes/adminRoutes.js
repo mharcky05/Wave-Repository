@@ -27,4 +27,87 @@ router.post("/login", async (req, res) => {
   });
 });
 
+
+// =======================
+// GET ALL BOOKINGS (Guest Records Tab)
+// =======================
+router.get("/bookings", (req, res) => {
+  const sql = `
+    SELECT 
+      b.bookingID,
+      b.guestID,
+      CONCAT(g.firstName, ' ', g.lastName) AS guestName,
+      b.packageName,
+      b.checkinDate,
+      b.checkoutDate,
+      b.checkinTime,
+      b.checkoutTime,
+      b.numGuests,
+      b.additionalPax,
+      b.additionalHours,
+      b.basePrice,
+      b.totalPrice,
+      b.status,
+      b.createdAt
+    FROM tbl_bookings b
+    LEFT JOIN tbl_guests g ON g.guestID = b.guestID
+    ORDER BY b.createdAt DESC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("❌ DB error (bookings):", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+
+
+// // ==========================
+// // 📦 GET ALL PACKAGES
+// // ==========================
+// router.get("/packages", (req, res) => {
+//   const sql = "SELECT * FROM tbl_packages";
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       console.error("❌ DB error (packages):", err);
+//       return res.status(500).json({ message: "Database error" });
+//     }
+//     res.json(results);
+//   });
+// });
+
+// // ==========================
+// // 🧺 GET ALL AMENITIES
+// // ==========================
+// router.get("/amenities", (req, res) => {
+//   const sql = "SELECT * FROM tbl_amenities";
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       console.error("❌ DB error (amenities):", err);
+//       return res.status(500).json({ message: "Database error" });
+//     }
+//     res.json(results);
+//   });
+// });
+
+
+
+// // GET all guest accounts
+// router.get("/guests", (req, res) => {
+//   const sql = "SELECT guestID, firstName, lastName, email, contactNo FROM tbl_guests";
+
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       console.error("❌ DB error:", err);
+//       return res.status(500).json({ message: "Database error" });
+//     }
+
+//     res.json(results);
+//   });
+// });
+
+
 module.exports = router;

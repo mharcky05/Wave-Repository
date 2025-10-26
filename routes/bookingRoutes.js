@@ -24,7 +24,15 @@ router.post("/book", (req, res) => {
     return res.status(400).json({ message: "Required fields missing." });
   }
 
-  const bookingID = "B" + Math.floor(100000 + Math.random() * 900000);
+  // ======= CHECK FOR PAST DATES =======
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // reset time for accurate comparison
+  const checkin = new Date(checkinDate);
+  const checkout = new Date(checkoutDate);
+
+  if (checkin < today || checkout < today) {
+    return res.status(400).json({ message: "⚠️ Booking for past dates is not allowed." });
+  }
 
   // Make sure numeric values are numbers
   const basePriceNum = Number(basePrice) || 0;
@@ -33,38 +41,68 @@ router.post("/book", (req, res) => {
   const additionalPaxNum = Number(additionalPax) || 0;
   const additionalHoursNum = Number(additionalHours) || 0;
 
-  const sql = `
-    INSERT INTO tbl_bookings
-    (bookingID, guestID, packageName, checkinDate, checkoutDate,
-     checkinTime, checkoutTime, numGuests, additionalPax, additionalHours,
-     basePrice, totalPrice, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  // ========== DATE CONFLICT CHECK ==========
+  const conflictSql = `
+    SELECT * FROM tbl_bookings
+    WHERE guestID = ? AND
+          ((checkinDate <= ? AND checkoutDate >= ?) OR
+           (checkinDate <= ? AND checkoutDate >= ?) OR
+           (checkinDate >= ? AND checkoutDate <= ?))
   `;
 
   db.query(
-    sql,
+    conflictSql,
     [
-      bookingID,
       guestID,
-      packageName,
-      checkinDate,
-      checkoutDate,
-      checkinTime,
-      checkoutTime,
-      numGuestsNum,
-      additionalPaxNum,
-      additionalHoursNum,
-      basePriceNum,
-      totalPriceNum,
-      "Pending",
+      checkinDate, checkinDate,
+      checkoutDate, checkoutDate,
+      checkinDate, checkoutDate
     ],
-    (err) => {
+    (err, results) => {
       if (err) {
-        console.error("❌ Booking insert error:", err);
+        console.error("❌ Booking conflict check error:", err);
         return res.status(500).json({ message: "Database error: " + err.message });
       }
+      if (results.length > 0) {
+        return res.status(400).json({ message: "⚠️ The selected date is already reserved." });
+      }
 
-      return res.json({ message: "Booking confirmed successfully!" });
+      // ===== INSERT BOOKING =====
+      const bookingID = "B" + Math.floor(100000 + Math.random() * 900000);
+      const sql = `
+        INSERT INTO tbl_bookings
+        (bookingID, guestID, packageName, checkinDate, checkoutDate,
+         checkinTime, checkoutTime, numGuests, additionalPax, additionalHours,
+         basePrice, totalPrice, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(
+        sql,
+        [
+          bookingID,
+          guestID,
+          packageName,
+          checkinDate,
+          checkoutDate,
+          checkinTime,
+          checkoutTime,
+          numGuestsNum,
+          additionalPaxNum,
+          additionalHoursNum,
+          basePriceNum,
+          totalPriceNum,
+          "Pending",
+        ],
+        (err) => {
+          if (err) {
+            console.error("❌ Booking insert error:", err);
+            return res.status(500).json({ message: "Database error: " + err.message });
+          }
+
+          return res.json({ message: "Booking confirmed successfully!" });
+        }
+      );
     }
   );
 });

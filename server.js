@@ -6,12 +6,14 @@ const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const db = require("./db");
 const bookingRoutes = require("./routes/bookingRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/admin", adminRoutes);
 
 // ✅ Serve your static files correctly
 app.use(express.static(path.join(__dirname, "html")));
