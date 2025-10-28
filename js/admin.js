@@ -149,14 +149,13 @@ async function loadBookings() {
         <td class="status-cell">${b.status}</td>
         <td>${formatDate(b.createdAt)}</td>
         <td class="action-buttons">
-          ${
-            b.status === "Pending"
-              ? `
+          ${b.status === "Pending"
+          ? `
                 <button class="approve-btn" data-id="${b.bookingID}" title="Approve">✔</button>
                 <button class="decline-btn" data-id="${b.bookingID}" title="Decline">✖</button>
               `
-              : `<span>${b.status}</span>`
-          }
+          : `<span>${b.status}</span>`
+        }
         </td>
       `;
       tableBody.appendChild(row);
@@ -191,9 +190,20 @@ async function updateBookingStatus(bookingID, status) {
     if (res.ok) {
       alert(`Booking ${status}!`);
       loadBookings();
+
+      // 🔔 Add notification to database
+      await fetch("http://localhost:3000/admin/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `Booking #${bookingID} has been ${status}.`,
+          status,
+        }),
+      });
     } else {
       alert(`❌ Failed: ${data.message}`);
     }
+
   } catch (err) {
     console.error("❌ Error updating status:", err);
   }

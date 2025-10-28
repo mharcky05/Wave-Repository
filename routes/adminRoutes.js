@@ -80,13 +80,49 @@ router.put("/bookings/:id/status", (req, res) => {
       console.error("❌ DB error (update status):", err);
       return res.status(500).json({ message: "Database error" });
     }
+
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Booking not found" });
     }
-    res.json({ message: `Booking ${status} successfully` });
+
+    // ✅ Get guestID for this booking
+    const guestQuery = `SELECT guestID FROM tbl_bookings WHERE bookingID = ?`;
+    db.query(guestQuery, [bookingID], (err, rows) => {
+      if (err) {
+        console.error("❌ DB error (get guestID):", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      const guestID = rows[0].guestID;
+      let message = "";
+
+      if (status === "Approved") {
+        message = "Your booking has been approved! You may now proceed to payment.";
+      } else if (status === "Declined") {
+        message = "Sorry, your booking was declined by the admin.";
+      }
+
+      // ✅ Insert into notifications table
+      const notifQuery = `
+        INSERT INTO tbl_notifications (guestID, message, isRead, createdAt)
+        VALUES (?, ?, 0, NOW())
+      `;
+      db.query(notifQuery, [guestID, message], (err2) => {
+        if (err2) {
+          console.error("❌ DB error (insert notif):", err2);
+          return res.status(500).json({ message: "Notification insert error" });
+        }
+
+        // ✅ Final success response
+        res.json({ message: `Booking ${status} successfully and notification sent.` });
+      });
+    });
   });
 });
-
 
 // // ==========================
 // // 📦 GET ALL PACKAGES

@@ -261,3 +261,82 @@
 }
 
 
+/* ===== NOTIFICATION BUTTON ===== */
+.notif-btn {
+  position: relative;
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 22px;
+  cursor: pointer;
+  margin-right: 12px;
+  display: flex;
+  left: 40px;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.notif-btn:hover {
+  color: #007bff;
+}
+
+/* ===== NOTIFICATION BADGE ===== */
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 40px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  display: none; /* hidden if no notifications */
+  pointer-events: none;
+}
+
+/* ===== POPUP ===== */
+.notif-popup {
+  position: absolute;
+  top: 45px; /* 🔹 closer to bell */
+  right: 209px; /* 🔹 aligned perfectly under the bell */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  width: 240px;
+  z-index: 9999;
+  display: none;
+}
+
+.notif-popup::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-left: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  transform: rotate(45deg);
+}
+
+.notif-popup ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notif-popup li {
+  font-size: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.notif-popup li:last-child {
+  border-bottom: none;
+}

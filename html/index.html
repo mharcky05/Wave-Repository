@@ -13,12 +13,10 @@
     <link rel="stylesheet" href="../css/amenities.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Poppins&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   </head>
 
   <body>
@@ -33,11 +31,29 @@
         <a href="#">Ratings</a>
         <a href="#">About Us</a>
       </nav>
-      <div class="auth-buttons">
+      <div class="auth-buttons" style="position: relative;">
         <button id="loginBtn" class="login-btn">Login</button>
         <button id="signupBtn" class="signup-btn">Signup</button>
-        <button id="accountBtn" class="account-btn">My Account</button>
+
+        <!-- 🔔 Notification Button -->
+        <button id="notifBtn" class="notif-btn" style="display: none;">
+          <i class="fa-solid fa-bell"></i>
+          <span id="notifBadge" class="notif-badge">3</span>
+        </button>
+
+        <!-- 🔔 Notification Popup -->
+        <div id="notifPopup" class="notif-popup">
+          <p><strong>Notifications</strong></p>
+          <ul>
+            <li>Your booking has been confirmed.</li>
+            <li>New promo available this weekend!</li>
+          </ul>
+        </div>
+
+        <button id="accountBtn" class="account-btn" style="display: none;">My
+          Account</button>
       </div>
+
     </header>
 
     <!-- ===== HERO / CAROUSEL ===== -->
@@ -45,28 +61,23 @@
       <img
         src="../images/hero1.jpg"
         class="carousel-image active"
-        alt="Hero Image 1"
-      />
+        alt="Hero Image 1" />
       <img
         src="../images/hero2.jpg"
         class="carousel-image"
-        alt="Hero Image 2"
-      />
+        alt="Hero Image 2" />
       <img
         src="../images/hero3.jpg"
         class="carousel-image"
-        alt="Hero Image 3"
-      />
+        alt="Hero Image 3" />
       <img
         src="../images/hero2.jpg"
         class="carousel-image"
-        alt="Hero Image 4"
-      />
+        alt="Hero Image 4" />
       <img
         src="../images/hero3.jpg"
         class="carousel-image"
-        alt="Hero Image 5"
-      />
+        alt="Hero Image 5" />
 
       <h2>LESCAPADE</h2>
       <span>PRIVATE VILLA</span>
@@ -115,10 +126,9 @@
             width="600"
             height="450"
             style="border: 0"
-            allowfullscreen=""
+            allowfullscreen
             loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </section>
@@ -281,8 +291,7 @@
           <textarea
             placeholder="Share your experience..."
             rows="8"
-            cols="40"
-          ></textarea>
+            cols="40"></textarea>
           <br />
           <button class="review-btn">Submit Review</button>
         </div>
@@ -300,8 +309,7 @@
             <img
               src="../images/icon1.jpg"
               alt="Anfernee Profile"
-              class="profile-pic"
-            />
+              class="profile-pic" />
           </div>
 
           <div class="feedback-item">
@@ -313,8 +321,7 @@
             <img
               src="../images/icon2.jpg"
               alt="Mharcky Profile"
-              class="profile-pic"
-            />
+              class="profile-pic" />
           </div>
 
           <div class="feedback-item">
@@ -329,8 +336,7 @@
             <img
               src="../images/icon3.jpg"
               alt="Quirsten Profile"
-              class="profile-pic"
-            />
+              class="profile-pic" />
           </div>
         </div>
       </div>
@@ -347,9 +353,8 @@
     <!-- LOGIN -->
     <div id="login-modal" class="modal">
       <div class="modal-content">
-        <span class="close-btn" id="closeLogin" data-close="login-modal"
-          >&times;</span
-        >
+        <span class="close-btn" id="closeLogin"
+          data-close="login-modal">&times;</span>
         <h2>Login</h2>
 
         <form id="loginForm" class="form">
@@ -359,8 +364,7 @@
             type="email"
             id="login-email"
             placeholder="Email"
-            required
-          />
+            required />
 
           <!-- Password -->
           <input
@@ -368,8 +372,7 @@
             id="login-password"
             type="password"
             placeholder="Password"
-            required
-          />
+            required />
 
           <!-- Show Password + Forgot -->
           <div class="show-pass">
@@ -390,8 +393,7 @@
             <span
               class="switch"
               data-switch="signup-modal"
-              onclick="toggleSignup()"
-            >
+              onclick="toggleSignup()">
               Sign up
             </span>
           </p>
@@ -402,9 +404,8 @@
     <!-- SIGNUP -->
     <div id="signup-modal" class="modal">
       <div class="modal-content">
-        <span class="close-btn" id="closeSignup" data-close="signup-modal"
-          >&times;</span
-        >
+        <span class="close-btn" id="closeSignup"
+          data-close="signup-modal">&times;</span>
         <h2>Sign Up</h2>
 
         <form id="signupForm" class="form">
@@ -414,22 +415,19 @@
             type="text"
             id="signup-fname"
             placeholder="First Name"
-            required
-          />
+            required />
           <input
             class="name"
             type="text"
             id="signup-lname"
             placeholder="Last Name"
-            required
-          />
+            required />
           <input
             class="name"
             type="text"
             id="signup-contact"
             placeholder="Contact No."
-            required
-          />
+            required />
 
           <!-- Email -->
           <input
@@ -437,8 +435,7 @@
             type="email"
             id="signup-email"
             placeholder="Email Address"
-            required
-          />
+            required />
 
           <!-- Password -->
           <input
@@ -446,15 +443,13 @@
             type="password"
             id="signup-password"
             placeholder="Password"
-            required
-          />
+            required />
           <input
             class="confirm"
             type="password"
             id="signupc-password"
             placeholder="Confirm Password"
-            required
-          />
+            required />
 
           <!-- Show Password -->
           <div class="show-pass">
@@ -477,9 +472,7 @@
             <span
               class="switch"
               data-switch="login-modal"
-              onclick="toggleLogin()"
-              >Login</span
-            >
+              onclick="toggleLogin()">Login</span>
           </p>
         </form>
       </div>
@@ -488,9 +481,8 @@
     <!-- ACCOUNT -->
     <div id="account-modal" class="modal">
       <div class="modal-content">
-        <span class="close-btn" id="closeAccount" data-close="account-modal"
-          >&times;</span
-        >
+        <span class="close-btn" id="closeAccount"
+          data-close="account-modal">&times;</span>
         <h2>My Account</h2>
 
         <!-- Account View -->
@@ -505,7 +497,7 @@
               <p><strong>Email:</strong> <span id="acc-email">—</span></p>
               <p>
                 <strong>Contact No:</strong>
-                  <span id="acc-contact">—</span>
+                <span id="acc-contact">—</span>
               </p>
             </div>
           </div>
@@ -529,24 +521,21 @@
                 type="text"
                 id="editFullName"
                 placeholder="Enter full name"
-                required
-              />
+                required />
 
               <label for="editEmail">Email</label>
               <input
                 type="email"
                 id="editEmail"
                 placeholder="Enter email"
-                required
-              />
+                required />
 
               <label for="editContact">Contact No</label>
               <input
                 type="text"
                 id="editContact"
                 placeholder="Enter contact number"
-                required
-              />
+                required />
               <div class="button-group">
                 <button type="submit" class="save-btn">Save Changes</button>
                 <button type="button" id="cancelEditBtn" class="cancel-btn">
@@ -573,8 +562,7 @@
               data-time="9:00 AM - 5:00 PM"
               data-pax="20"
               data-price="₱5,500.00"
-              data-duration="same-day"
-            >
+              data-duration="same-day">
               <img src="../images/hero1.jpg" alt="Daytime Package" />
               <div class="modal-package-info">
                 <h3>Daytime Package</h3>
@@ -592,8 +580,7 @@
               data-time="7:00 PM - 7:00 AM"
               data-pax="15"
               data-price="₱6,500.00"
-              data-duration="next-day"
-            >
+              data-duration="next-day">
               <img src="../images/hero2.jpg" alt="Overnight Package" />
               <div class="modal-package-info">
                 <h3>Overnight Package</h3>
@@ -613,8 +600,7 @@
               data-price="₱9,000.00"
               data-duration="next-day"
               data-option-a-time="9:00 AM - 7:00 AM"
-              data-option-b-time="7:00 PM - 5:00 PM"
-            >
+              data-option-b-time="7:00 PM - 5:00 PM">
               <img src="../images/hero3.jpg" alt="One-Day Package" />
               <div class="modal-package-info">
                 <h3>One-Day Package</h3>
@@ -637,8 +623,7 @@
                 src="../images/hero1.jpg"
                 alt="Villa Image"
                 class="villa-image"
-                id="selected-package-image"
-              />
+                id="selected-package-image" />
               <div class="villa-info">
                 <h2 id="selected-package-name"></h2>
                 <p id="selected-package-time"></p>
@@ -677,8 +662,7 @@
               <div
                 class="form-row"
                 id="one-day-option-row"
-                style="display: none"
-              >
+                style="display: none">
                 <div class="form-group full-width">
                   <label for="one-day-option">One-Day Time Option</label>
                   <select id="one-day-option">
@@ -695,24 +679,21 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="additional-pax"
-                    >Additional Person (₱150 each)</label
-                  >
+                  <label for="additional-pax">Additional Person (₱150
+                    each)</label>
                   <input type="number" id="additional-pax" min="0" value="0" />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
-                  <label for="additional-hours"
-                    >Additional Hour(s) (₱500 each)</label
-                  >
+                  <label for="additional-hours">Additional Hour(s) (₱500
+                    each)</label>
                   <input
                     type="number"
                     id="additional-hours"
                     min="0"
-                    value="0"
-                  />
+                    value="0" />
                 </div>
 
                 <div class="form-group">
@@ -770,6 +751,7 @@
         </ul>
       </div>
     </div>
+
   </body>
   <!-- JS -->
   <script src="../js/amenities.js"></script>

@@ -1,4 +1,3 @@
-
 // ===============================
 // AUTHENTICATION MODALS SCRIPT
 // ===============================
@@ -12,6 +11,9 @@ const accountModal = document.getElementById("account-modal");
 const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
 const accountBtn = document.getElementById("accountBtn");
+const notifBtn = document.getElementById("notifBtn");
+const notifBadge = document.getElementById("notifBadge");
+const notifPopup = document.getElementById("notifPopup");
 
 // Close Buttons
 const closeLogin = document.getElementById("closeLogin");
@@ -33,8 +35,6 @@ const logoutBtn = document.getElementById("logoutBtn");
 // ===============================
 // EVENT LISTENERS
 // ===============================
-
-// --- OPEN MODALS ---
 loginBtn?.addEventListener("click", () => showModal(loginModal));
 signupBtn?.addEventListener("click", () => showModal(signupModal));
 accountBtn?.addEventListener("click", () => {
@@ -42,12 +42,10 @@ accountBtn?.addEventListener("click", () => {
   loadAccountInfo();
 });
 
-// --- CLOSE MODALS ---
 closeLogin?.addEventListener("click", () => closeModal(loginModal));
 closeSignup?.addEventListener("click", () => closeModal(signupModal));
 closeAccount?.addEventListener("click", () => closeModal(accountModal));
 
-// --- CLICK OUTSIDE TO CLOSE ---
 window.addEventListener("click", (e) => {
   [loginModal, signupModal, accountModal].forEach((modal) => {
     if (modal && e.target === modal) closeModal(modal);
@@ -86,10 +84,7 @@ signupForm?.addEventListener("submit", async (e) => {
   const password = document.getElementById("signup-password").value.trim();
   const confirm = document.getElementById("signupc-password").value.trim();
 
-  if (password !== confirm) {
-    alert("Passwords do not match!");
-    return;
-  }
+  if (password !== confirm) return alert("Passwords do not match!");
 
   try {
     const res = await fetch("http://localhost:3000/auth/signup", {
@@ -132,29 +127,58 @@ loginForm?.addEventListener("submit", async (e) => {
 
     if (res.ok && data.user) {
       if (data.user.isAdmin) {
-        // Admin login → redirect to admin dashboard
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("adminEmail", data.user.email);
-        closeModal(loginModal);
         window.location.href = "/admin.html";
       } else {
-        // Guest login
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("guestID", data.user.guestID);
         localStorage.setItem("userEmail", data.user.email);
         localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
         localStorage.setItem("userContact", data.user.contactNo);
-        console.log("✅ guestID saved:", data.user.guestID);
 
         closeModal(loginModal);
         updateNavbarState(true);
+        async function loadNotifications() {
+          const guestID = localStorage.getItem("guestID");
+          if (!guestID) return;
+
+          try {
+            const res = await fetch(`http://localhost:3000/notifications/${guestID}`);
+            const data = await res.json();
+
+            const notifList = notifPopup.querySelector("ul");
+            notifList.innerHTML = "";
+
+            if (data.length > 0) {
+              data.forEach((notif) => {
+                const li = document.createElement("li");
+                li.textContent = notif.message;
+                notifList.appendChild(li);
+              });
+
+              // Show badge if may unread
+              const unreadCount = data.filter((n) => !n.isRead).length;
+              notifBadge.textContent = unreadCount;
+              notifBadge.style.display = unreadCount > 0 ? "block" : "none";
+            } else {
+              notifList.innerHTML = "<li>No new notifications.</li>";
+              notifBadge.style.display = "none";
+            }
+
+            // Show notif button
+            notifBtn.style.display = "inline-block";
+          } catch (err) {
+            console.error("❌ Failed to load notifications:", err);
+          }
+        }
+
+        loadNotifications(); // ⬅️ load notifications after login
       }
-    } else {
-      alert("❌ Login failed: " + (data.message || "Unknown error"));
     }
   } catch (err) {
     console.error("Login error:", err);
-    alert("❌ Login failed due to network or server error.");
+    alert("❌ Login failed due to server error.");
   }
 });
 
@@ -162,13 +186,7 @@ loginForm?.addEventListener("submit", async (e) => {
 // LOGOUT
 // ===============================
 logoutBtn?.addEventListener("click", () => {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("guestID");
-  localStorage.removeItem("userEmail");
-  localStorage.removeItem("userName");
-  localStorage.removeItem("userContact");
-  localStorage.removeItem("adminEmail");
-
+  localStorage.clear();
   closeModal(accountModal);
   updateNavbarState(false);
 });
@@ -188,73 +206,107 @@ async function loadAccountInfo() {
       accName.textContent = data.user.fullName;
       accEmail.textContent = data.user.email;
       accContact.textContent = data.user.contactNo;
-    } else {
-      console.warn("⚠️ Could not load account info:", data.message);
     }
   } catch (err) {
-    console.error("❌ Error loading account info:", err);
+    console.error("Error loading account info:", err);
   }
 }
 
 // ===============================
-// EDIT PROFILE FEATURE
+// NOTIFICATIONS
 // ===============================
-const editProfileBtn = document.getElementById("editProfileBtn");
-const editForm = document.getElementById("edit-profile-form");
-const accountView = document.getElementById("account-view");
-const cancelEditBtn = document.getElementById("cancelEditBtn");
-
-if (editProfileBtn) {
-  editProfileBtn.addEventListener("click", () => {
-    document.getElementById("editFullName").value = accName.textContent;
-    document.getElementById("editEmail").value = accEmail.textContent;
-    document.getElementById("editContact").value = accContact.textContent;
-
-    accountView.style.display = "none";
-    editForm.style.display = "flex";
-  });
-}
-
-if (cancelEditBtn) {
-  cancelEditBtn.addEventListener("click", () => {
-    editForm.style.display = "none";
-    accountView.style.display = "block";
-  });
-}
-
-editForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const fullName = document.getElementById("editFullName").value.trim();
-  const email = document.getElementById("editEmail").value.trim();
-  const contact = document.getElementById("editContact").value.trim();
+async function loadNotifications() {
+  const guestID = localStorage.getItem("guestID");
+  if (!guestID) return;
 
   try {
-    const res = await fetch("http://localhost:3000/auth/update-profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, email, contact }),
-    });
-
+    const res = await fetch(`http://localhost:3000/api/notifications/${guestID}`);
     const data = await res.json();
 
-    if (res.ok) {
-      localStorage.setItem("userName", fullName);
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("userContact", contact);
+    if (!res.ok) throw new Error(data.message);
 
-      loadAccountInfo();
-      editForm.style.display = "none";
-      accountView.style.display = "block";
-      alert("✅ Profile updated successfully!");
-    } else {
-      alert("⚠️ " + data.message);
-    }
+    // Update badge
+    const unreadCount = data.filter((n) => !n.isRead).length;
+    notifBadge.style.display = unreadCount > 0 ? "block" : "none";
+    notifBadge.textContent = unreadCount;
+
+    // Show popup list
+    notifPopup.innerHTML = data
+      .map(
+        (n) => `
+      <div class="notif-item" data-message="${n.message}">
+        <p>${n.message}</p>
+      </div>`
+      )
+      .join("");
+
+    // Add click listeners after rendering
+    document.querySelectorAll(".notif-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const message = item.getAttribute("data-message");
+        if (message.includes("approved")) {
+          notifPopup.style.display = "none"; // close notif popup
+          const paymentModal = document.getElementById("payment-modal");
+          if (paymentModal) paymentModal.style.display = "flex";
+          else console.warn("⚠️ Payment modal not found in DOM.");
+        }
+      });
+    });
+
+
   } catch (err) {
-    console.error("❌ Error updating profile:", err);
-    alert("Something went wrong while saving changes.");
+    console.error("❌ Error loading notifications:", err);
+  }
+}
+
+// Mark notifications as read when opening popup
+notifBtn?.addEventListener("click", async () => {
+  notifPopup.style.display =
+    notifPopup.style.display === "block" ? "none" : "block";
+
+  if (notifPopup.style.display === "block") {
+    await markNotificationsRead();
   }
 });
+
+notifBtn?.addEventListener("click", async () => {
+  notifPopup.classList.toggle("show");
+
+  if (notifPopup.classList.contains("show")) {
+    const guestID = localStorage.getItem("guestID");
+    await fetch(`http://localhost:3000/notifications/mark-read/${guestID}`, {
+      method: "PATCH",
+    });
+
+    notifBadge.style.display = "none";
+  }
+});
+
+async function markNotificationsRead() {
+  const guestID = localStorage.getItem("guestID");
+  if (!guestID) return;
+  await fetch(`http://localhost:3000/api/notifications/${guestID}/read`, {
+    method: "PUT",
+  });
+  notifBadge.style.display = "none";
+}
+
+function proceedToPayment(notificationID) {
+  const paymentModal = document.getElementById("payment-modal");
+
+  if (paymentModal) {
+    // Close notification popup
+    notifPopup.style.display = "none";
+
+    // Show payment modal
+    paymentModal.style.display = "flex";
+  } else {
+    console.warn("⚠️ Payment modal not found in DOM.");
+  }
+}
+
+// Auto-refresh every 10s
+setInterval(loadNotifications, 10000);
 
 // ===============================
 // HELPER FUNCTIONS
@@ -262,71 +314,22 @@ editForm?.addEventListener("submit", async (e) => {
 function showModal(modal) {
   if (modal) modal.style.display = "flex";
 }
-
 function closeModal(modal) {
   if (modal) modal.style.display = "none";
 }
-
-function toggleVisibility(element, show) {
-  if (!element) return;
-  element.style.display = show ? "inline-block" : "none";
+function toggleVisibility(el, show) {
+  if (el) el.style.display = show ? "inline-block" : "none";
 }
-
-function updateNavbarState(isLoggedIn, isAdmin = false) {
+function updateNavbarState(isLoggedIn) {
   toggleVisibility(loginBtn, !isLoggedIn);
   toggleVisibility(signupBtn, !isLoggedIn);
-  toggleVisibility(accountBtn, isLoggedIn && !isAdmin);
-}
-
-// Clear localStorage on localhost reload
-if (window.location.hostname === "localhost") {
-  window.addEventListener("load", () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("guestID");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userContact");
-    localStorage.removeItem("adminEmail");
-    updateNavbarState(false);
-  });
+  toggleVisibility(accountBtn, isLoggedIn);
+  toggleVisibility(notifBtn, isLoggedIn);
 }
 
 // ===============================
-// INITIAL STATE
+// INITIAL LOAD
 // ===============================
-const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-const isAdmin = !!localStorage.getItem("adminEmail");
-updateNavbarState(isLoggedIn, isAdmin);
-
-
-const adminLoginForm = document.getElementById("adminLoginForm");
-
-adminLoginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById("admin-email").value.trim();
-  const password = document.getElementById("admin-password").value.trim();
-
-  try {
-    const res = await fetch("http://localhost:3000/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-    alert(data.message);
-
-    if (res.ok && data.admin) {
-      localStorage.setItem("isAdminLoggedIn", "true");
-      localStorage.setItem("adminEmail", data.admin.email);
-      localStorage.setItem("adminID", data.admin.adminID);
-
-      // Redirect to admin dashboard
-      window.location.href = "/admin.html";
-    }
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("❌ Admin login failed due to network/server error.");
-  }
-});
+const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+updateNavbarState(loggedIn);
+if (loggedIn) loadNotifications();
