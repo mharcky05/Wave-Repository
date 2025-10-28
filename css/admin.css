@@ -1,0 +1,330 @@
+/* ===============================
+   GLOBAL STYLE
+   =============================== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ===============================
+   ADMIN HEADER
+   =============================== */
+.admin-header {
+  background-color: #fff;
+  color: #000;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 70px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 30px;
+  color: #000;
+}
+
+/* --- CENTER NAVIGATION --- */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 25px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: #b81d24;
+}
+
+/* --- RIGHT SIDE (Notif + Logout) --- */
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* --- NOTIFICATION --- */
+.notif-wrapper {
+  position: relative;
+}
+
+.notif-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1.4rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.notif-count {
+  background: #d00;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  position: absolute;
+  top: -5px;
+  right: -8px;
+}
+
+/* --- LOGOUT BUTTON --- */
+.logout-btn {
+  background-color: white;
+  border: 1.5px solid #b22222;
+  color: black;
+  padding: 0.55rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 200;
+}
+
+.logout-btn:hover {
+  background-color: #b22222;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ===============================
+   MAIN CONTENT
+   =============================== */
+.admin-main {
+  padding: 1.5rem;
+}
+
+.tab-section {
+  display: none;
+}
+
+.tab-section.active {
+  display: block;
+}
+
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===============================
+   TABLE DESIGN
+   =============================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  table-layout: fixed; /* prevents horizontal scroll */
+  word-wrap: break-word;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+th,
+td {
+  padding: 0.6rem 0.8rem; /* smaller padding for cleaner look */
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 0.8rem; /* smaller font */
+  vertical-align: middle;
+}
+
+th {
+  background-color: #b81d24;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+td {
+  color: #333;
+  word-break: break-word;
+}
+
+/* --- Date Columns --- */
+td:nth-child(3),
+td:nth-child(4) {
+  white-space: nowrap;
+}
+
+/* --- Table Row Hover --- */
+tr:hover {
+  background-color: #f8f9fa;
+  transition: 0.2s ease;
+}
+
+/* --- Responsive Scroll for Wide Tables --- */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* ===============================
+   ACTION BUTTONS (✔ ✖)
+   =============================== */
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.action-btns button {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.approve-btn {
+  color: #28a745;
+}
+
+.decline-btn {
+  color: #dc3545;
+}
+
+.action-btns button:hover {
+  transform: scale(1.15);
+}
+
+/* ===============================
+   MODAL & POPUPS
+   =============================== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.modal-content input {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-content button {
+  background: #3c6382;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background: #60a3bc;
+}
+
+/* --- POPUP MESSAGE --- */
+.popup-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 2000;
+}
+
+.popup {
+  background: white;
+  border-left: 5px solid #60a3bc;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+   =============================== */
+@media (max-width: 1000px) {
+  th,
+  td {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .action-btns button {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-header {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+  }
+
+  .admin-nav {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .logout-btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  table {
+    font-size: 0.7rem;
+  }
+}

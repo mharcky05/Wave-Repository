@@ -1,4 +1,4 @@
-// ===== BOOK-NOW SCRIPT (full) =====
+// ===== BOOK-NOW SCRIPT (with Login Check & Backend Booking) =====
 (() => {
   // Elements
   const overlay = document.getElementById("overlay");
@@ -8,8 +8,9 @@
   const formSection = document.getElementById("modal-booking-form");
   const packageCards = document.querySelectorAll(".modal-package-card");
   const cancelBooking = document.getElementById("cancelBooking");
+  const bookingForm = document.getElementById("bookingForm");
 
-  // display elements in form
+  // Display elements in form
   const packageNameEl = document.getElementById("selected-package-name");
   const packageTimeEl = document.getElementById("selected-package-time");
   const packagePaxEl = document.getElementById("selected-package-pax");
@@ -32,10 +33,24 @@
   const PRICE_PER_PERSON = 150;
   const PRICE_PER_HOUR = 500;
 
-  // helpers
+  // ========== LOGIN CHECK ==========
+  async function checkLoginStatus() {
+    try {
+      const res = await fetch("/api/check-session", { credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.loggedIn) return true;
+      }
+    } catch (err) {
+      console.warn("Backend login check failed:", err);
+    }
+    const loggedIn = localStorage.getItem("isLoggedIn");
+    return loggedIn === "true";
+  }
+
+  // Helpers
   function parsePriceString(p) {
     if (!p) return 0;
-    // remove non-digits
     const n = p.replace(/[^0-9.]/g, "");
     return Number(n) || 0;
   }
@@ -47,7 +62,6 @@
   function addDays(date, days) {
     const d = new Date(date);
     d.setDate(d.getDate() + days);
-    // to yyyy-mm-dd string for input[type=date]
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
@@ -59,22 +73,20 @@
       checkoutDateEl.value = "";
       return;
     }
-    if (duration === "same-day") {
-      checkoutDateEl.value = checkinDateStr;
-    } else {
-      checkoutDateEl.value = addDays(checkinDateStr, 1);
-    }
+    checkoutDateEl.value =
+      duration === "same-day" ? checkinDateStr : addDays(checkinDateStr, 1);
   }
 
   function computeTotal() {
-    const base = parsePriceString(basePriceEl.value);
+    const base = Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
     const addPax = Number(additionalPaxEl.value) || 0;
-    const addHours = Number(additionalHoursEl.value) || 0;
-    const total = base + (addPax * PRICE_PER_PERSON) + (addHours * PRICE_PER_HOUR);
-    totalPriceEl.value = formatPHP(total);
+    const addHrs = Number(additionalHoursEl.value) || 0;
+    const total = base + addPax * PRICE_PER_PERSON + addHrs * PRICE_PER_HOUR;
+    totalPriceEl.value = total;
+    basePriceEl.value = formatPHP(base);
   }
 
-  // open modal: also wired to .book-now buttons across the page
+  // Open modal
   function openModal() {
     modal.classList.add("show");
     bookingModal.classList.remove("step2");
@@ -83,221 +95,13 @@
     document.body.classList.add("modal-open");
   }
 
-  // close modal fully and reset to step1
+  // Close modal
   function closeModal() {
     modal.classList.remove("show");
     bookingModal.classList.remove("step2");
     packageSection.style.display = "block";
     formSection.style.display = "none";
     document.body.classList.remove("modal-open");
-    // reset one-day option
-    oneDayOptionRow.style.display = "none";
-    oneDayOptionSelect.selectedIndex = 0;
-  }
-
-  // wire all Book Now triggers (existing .book-now)
-  document.querySelectorAll(".book-now").forEach(btn => {
-    btn.addEventListener("click", openModal);
-  });
-
-  // package choose behavior
-  packageCards.forEach(card => {
-    const btn = card.querySelector(".choose-package-btn");
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      // gather package info from card's data attributes
-      const name = card.dataset.name || "";
-      const time = card.dataset.time || "";
-      const pax = card.dataset.pax || "";
-      const price = card.dataset.price || "";
-      const duration = card.dataset.duration || "same-day"; // same-day or next-day
-      const optA = card.dataset.optionATime || card.dataset.optionA || card.dataset.optionA || card.dataset.optionATime || card.dataset.optionA; // fallback
-      // we set explicitly below via dataset fields used in HTML: data-option-a-time and data-option-b-time
-      const optionATime = card.dataset.optionATime || card.dataset.optionATime || card.dataset.optionA || card.dataset.optionATime || card.dataset.optionA;
-      const optionBTime = card.dataset.optionBTime || card.dataset.optionBTime || card.dataset.optionB || card.dataset.optionBTime || card.dataset.optionB;
-
-      // populate the form UI
-      packageNameEl.textContent = name;
-      packageTimeEl.textContent = time;
-      packagePaxEl.textContent = `${pax} PAX Maximum`;
-      packagePriceEl.textContent = price;
-      packageImageEl.src = card.querySelector("img").src;
-
-      // base price (plain number) shown in basePriceEl (readonly text)
-      const baseNum = parsePriceString(price);
-      basePriceEl.value = formatPHP(baseNum);
-
-      // set times and pax readonly fields
-      // For One-Day package (we used data-option-a-time and data-option-b-time in HTML),
-      // show dropdown so user can pick the time option
-      if (card.dataset.optionA && card.dataset.optionB) {
-        // handled if attributes were set as data-option-a & data-option-b (fallback)
-      }
-      // Check if the card has option-a and option-b attributes (we used data-option-a-time and data-option-b-time)
-      const hasOneDayOptions = !!(card.dataset.optionATime || card.dataset.optionATime || card.dataset.optionA || card.dataset["option-a-time"] || card.dataset["option-b-time"]);
-
-      // Show or hide the one-day dropdown
-      if (hasOneDayOptions) {
-        // try to read them reliably (using the names included in our HTML: data-option-a-time and data-option-b-time)
-        const aTime = card.dataset.optionATime || card.dataset.optionA || card.dataset["option-a-time"] || card.dataset.optionATime || card.dataset.optionA;
-        const bTime = card.dataset.optionBTime || card.dataset.optionB || card.dataset["option-b-time"] || card.dataset.optionBTime || card.dataset.optionB;
-        // put them into select options (if values present)
-        // Normalize: set select options text and values:
-        // option-a = first, option-b = second
-        if (aTime && bTime) {
-          oneDayOptionRow.style.display = "block";
-          oneDayOptionSelect.innerHTML = ""; // clear
-          const optElemA = document.createElement("option");
-          optElemA.value = "option-a";
-          optElemA.textContent = aTime;
-          const optElemB = document.createElement("option");
-          optElemB.value = "option-b";
-          optElemB.textContent = bTime;
-          oneDayOptionSelect.appendChild(optElemA);
-          oneDayOptionSelect.appendChild(optElemB);
-
-          // set initial times based on option selected
-          const selectedVal = oneDayOptionSelect.value || "option-a";
-          const selectedTime = (selectedVal === "option-a") ? aTime : bTime;
-          checkinTimeEl.value = selectedTime.split(" - ")[0] || selectedTime;
-          checkoutTimeEl.value = selectedTime.split(" - ")[1] || "";
-          // duration for checkout date: next-day (we'll treat both as next-day)
-          // store duration state on bookingModal for later reference
-          bookingModal.dataset.currentDuration = "next-day";
-        } else {
-          // fallback: treat as normal package without options
-          oneDayOptionRow.style.display = "none";
-          checkinTimeEl.value = time.split(" - ")[0] || time;
-          checkoutTimeEl.value = time.split(" - ")[1] || "";
-          bookingModal.dataset.currentDuration = duration;
-        }
-      } else {
-        // no options -> hide dropdown
-        oneDayOptionRow.style.display = "none";
-        checkinTimeEl.value = time.split(" - ")[0] || time;
-        checkoutTimeEl.value = time.split(" - ")[1] || "";
-        bookingModal.dataset.currentDuration = duration;
-      }
-
-      // set number of guests (max) and make readonly
-      numGuestsEl.value = pax;
-
-      // initialize additional inputs
-      additionalPaxEl.value = 0;
-      additionalHoursEl.value = 0;
-
-      // compute total initially
-      computeTotal();
-
-      // set a data attribute current-base for easier computations
-      bookingModal.dataset.currentBase = baseNum;
-
-      // show step 2 UI
-      packageSection.style.display = "none";
-      formSection.style.display = "block";
-      bookingModal.classList.add("step2");
-
-      // open modal if not already
-      modal.classList.add("show");
-      document.body.classList.add("modal-open");
-
-      // if check-in date already selected, update checkout accordingly
-      if (checkinDateEl.value) {
-        setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
-      }
-    });
-  });
-
-  // One-day option change handler
-  oneDayOptionSelect.addEventListener("change", () => {
-    // get selected option text
-    const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
-    // expected format "9:00 AM - 7:00 AM"
-    const parts = selectedText.split(" - ");
-    checkinTimeEl.value = parts[0] ? parts[0].trim() : "";
-    checkoutTimeEl.value = parts[1] ? parts[1].trim() : "";
-    // For one-day both options are next-day types
-    bookingModal.dataset.currentDuration = "next-day";
-    // if checkin date already set, update checkout
-    if (checkinDateEl.value) {
-      setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
-    }
-  });
-
-  // When user changes checkin date -> auto update checkout date based on current package duration
-  checkinDateEl.addEventListener("change", (e) => {
-    const cd = e.target.value;
-    const duration = bookingModal.dataset.currentDuration || "same-day";
-    setCheckoutDateFrom(cd, duration);
-  });
-
-  // Additional pax/hours change -> recompute total
-  additionalPaxEl.addEventListener("input", computeTotal);
-  additionalHoursEl.addEventListener("input", computeTotal);
-
-  // computeTotal utility uses basePriceEl.value, so make sure it's set as numeric text (we set basePriceEl as formatted)
-  // but computeTotal uses parsePriceString on basePriceEl.value.
-
-  // Cancel/back button: return to package selection
-  cancelBooking.addEventListener("click", (e) => {
-    e.preventDefault();
-    formSection.style.display = "none";
-    packageSection.style.display = "block";
-    bookingModal.classList.remove("step2");
-    // reset one-day row
-    oneDayOptionRow.style.display = "none";
-  });
-
-  // close when clicking overlay area (outside the booking-modal)
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
-
-  // helper to compute and update total: uses bookingModal.dataset.currentBase if available
-  function computeTotal() {
-    const base = Number(bookingModal.dataset.currentBase || parsePriceString(basePriceEl.value));
-    const addPax = Number(additionalPaxEl.value) || 0;
-    const addHrs = Number(additionalHoursEl.value) || 0;
-    const total = base + (addPax * 150) + (addHrs * 500);
-    totalPriceEl.value = "₱" + total.toLocaleString("en-PH", { minimumFractionDigits: 0 });
-  }
-
-  // on form submit (example behavior)
-  const bookingForm = document.getElementById("bookingForm");
-  bookingForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    // Here you can gather data and send to server
-    const payload = {
-      package: packageNameEl.textContent,
-      checkin_date: checkinDateEl.value,
-      checkout_date: checkoutDateEl.value,
-      checkin_time: checkinTimeEl.value,
-      checkout_time: checkoutTimeEl.value,
-      pax_max: numGuestsEl.value,
-      additional_persons: Number(additionalPaxEl.value) || 0,
-      additional_hours: Number(additionalHoursEl.value) || 0,
-      base_price: Number(bookingModal.dataset.currentBase || 0),
-      total_price: totalPriceEl.value,
-      remarks: document.getElementById("remarks").value || ""
-    };
-
-    // For now we'll just log and close modal — replace with actual submit logic
-    console.log("Booking payload:", payload);
-    // close modal
-    closeModal();
-    alert("Booking request submitted (demo). Check console for payload.");
-  });
-
-  function closeModal() {
-    modal.classList.remove("show");
-    bookingModal.classList.remove("step2");
-    packageSection.style.display = "block";
-    formSection.style.display = "none";
-    document.body.classList.remove("modal-open");
-    // reset some fields
     additionalPaxEl.value = 0;
     additionalHoursEl.value = 0;
     basePriceEl.value = "";
@@ -308,7 +112,157 @@
     oneDayOptionSelect.innerHTML = "";
   }
 
-  // small safety: when modal opens via book-now from other places, ensure overlay element exists
-  // your page already has #overlay div earlier; we used #book-modal as backdrop. If you want to use overlay separately, we can wire it too.
+  // ========= BOOK NOW BUTTON BEHAVIOR =========
+  document.querySelectorAll(".book-now").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const isLoggedIn = await checkLoginStatus();
+      if (!isLoggedIn) {
+        alert("⚠️ Please log in first before booking.");
+        const loginModal = document.getElementById("login-modal");
+        if (loginModal) loginModal.style.display = "flex";
+        return;
+      }
+      openModal();
+    });
+  });
 
+  // ========= PACKAGE SELECTION =========
+  packageCards.forEach((card) => {
+    const btn = card.querySelector(".choose-package-btn");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const name = card.dataset.name || "";
+      const time = card.dataset.time || "";
+      const pax = card.dataset.pax || "";
+      const price = card.dataset.price || "";
+      const duration = card.dataset.duration || "same-day";
+      const aTime = card.dataset.optionATime || card.dataset["option-a-time"];
+      const bTime = card.dataset.optionBTime || card.dataset["option-b-time"];
+
+      packageNameEl.textContent = name;
+      packageTimeEl.textContent = time;
+      packagePaxEl.textContent = `${pax} PAX Maximum`;
+      packagePriceEl.textContent = price;
+      packageImageEl.src = card.querySelector("img").src;
+
+      const baseNum = parsePriceString(price);
+      basePriceEl.value = formatPHP(baseNum);
+      bookingModal.dataset.currentBase = baseNum;
+
+      if (aTime && bTime) {
+        oneDayOptionRow.style.display = "block";
+        oneDayOptionSelect.innerHTML = "";
+        const optA = document.createElement("option");
+        optA.value = "a";
+        optA.textContent = aTime;
+        const optB = document.createElement("option");
+        optB.value = "b";
+        optB.textContent = bTime;
+        oneDayOptionSelect.appendChild(optA);
+        oneDayOptionSelect.appendChild(optB);
+        const selectedTime = aTime.split(" - ");
+        checkinTimeEl.value = selectedTime[0] || "";
+        checkoutTimeEl.value = selectedTime[1] || "";
+        bookingModal.dataset.currentDuration = "next-day";
+      } else {
+        oneDayOptionRow.style.display = "none";
+        const timeParts = time.split(" - ");
+        checkinTimeEl.value = timeParts[0] || "";
+        checkoutTimeEl.value = timeParts[1] || "";
+        bookingModal.dataset.currentDuration = duration;
+      }
+
+      numGuestsEl.value = pax;
+      additionalPaxEl.value = 0;
+      additionalHoursEl.value = 0;
+      computeTotal();
+
+      packageSection.style.display = "none";
+      formSection.style.display = "block";
+      bookingModal.classList.add("step2");
+      modal.classList.add("show");
+      document.body.classList.add("modal-open");
+
+      if (checkinDateEl.value) {
+        setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
+      }
+    });
+  });
+
+  // ========= OPTION CHANGE & FORM EVENTS =========
+  oneDayOptionSelect.addEventListener("change", () => {
+    const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
+    const parts = selectedText.split(" - ");
+    checkinTimeEl.value = parts[0] ? parts[0].trim() : "";
+    checkoutTimeEl.value = parts[1] ? parts[1].trim() : "";
+    bookingModal.dataset.currentDuration = "next-day";
+    if (checkinDateEl.value) {
+      setCheckoutDateFrom(checkinDateEl.value, bookingModal.dataset.currentDuration);
+    }
+  });
+
+  checkinDateEl.addEventListener("change", (e) => {
+    setCheckoutDateFrom(e.target.value, bookingModal.dataset.currentDuration || "same-day");
+  });
+
+  additionalPaxEl.addEventListener("input", computeTotal);
+  additionalHoursEl.addEventListener("input", computeTotal);
+
+  cancelBooking.addEventListener("click", (e) => {
+    e.preventDefault();
+    formSection.style.display = "none";
+    packageSection.style.display = "block";
+    bookingModal.classList.remove("step2");
+    oneDayOptionRow.style.display = "none";
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // ========= FORM SUBMIT (POST TO BACKEND) =========
+  bookingForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const guestID = localStorage.getItem("guestID");
+    if (!guestID) {
+      alert("⚠️ Please log in first.");
+      return;
+    }
+
+    const bookingData = {
+      guestID,
+      packageName: packageNameEl.textContent,
+      checkinDate: checkinDateEl.value,
+      checkoutDate: checkoutDateEl.value,
+      checkinTime: checkinTimeEl.value,
+      checkoutTime: checkoutTimeEl.value,
+      numGuests: Number(numGuestsEl.value) || 0,
+      additionalPax: Number(additionalPaxEl.value) || 0,
+      additionalHours: Number(additionalHoursEl.value) || 0,
+      basePrice: Number(bookingModal.dataset.currentBase || 0),
+      totalPrice: parseFloat(totalPriceEl.value.replace(/[^0-9.]/g, "")) || 0,
+    };
+
+    try {
+      const response = await fetch("/api/bookings/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("✅ " + result.message);
+        closeModal();
+        bookingForm.reset();
+      } else {
+        alert("❌ " + result.message);
+      }
+    } catch (err) {
+      console.error("Booking submit error:", err);
+      alert("⚠️ Something went wrong while saving your booking.");
+    }
+  });
 })();
