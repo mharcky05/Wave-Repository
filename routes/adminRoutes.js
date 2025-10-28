@@ -63,6 +63,29 @@ router.get("/bookings", (req, res) => {
   });
 });
 
+// =======================
+// UPDATE BOOKING STATUS (Approve/Decline)
+// =======================
+router.put("/bookings/:id/status", (req, res) => {
+  const bookingID = req.params.id;
+  const { status } = req.body;
+
+  if (!["Approved", "Declined"].includes(status)) {
+    return res.status(400).json({ message: "Invalid status value" });
+  }
+
+  const sql = `UPDATE tbl_bookings SET status = ? WHERE bookingID = ?`;
+  db.query(sql, [status, bookingID], (err, result) => {
+    if (err) {
+      console.error("❌ DB error (update status):", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    res.json({ message: `Booking ${status} successfully` });
+  });
+});
 
 
 // // ==========================
