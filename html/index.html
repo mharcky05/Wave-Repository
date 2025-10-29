@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/account.css" />
     <link rel="stylesheet" href="../css/book-now.css" />
     <link rel="stylesheet" href="../css/amenities.css" />
+    <link rel="stylesheet" href="../css/payment.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Poppins&display=swap"
       rel="stylesheet" />
@@ -36,18 +37,13 @@
         <button id="signupBtn" class="signup-btn">Signup</button>
 
         <!-- 🔔 Notification Button -->
-        <button id="notifBtn" class="notif-btn" style="display: none;">
-          <i class="fa-solid fa-bell"></i>
-          <span id="notifBadge" class="notif-badge">3</span>
+        <button id="notifBtn" class="notif-btn">
+          🔔
+          <span id="notifBadge" class="notif-badge"></span>
         </button>
 
-        <!-- 🔔 Notification Popup -->
         <div id="notifPopup" class="notif-popup">
-          <p><strong>Notifications</strong></p>
-          <ul>
-            <li>Your booking has been confirmed.</li>
-            <li>New promo available this weekend!</li>
-          </ul>
+          <ul></ul>
         </div>
 
         <button id="accountBtn" class="account-btn" style="display: none;">My
@@ -752,6 +748,18 @@
       </div>
     </div>
 
+    <div id="payment-modal" class="modal">
+      <div class="modal-content">
+        <span id="closePayment" class="close">&times;</span>
+        <h3>Complete Payment</h3>
+        <form id="paymentForm">
+          <input type="hidden" id="booking-id" name="bookingID">
+          <label>Amount:</label>
+          <input type="number" id="payment-amount" name="amount" required>
+          <button type="submit">Pay Now</button>
+        </form>
+      </div>
+    </div>
   </body>
   <!-- JS -->
   <script src="../js/amenities.js"></script>
