@@ -80,18 +80,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ======================
-  // LOGOUT (FIXED)
-  // ======================
-  document.addEventListener("click", (e) => {
-    if (e.target && e.target.id === "logoutBtn") {
-      e.preventDefault();
-      console.log("✅ Logout button clicked!");
-      localStorage.removeItem("adminLoggedIn");
-      alert("Logged out successfully!");
-      window.location.href = "../index.html";
-    }
-  });
+  // // ======================
+  // // LOGOUT (FIXED)
+  // // ======================
+  // document.addEventListener("click", (e) => {
+  //   if (e.target && e.target.id === "logoutBtn") {
+  //     e.preventDefault();
+  //     console.log("✅ Logout button clicked!");
+  //     localStorage.removeItem("adminLoggedIn");
+  //     alert("Logged out successfully!");
+  //     window.location.href = "../index.html";
+  //   }
+  // });
 
   // ======================
   // INITIAL LOAD
@@ -208,3 +208,15 @@ async function updateBookingStatus(bookingID, status) {
     console.error("❌ Error updating status:", err);
   }
 }
+
+// ===============================
+// Add this to admin.js if not exists
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.getElementById('logoutBtn'); // or whatever your admin logout button ID is
+    
+    logoutBtn?.addEventListener('click', function() {
+        localStorage.clear();
+        alert('Logout successful!');
+        window.location.href = '/index.html';
+    });
+});

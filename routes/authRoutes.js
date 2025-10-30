@@ -121,24 +121,80 @@ router.get("/user/:email", (req, res) => {
 });
 
 // ===============================
-// === UPDATE PROFILE (Guests Only) ===
+// === UPDATE PROFILE (Fixed) ===
 // ===============================
 router.put("/update-profile", (req, res) => {
-  const { fullName, email, contact } = req.body;
-  if (!email || !fullName || !contact) return res.status(400).json({ message: "All fields required." });
+  const { fullName, email, contact, currentEmail } = req.body;
+  
+  if (!currentEmail || !fullName || !contact) {
+    return res.status(400).json({ message: "All fields required." });
+  }
 
   const [firstName, ...lastParts] = fullName.split(" ");
   const lastName = lastParts.join(" ");
 
-  db.query(
-    "UPDATE tbl_guests SET firstName = ?, lastName = ?, contactNo = ? WHERE email = ?",
-    [firstName, lastName, contact, email],
-    (err, result) => {
-      if (err) return res.status(500).json({ message: "Database update failed." });
-      if (result.affectedRows === 0) return res.status(404).json({ message: "User not found." });
-      res.json({ message: "Profile updated successfully." });
-    }
-  );
+  // Check if new email already exists (if email is being changed)
+  if (email !== currentEmail) {
+    db.query("SELECT * FROM tbl_guests WHERE email = ? AND email != ?", [email, currentEmail], (err, results) => {
+      if (err) return res.status(500).json({ message: "Database error." });
+      if (results.length > 0) return res.status(400).json({ message: "Email already exists." });
+
+      // Proceed with update
+      updateProfile();
+    });
+  } else {
+    updateProfile();
+  }
+
+  function updateProfile() {
+    db.query(
+      "UPDATE tbl_guests SET firstName = ?, lastName = ?, contactNo = ?, email = ? WHERE email = ?",
+      [firstName, lastName, contact, email, currentEmail],
+      (err, result) => {
+        if (err) {
+          console.error("Update error:", err);
+          return res.status(500).json({ message: "Database update failed." });
+        }
+        if (result.affectedRows === 0) return res.status(404).json({ message: "User not found." });
+        res.json({ message: "Profile updated successfully." });
+      }
+    );
+  }
 });
+
+// ===============================
+// ACCOUNT INFO (Fixed)
+// ===============================
+async function loadAccountInfo() {
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+        // If no user email, check if admin
+        const adminEmail = localStorage.getItem("adminEmail");
+        if (adminEmail) {
+            accName.textContent = "Administrator";
+            accEmail.textContent = adminEmail;
+            accContact.textContent = "N/A";
+            // Hide edit button for admin
+            if (editProfileBtn) editProfileBtn.style.display = "none";
+            return;
+        }
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://localhost:3000/auth/user/${email}`);
+        const data = await res.json();
+
+        if (res.ok && data.user) {
+            accName.textContent = data.user.fullName;
+            accEmail.textContent = data.user.email;
+            accContact.textContent = data.user.contactNo;
+            // Show edit button for guest
+            if (editProfileBtn) editProfileBtn.style.display = "block";
+        }
+    } catch (err) {
+        console.error("Error loading account info:", err);
+    }
+}
 
 module.exports = router;

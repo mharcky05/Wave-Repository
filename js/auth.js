@@ -148,13 +148,22 @@ loginForm?.addEventListener("submit", async (e) => {
 });
 
 // ===============================
-// LOGOUT
+// LOGOUT (Fixed for both admin and guest)
 // ===============================
 logoutBtn?.addEventListener("click", () => {
-    localStorage.clear();
-    closeModal(accountModal);
-    updateNavbarState(false);
-    if (notifInterval) clearInterval(notifInterval);
+    const isAdmin = localStorage.getItem("adminEmail");
+    
+    if (isAdmin) {
+        // Admin logout - redirect to landing page
+        localStorage.clear();
+        window.location.href = "/index.html";
+    } else {
+        // Guest logout - just close modal and update UI
+        localStorage.clear();
+        closeModal(accountModal);
+        updateNavbarState(false);
+        if (notifInterval) clearInterval(notifInterval);
+    }
 });
 
 // ===============================
@@ -179,7 +188,7 @@ async function loadAccountInfo() {
 }
 
 // ===============================
-// NOTIFICATIONS (with explicit "read" indicator)
+// NOTIFICATIONS
 // ===============================
 let notifInterval;
 
@@ -193,25 +202,21 @@ async function loadNotifications() {
         const notifList = notifPopup.querySelector("ul");
         notifList.innerHTML = "";
 
-        // No-notifications case
         if (!data || data.length === 0) {
             notifList.innerHTML = "<li>No notifications.</li>";
             notifBadge.style.display = "none";
             return;
         }
 
-        // Update badge
         const unreadCount = data.filter((n) => !n.isRead).length;
         notifBadge.textContent = unreadCount;
         notifBadge.style.display = unreadCount > 0 ? "block" : "none";
 
-        // Build list
         data.forEach((notif) => {
             const li = document.createElement("li");
             li.className = "notif-item";
             li.setAttribute("data-notifid", notif.notifID);
 
-            // message wrapper
             const msgWrap = document.createElement("div");
             msgWrap.style.display = "flex";
             msgWrap.style.justifyContent = "space-between";
@@ -222,7 +227,6 @@ async function loadNotifications() {
             msg.style.flex = "1";
             msgWrap.appendChild(msg);
 
-            // read indicator pill
             const readPill = document.createElement("span");
             readPill.className = "notif-read-pill";
             readPill.style.marginLeft = "8px";
@@ -252,14 +256,11 @@ async function loadNotifications() {
             msgWrap.appendChild(readPill);
             li.appendChild(msgWrap);
 
-            // click on the list item opens payment when approved
             li.addEventListener("click", async (e) => {
                 const target = e.target;
-
-                // ✅ If user clicked the "Mark as read" pill
                 if (target.classList.contains("notif-read-pill") && !li.hasAttribute("data-read")) {
-                    e.stopPropagation(); // prevent parent li click
-                    target.style.pointerEvents = "none"; // avoid double click
+                    e.stopPropagation();
+                    target.style.pointerEvents = "none";
 
                     try {
                         const markRes = await fetch(`http://localhost:3000/notif/mark-read/${notif.notifID}`, {
@@ -268,7 +269,6 @@ async function loadNotifications() {
 
                         if (!markRes.ok) throw new Error("Mark-read failed");
 
-                        // Immediate UI update
                         li.classList.remove("unread");
                         li.setAttribute("data-read", "true");
                         target.textContent = "✓ Read";
@@ -277,13 +277,11 @@ async function loadNotifications() {
                         target.style.borderColor = "#e5e7eb";
                         target.style.cursor = "default";
 
-                        // Update badge
                         const current = parseInt(notifBadge.textContent || "0", 10);
                         const next = Math.max(current - 1, 0);
                         notifBadge.textContent = next;
                         notifBadge.style.display = next > 0 ? "block" : "none";
 
-                        // Optional: brief fade animation
                         li.style.transition = "opacity 0.3s ease";
                         li.style.opacity = "0.7";
 
@@ -292,10 +290,9 @@ async function loadNotifications() {
                         console.error("Failed to mark as read:", err);
                     }
 
-                    return; // stop here — don’t trigger other click logic
+                    return;
                 }
 
-                // ✅ Otherwise, handle normal li click (approved notification → open modal)
                 if (notif.message.toLowerCase().includes("approved")) {
                     notifPopup.classList.remove("show");
                     showModal(paymentModal);
@@ -311,21 +308,18 @@ async function loadNotifications() {
     }
 }
 
-// Toggle popup visibility
 notifBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     const isVisible = notifPopup.classList.toggle("show");
     if (isVisible) notifBadge.style.display = "none";
 });
 
-// close popup when clicking outside
 window.addEventListener("click", (e) => {
     if (!notifPopup.contains(e.target) && e.target !== notifBtn) {
         notifPopup.classList.remove("show");
     }
 });
 
-// Polling (15s) but only when popup is closed
 function startNotifPolling() {
     if (notifInterval) clearInterval(notifInterval);
     loadNotifications();
@@ -333,7 +327,6 @@ function startNotifPolling() {
         if (!notifPopup.classList.contains("show")) loadNotifications();
     }, 15000);
 }
-
 
 // ===============================
 // HELPERS
@@ -358,8 +351,95 @@ function updateNavbarState(isLoggedIn) {
 }
 
 // ===============================
+// SWITCH BETWEEN LOGIN & SIGNUP
+// ===============================
+function toggleSignup() {
+    closeModal(loginModal);
+    showModal(signupModal);
+}
+
+function toggleLogin() {
+    closeModal(signupModal);
+    showModal(loginModal);
+}
+
+// ===============================
 // INITIAL LOAD
 // ===============================
 const loggedIn = localStorage.getItem("isLoggedIn") === "true";
 updateNavbarState(loggedIn);
 if (loggedIn) startNotifPolling();
+
+
+// ===============================
+// EDIT PROFILE FUNCTIONALITY
+// ===============================
+const editProfileBtn = document.getElementById("editProfileBtn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+const editProfileForm = document.getElementById("edit-profile-form");
+const accountView = document.getElementById("account-view");
+
+// Switch to edit mode
+editProfileBtn?.addEventListener("click", () => {
+    accountView.style.display = "none";
+    editProfileForm.style.display = "block";
+    
+    // Pre-fill the form with current data
+    document.getElementById("editFullName").value = accName.textContent;
+    document.getElementById("editEmail").value = accEmail.textContent;
+    document.getElementById("editContact").value = accContact.textContent;
+});
+
+// Cancel edit
+cancelEditBtn?.addEventListener("click", () => {
+    editProfileForm.style.display = "none";
+    accountView.style.display = "block";
+});
+
+// Submit edit form
+editProfileForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const fullName = document.getElementById("editFullName").value.trim();
+    const email = document.getElementById("editEmail").value.trim();
+    const contact = document.getElementById("editContact").value.trim();
+    const currentEmail = localStorage.getItem("userEmail");
+
+    if (!fullName || !email || !contact) {
+        alert("All fields are required!");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/auth/update-profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                fullName, 
+                email, 
+                contact,
+                currentEmail // Send current email to identify the user
+            }),
+        });
+
+        const data = await res.json();
+        alert(data.message);
+
+        if (res.ok) {
+            // Update localStorage
+            localStorage.setItem("userEmail", email);
+            localStorage.setItem("userName", fullName);
+            localStorage.setItem("userContact", contact);
+            
+            // Reload account info
+            await loadAccountInfo();
+            
+            // Switch back to view mode
+            editProfileForm.style.display = "none";
+            accountView.style.display = "block";
+        }
+    } catch (err) {
+        console.error("Error updating profile:", err);
+        alert("Profile update failed.");
+    }
+});
