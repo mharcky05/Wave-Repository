@@ -1,51 +1,259 @@
-/* ===== PAYMENT MODAL ===== */
+/* ===== PAYMENT MODAL WRAPPER ===== */
 #payment-modal {
-  display: none; /* hidden by default */
+  display: none; /* hidden by default until opened by auth.js */
   position: fixed;
   z-index: 99999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
   justify-content: center;
   align-items: center;
 }
 
+/* ===== MODAL CONTAINER ===== */
 #payment-modal .modal-content {
-  background: #fff;
-  padding: 24px;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f9fb 100%);
   width: 90%;
-  max-width: 400px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  max-width: 950px;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+  transform: scale(0.98);
+  opacity: 0;
+  transition: all 0.4s ease;
+  min-height: 520px;
   animation: fadeIn 0.3s ease-in-out;
 }
 
-#payment-modal .close {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 20px;
+#payment-modal .modal-content.animate-in {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ===== HEADER ===== */
+#payment-modal .modal-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+#payment-modal .modal-header h2 {
+  font-size: 1.8rem;
+  color: #1a1a1a;
+}
+
+#payment-modal .modal-header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ===== BODY ===== */
+.payment-modal-body {
+  display: flex;
+  gap: 2rem;
+  min-height: 380px;
+}
+
+.left-section {
+  flex: 1;
+}
+
+.summary-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.summary-box h3 {
+  margin-bottom: 0.5rem;
   color: #333;
-  cursor: pointer;
 }
 
-.pay-btn {
-  margin-top: 16px;
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
+/* ===== PAYMENT BUTTONS ===== */
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.payment-btn {
   border: none;
-  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.9rem;
+  border-radius: 12px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-.pay-btn:hover {
-  background: #0056b3;
+.payment-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
+/* GCash Style */
+.gcash-btn {
+  background: linear-gradient(135deg, #0077ff, #00b2ff);
+}
+
+/* Bank Style */
+.bank-btn {
+  background: linear-gradient(135deg, #28a745, #56d364);
+}
+
+/* Active Button */
+.payment-btn.active {
+  outline: 3px solid rgba(0,0,0,0.2);
+  transform: scale(1.02);
+}
+
+/* ===== RIGHT SIDE ===== */
+.right-section {
+  flex: 1.6;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+}
+
+/* Placeholder */
+.placeholder {
+  display: none;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.placeholder.active {
+  display: flex;
+}
+
+/* ===== GCash ===== */
+.gcash-qr {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.gcash-qr img {
+  width: 290px;
+  height: 290px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+}
+
+.gcash-qr img:hover {
+  transform: scale(1.05);
+}
+
+.gcash-qr p {
+  color: #555;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* ===== Bank Transfer ===== */
+.bank-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bank-field label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0;
+  display: block;
+  text-align: left;
+}
+
+.bank-field input,
+.bank-field select {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+/* ===== Fade Animation ===== */
+.hidden {
+  display: none;
+}
+
+.fade {
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(10px);
+}
+
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+/* ===== FOOTER ===== */
+.modal-footer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+#confirmPayment {
+  background: linear-gradient(135deg, #2e86de, #6ab1f7);
+  color: white;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(46,134,222,0.4);
+}
+
+#confirmPayment:hover {
+  background: linear-gradient(135deg, #1b5dbf, #4f9ff3);
+  transform: translateY(-2px);
+}
+
+/* ===== Popup ===== */
+.popup {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 100000;
+}
+
+.popup.show {
+  opacity: 1;
+}
+
+/* ===== Animation ===== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }

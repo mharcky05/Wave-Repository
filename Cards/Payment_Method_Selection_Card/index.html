@@ -1,63 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Method Selection - L’escapade Private Villa</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Modal</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <div class="resort-name">L’escapade Private Villa</div>
-      <button class="btn-logout">Logout</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="card">
-      <h2>Select Payment Method</h2>
-
-      <div class="booking-summary">
-        <h3>Booking Summary</h3>
-        <p><strong>Package:</strong> Daytime</p>
-        <p><strong>Check-in:</strong> October 13, 2025</p>
-        <p><strong>Check-out:</strong> October 13, 2025</p>
-        <p><strong>Additional Pax:</strong> 1</p>
-        <p><strong>Additional Hours:</strong> 1</p>
-        <p><strong>Total Amount:</strong> PHP 6,100.00</p>
+  <div class="modal-overlay show">
+    <div class="modal-content animate-in">
+      <div class="modal-header">
+        <h2>Complete Your Payment</h2>
+        <p>Choose your preferred payment method to proceed.</p>
       </div>
 
-      <div class="payment-section">
-        <h3>Choose Payment Method</h3>
-        <label><input type="radio" name="paymentMethod" value="gcash"> GCash</label>
-        <label><input type="radio" name="paymentMethod" value="bank"> Bank Transfer</label>
-        <label><input type="radio" name="paymentMethod" value="card"> Credit/Debit Card</label>
-        <label><input type="radio" name="paymentMethod" value="paypal"> PayPal</label>
+      <div class="payment-modal-body">
+        <!-- LEFT SECTION -->
+        <div class="left-section">
+          <div class="summary-box glass">
+            <h3>Booking Summary</h3>
+            <p><strong>Date:</strong> October 30, 2025</p>
+            <p><strong>Package:</strong> One-Day Package</p>
+            <p><strong>Total:</strong> ₱6,100</p>
+          </div>
+
+          <div class="payment-methods">
+            <button class="payment-btn gcash-btn" data-method="gcash">Pay with GCash</button>
+            <button class="payment-btn bank-btn" data-method="bank">Bank Transfer</button>
+          </div>
+        </div>
+
+        <!-- RIGHT SECTION -->
+        <div class="right-section glass">
+          <div class="placeholder active">
+            <p>Please select a payment method to view details.</p>
+          </div>
+
+          <div class="gcash-details hidden fade">
+            <h3>GCash Payment</h3>
+            <div class="gcash-qr">
+              <img src="qr-image.jpg" alt="Scan QR Code" />
+              <p>Scan this QR code using your GCash app</p>
+            </div>
+          </div>
+
+          <div class="bank-details hidden fade">
+            <h3>Bank Transfer Details</h3>
+            <div class="bank-field">
+              <label>Bank Name</label>
+              <select id="bankName">
+                <option value="">-- Select Bank --</option>
+                <option value="RCBC">RCBC</option>
+                <option value="BDO">BDO</option>
+                <option value="BPI">BPI</option>
+              </select>
+            </div>
+
+            <div class="bank-field">
+              <label>Account No.</label>
+              <input type="text" placeholder="Enter account no.">
+            </div>
+
+            <div class="bank-field">
+              <label>Account Name</label>
+              <input type="text" placeholder="Enter account name">
+            </div>
+
+            <div class="bank-field">
+              <label>Amount</label>
+              <input type="text" value="₱6,100" readonly>
+            </div>
+
+            <div class="bank-field">
+              <label>Purpose / Remarks</label>
+              <input type="text" id="remarks" placeholder="Enter purpose or remarks">
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="payment-details">
-        <h3>Payment Details</h3>
-        <label for="refNo">Reference Number</label>
-        <input type="text" id="refNo" placeholder="Enter reference number">
-
-        <label for="amountPaid">Amount Paid</label>
-        <input type="number" id="amountPaid" placeholder="Enter amount paid">
-
-        <label for="uploadReceipt">Upload Receipt</label>
-        <input type="file" id="uploadReceipt" accept="image/*">
+      <div class="modal-footer">
+        <button id="confirmPayment">Confirm Payment</button>
       </div>
 
-      <div class="btn-container">
-        <button class="btn-back">Back</button>
-        <button class="btn-proceed" id="proceedBtn">Proceed to Confirmation</button>
-      </div>
-    </section>
-  </main>
-
-  <div id="popup" class="popup">
-    <div class="popup-content">
-      <p>Proceeding to Confirmation...</p>
+      <div class="popup" id="popup">Processing your payment...</div>
     </div>
   </div>
 
