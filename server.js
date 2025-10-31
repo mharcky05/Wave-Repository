@@ -11,22 +11,25 @@ const notifRoutes = require("./routes/notifRoutes");
 
 const app = express();
 
-// Middleware
+// ===== MIDDLEWARE SETUP =====
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/admin", adminRoutes);
 
-// ✅ Serve your static files correctly
+// ===== STATIC FILE SERVING =====
 app.use(express.static(path.join(__dirname, "html")));
 app.use("/js", express.static(path.join(__dirname, "js")));
 app.use("/css", express.static(path.join(__dirname, "css")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-// API routes
+// ===== API ROUTES REGISTRATION =====
 app.use("/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/notifications", notifRoutes);
 
+// ===== NOTIFICATION MANAGEMENT ENDPOINTS =====
+
+// SEND NOTIFICATION TO SPECIFIC GUEST
 app.post("/notifications/send", (req, res) => {
   const { guestID, message } = req.body;
 
@@ -40,7 +43,7 @@ app.post("/notifications/send", (req, res) => {
   });
 });
 
-// GET /notifications/:guestID
+// GET ALL NOTIFICATIONS FOR SPECIFIC GUEST
 app.get("/notifications/:guestID", (req, res) => {
   const guestID = req.params.guestID;
 
@@ -54,7 +57,7 @@ app.get("/notifications/:guestID", (req, res) => {
   });
 });
 
-// PATCH /notifications/mark-read/:guestID
+// MARK NOTIFICATIONS AS READ FOR SPECIFIC GUEST
 app.patch("/notifications/mark-read/:guestID", (req, res) => {
   const guestID = req.params.guestID;
   const sql = "UPDATE tbl_notifications SET isRead = TRUE WHERE guestID = ?";
@@ -64,12 +67,11 @@ app.patch("/notifications/mark-read/:guestID", (req, res) => {
   });
 });
 
-
-// Default route — serve index.html
+// ===== DEFAULT ROUTE - SERVE MAIN APPLICATION =====
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "html", "index.html"));
 });
 
+// ===== SERVER INITIALIZATION =====
 const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
-
