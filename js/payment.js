@@ -1,11 +1,13 @@
+// ===== PAYMENT METHOD SELECTION SYSTEM =====
 const buttons = document.querySelectorAll(".payment-btn");
 const gcashDetails = document.querySelector(".gcash-details");
 const bankDetails = document.querySelector(".bank-details");
 const placeholder = document.querySelector(".placeholder");
 
+// ===== PAYMENT METHOD BUTTON HANDLERS =====
 buttons.forEach((btn) => {
   btn.addEventListener("click", () => {
-    // reset states
+    // RESET ALL ACTIVE STATES
     buttons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     gcashDetails.classList.add("hidden");
@@ -14,7 +16,7 @@ buttons.forEach((btn) => {
     gcashDetails.classList.remove("show");
     bankDetails.classList.remove("show");
 
-    // show selected
+    // SHOW SELECTED PAYMENT METHOD DETAILS
     const method = btn.getAttribute("data-method");
     if (method === "gcash") {
       gcashDetails.classList.remove("hidden");
@@ -26,7 +28,7 @@ buttons.forEach((btn) => {
   });
 });
 
-// Confirm payment
+// ===== PAYMENT CONFIRMATION HANDLER =====
 const confirmBtn = document.getElementById("confirmPayment");
 const popup = document.getElementById("popup");
 
@@ -37,6 +39,7 @@ confirmBtn.addEventListener("click", () => {
     return;
   }
 
+  // VALIDATE BANK TRANSACTION DETAILS
   if (activeBtn.dataset.method === "bank") {
     const bank = document.getElementById("bankName").value.trim();
     const remarks = document.getElementById("remarks").value.trim();
@@ -50,6 +53,7 @@ confirmBtn.addEventListener("click", () => {
     }
   }
 
+  // SHOW SUCCESS POPUP AND REDIRECT
   popup.classList.add("show");
   setTimeout(() => {
     popup.classList.remove("show");

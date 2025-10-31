@@ -1,6 +1,4 @@
-/* ===============================
-   GLOBAL STYLE
-   =============================== */
+/* ===== ADMIN PANEL GLOBAL STYLES ===== */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -9,9 +7,7 @@ body {
   line-height: 1.6;
 }
 
-/* ===============================
-   ADMIN HEADER
-   =============================== */
+/* ===== ADMIN HEADER ===== */
 .admin-header {
   background-color: #fff;
   color: #000;
@@ -32,7 +28,7 @@ body {
   color: #000;
 }
 
-/* --- CENTER NAVIGATION --- */
+/* CENTER NAVIGATION MENU */
 .admin-nav {
   display: flex;
   align-items: center;
@@ -56,14 +52,14 @@ body {
   color: #b81d24;
 }
 
-/* --- RIGHT SIDE (Notif + Logout) --- */
+/* RIGHT SIDE ACTIONS (NOTIFICATION + LOGOUT) */
 .admin-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* --- NOTIFICATION --- */
+/* NOTIFICATION BELL */
 .notif-wrapper {
   position: relative;
 }
@@ -88,7 +84,7 @@ body {
   right: -8px;
 }
 
-/* --- LOGOUT BUTTON --- */
+/* LOGOUT BUTTON */
 .logout-btn {
   background-color: white;
   border: 1.5px solid #b22222;
@@ -108,9 +104,7 @@ body {
   transform: scale(1.05);
 }
 
-/* ===============================
-   MAIN CONTENT
-   =============================== */
+/* ===== MAIN CONTENT AREA ===== */
 .admin-main {
   padding: 1.5rem;
 }
@@ -129,9 +123,7 @@ body {
   align-items: center;
 }
 
-/* ===============================
-   TABLE DESIGN
-   =============================== */
+/* ===== TABLE STYLES ===== */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -139,17 +131,17 @@ table {
   background: white;
   border-radius: 10px;
   overflow: hidden;
-  table-layout: fixed; /* prevents horizontal scroll */
+  table-layout: fixed;
   word-wrap: break-word;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 th,
 td {
-  padding: 0.6rem 0.8rem; /* smaller padding for cleaner look */
+  padding: 0.6rem 0.8rem;
   border-bottom: 1px solid #eee;
   text-align: center;
-  font-size: 0.8rem; /* smaller font */
+  font-size: 0.8rem;
   vertical-align: middle;
 }
 
@@ -165,27 +157,25 @@ td {
   word-break: break-word;
 }
 
-/* --- Date Columns --- */
+/* DATE COLUMNS FORMATTING */
 td:nth-child(3),
 td:nth-child(4) {
   white-space: nowrap;
 }
 
-/* --- Table Row Hover --- */
+/* TABLE ROW HOVER EFFECT */
 tr:hover {
   background-color: #f8f9fa;
   transition: 0.2s ease;
 }
 
-/* --- Responsive Scroll for Wide Tables --- */
+/* TABLE CONTAINER FOR SCROLLING */
 .table-container {
   width: 100%;
   overflow-x: auto;
 }
 
-/* ===============================
-   ACTION BUTTONS (✔ ✖)
-   =============================== */
+/* ===== ACTION BUTTONS (APPROVE/DECLINE) ===== */
 .action-btns {
   display: flex;
   justify-content: center;
@@ -212,9 +202,7 @@ tr:hover {
   transform: scale(1.15);
 }
 
-/* ===============================
-   MODAL & POPUPS
-   =============================== */
+/* ===== MODAL AND POPUP STYLES ===== */
 .modal {
   display: none;
   position: fixed;
@@ -261,7 +249,7 @@ tr:hover {
   background: #60a3bc;
 }
 
-/* --- POPUP MESSAGE --- */
+/* SUCCESS/ERROR POPUP MESSAGES */
 .popup-container {
   position: fixed;
   top: 1rem;
@@ -292,9 +280,7 @@ tr:hover {
   }
 }
 
-/* ===============================
-   RESPONSIVE DESIGN
-   =============================== */
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1000px) {
   th,
   td {

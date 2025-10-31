@@ -1,8 +1,6 @@
-/* ==============================
-   ACCOUNT MODAL STYLES
-   ============================== */
+/* ACCOUNT MODAL STYLES */
 
-/* Overlay */
+/* OVERLAY BACKGROUND */
 #account-modal {
   display: none;
   position: fixed;
@@ -17,7 +15,7 @@
   backdrop-filter: blur(3px);
 }
 
-/* Modal container */
+/* MODAL CONTAINER */
 #account-modal .modal-content {
   background: #ffffff;
   border-radius: 20px;
@@ -33,7 +31,7 @@
   transition: all 0.3s ease;
 }
 
-/* Close button */
+/* CLOSE BUTTON */
 #account-modal .close-btn {
   position: absolute;
   top: 12px;
@@ -49,7 +47,7 @@
   transform: scale(1.1);
 }
 
-/* Title */
+/* TITLE */
 #account-modal h2 {
   margin-bottom: 20px;
   font-size: 26px;
@@ -59,7 +57,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Account card */
+/* ACCOUNT CARD */
 #account-modal .account-card {
   width: 100%;
   background: #f7f9fc;
@@ -70,7 +68,7 @@
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Avatar */
+/* AVATAR CIRCLE */
 #account-modal .avatar-circle {
   width: 70px;
   height: 70px;
@@ -85,7 +83,7 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Account info */
+/* ACCOUNT INFO */
 #account-modal .account-info {
   font-size: 15px;
   color: #333;
@@ -107,11 +105,9 @@
   color: #2c3e50;
 }
 
-/* ==============================
-   EDIT PROFILE STYLES - UPDATED
-   ============================== */
+/* EDIT PROFILE FORM STYLES */
 
-/* Form labels and inputs */
+/* FORM LABELS AND INPUTS */
 #account-modal .account-info label {
   display: block;
   text-align: left;
@@ -143,7 +139,7 @@
   color: #a0a0a0;
 }
 
-/* Button group */
+/* BUTTON GROUP */
 #account-modal .button-group {
   display: flex;
   justify-content: center;
@@ -188,7 +184,7 @@
   box-shadow: 0 6px 15px rgba(249, 212, 35, 0.4);
 }
 
-/* Save and Cancel buttons */
+/* SAVE AND CANCEL BUTTONS */
 #account-modal .save-btn,
 #account-modal .cancel-btn {
   padding: 12px 24px;
@@ -202,7 +198,7 @@
   flex: 1;
 }
 
-/* Save button */
+/* SAVE BUTTON */
 #account-modal .save-btn {
   background: linear-gradient(135deg, #56ab2f, #a8e063);
 }
@@ -212,7 +208,7 @@
   box-shadow: 0 6px 15px rgba(168, 224, 99, 0.4);
 }
 
-/* Cancel button */
+/* CANCEL BUTTON */
 #account-modal .cancel-btn {
   background: linear-gradient(135deg, #6c757d, #a0a0a0);
 }
@@ -222,7 +218,7 @@
   box-shadow: 0 6px 15px rgba(200, 200, 200, 0.4);
 }
 
-/* Edit form specific styles */
+/* EDIT FORM SPECIFIC STYLES */
 #account-modal .edit-form .account-card {
   text-align: left;
 }
@@ -231,14 +227,14 @@
   background: linear-gradient(135deg, #ff7e5f, #feb47b);
 }
 
-/* Form layout improvements */
+/* FORM LAYOUT IMPROVEMENTS */
 #account-modal .edit-form .account-info {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-/* Animation */
+/* ANIMATIONS */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -261,7 +257,7 @@
   }
 }
 
-/* Smooth transitions between view and edit modes */
+/* SMOOTH TRANSITIONS BETWEEN VIEW AND EDIT MODES */
 #account-view,
 #edit-profile-form {
   transition: all 0.3s ease;
@@ -271,9 +267,7 @@
   width: 100%;
 }
 
-/* ==============================
-   NOTIFICATION STYLES
-   ============================== */
+/* FACEBOOK-STYLE NOTIFICATION STYLES */
 .notif-btn {
   position: relative;
   background: none;
@@ -293,33 +287,38 @@
   color: #007bff;
 }
 
-/* Badge */
+/* BADGE - FACEBOOK STYLE */
 .notif-badge {
   position: absolute;
-  top: 2px;
-  right: 40px;
-  background: red;
+  top: -5px;
+  right: 35px;
+  background: #fa3e3e;
   color: white;
   border-radius: 50%;
-  padding: 1px 5px;
+  padding: 3px 6px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
   display: none;
   pointer-events: none;
+  min-width: 18px;
+  text-align: center;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Popup */
+/* POPUP - FACEBOOK STYLE */
 .notif-popup {
   position: absolute;
-  top: 45px;
-  right: 209px;
+  top: 50px;
+  right: 200px;
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 380px;
+  max-height: 500px;
+  overflow-y: auto;
   z-index: 9999 !important;
   display: none;
 }
@@ -332,13 +331,26 @@
   content: "";
   position: absolute;
   top: -6px;
-  right: 12px;
-  width: 10px;
-  height: 10px;
+  right: 15px;
+  width: 12px;
+  height: 12px;
   background: white;
   border-left: 1px solid #ddd;
   border-top: 1px solid #ddd;
   transform: rotate(45deg);
+}
+
+/* NOTIFICATION HEADER */
+.notif-popup::after {
+  content: "Notifications";
+  display: block;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #1c1e21;
+  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
 }
 
 .notif-popup ul {
@@ -347,67 +359,67 @@
   margin: 0;
 }
 
+/* NOTIFICATION ITEMS - FACEBOOK STYLE */
 .notif-item {
-  transition: opacity 0.3s ease, background-color 0.3s ease;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
-  padding: 8px 10px;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: flex-start;
 }
 
-.notif-read-pill {
-  display: inline-block;
-  background-color: #eef2ff;
-  color: #3730a3;
-  border: 1px solid #c7d2fe;
-  padding: 3px 6px;
-  border-radius: 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.notif-read-pill:hover {
-  background-color: #c7d2fe;
-  color: #1e1b4b;
-}
-
-.notif-item.unread {
-  background-color: #f5f5ff;
-  font-weight: 700;
-}
-
-.notif-item[data-read="true"] {
-  opacity: 0.85;
-}
-
-.notif-popup li:last-child {
+.notif-item:last-child {
   border-bottom: none;
 }
 
-.mark-read-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: background-color 0.2s ease;
+.notif-item.unread {
+  background-color: #f0f8ff;
+  border-left: 3px solid #1877f2;
 }
 
-.mark-read-btn:hover {
-  background-color: #0056b3;
+.notif-item.read {
+  background-color: #ffffff;
+  border-left: 3px solid transparent;
 }
 
-.read-indicator {
-  color: gray;
-  font-size: 0.8rem;
+.notif-item:hover {
+  background-color: #f5f5f5;
 }
 
-/* ==============================
-   PAYMENT MODAL
-   ============================== */
+.notif-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-message {
+  font-size: 14px;
+  color: #1c1e21;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.notif-item.unread .notif-message {
+  font-weight: 600;
+}
+
+.notif-time {
+  font-size: 12px;
+  color: #65676b;
+  font-weight: 400;
+}
+
+.no-notif {
+  padding: 20px;
+  text-align: center;
+  color: #65676b;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* PAYMENT MODAL STYLES */
 #payment-modal {
   display: none;
   position: fixed;

@@ -1,8 +1,7 @@
-// ===============================
-// AUTHENTICATION & NOTIFICATION SCRIPT
-// ===============================
+// Authentication and Notification Management System
+// Handles user authentication, notifications, and payment flows
 
-// --- GET ELEMENTS ---
+// DOM Element References
 const loginModal = document.getElementById("login-modal");
 const signupModal = document.getElementById("signup-modal");
 const accountModal = document.getElementById("account-modal");
@@ -29,14 +28,12 @@ const accContact = document.getElementById("acc-contact");
 
 const logoutBtn = document.getElementById("logoutBtn");
 
-// ===============================
-// EVENT LISTENERS
-// ===============================
+// Modal Event Handlers
 loginBtn?.addEventListener("click", () => showModal(loginModal));
 signupBtn?.addEventListener("click", () => showModal(signupModal));
 accountBtn?.addEventListener("click", () => {
-    showModal(accountModal);
-    loadAccountInfo();
+  showModal(accountModal);
+  loadAccountInfo();
 });
 
 closeLogin?.addEventListener("click", () => closeModal(loginModal));
@@ -44,15 +41,14 @@ closeSignup?.addEventListener("click", () => closeModal(signupModal));
 closeAccount?.addEventListener("click", () => closeModal(accountModal));
 closePayment?.addEventListener("click", () => closeModal(paymentModal));
 
+// Close modals when clicking outside
 window.addEventListener("click", (e) => {
-    [loginModal, signupModal, accountModal, paymentModal].forEach((modal) => {
-        if (modal && e.target === modal) closeModal(modal);
-    });
+  [loginModal, signupModal, accountModal, paymentModal].forEach((modal) => {
+    if (modal && e.target === modal) closeModal(modal);
+  });
 });
 
-// ===============================
-// PASSWORD TOGGLE
-// ===============================
+// Password Visibility Toggle
 const loginPwd = document.getElementById("login-password");
 const loginShow = document.getElementById("login-showPass");
 const signupPwd = document.getElementById("signup-password");
@@ -60,386 +56,429 @@ const signupCPwd = document.getElementById("signupc-password");
 const signupShow = document.getElementById("signup-showPass");
 
 loginShow?.addEventListener("change", () => {
-    loginPwd.type = loginShow.checked ? "text" : "password";
+  loginPwd.type = loginShow.checked ? "text" : "password";
 });
 
 signupShow?.addEventListener("change", () => {
-    const type = signupShow.checked ? "text" : "password";
-    signupPwd.type = type;
-    signupCPwd.type = type;
+  const type = signupShow.checked ? "text" : "password";
+  signupPwd.type = type;
+  signupCPwd.type = type;
 });
 
-// ===============================
-// SIGNUP BACKEND
-// ===============================
+// User Registration
 signupForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const firstName = document.getElementById("signup-fname").value.trim();
-    const lastName = document.getElementById("signup-lname").value.trim();
-    const contactNo = document.getElementById("signup-contact").value.trim();
-    const email = document.getElementById("signup-email").value.trim();
-    const password = document.getElementById("signup-password").value.trim();
-    const confirm = document.getElementById("signupc-password").value.trim();
+  const firstName = document.getElementById("signup-fname").value.trim();
+  const lastName = document.getElementById("signup-lname").value.trim();
+  const contactNo = document.getElementById("signup-contact").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value.trim();
+  const confirm = document.getElementById("signupc-password").value.trim();
 
-    if (password !== confirm) return alert("Passwords do not match!");
+  if (password !== confirm) return alert("Passwords do not match!");
 
-    try {
-        const res = await fetch("http://localhost:3000/auth/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ firstName, lastName, contactNo, email, password }),
-        });
+  try {
+    const res = await fetch("http://localhost:3000/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName, contactNo, email, password }),
+    });
 
-        const data = await res.json();
-        alert(data.message);
+    const data = await res.json();
+    alert(data.message);
 
-        if (res.ok) {
-            closeModal(signupModal);
-            signupForm.reset();
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Signup failed.");
+    if (res.ok) {
+      closeModal(signupModal);
+      signupForm.reset();
     }
+  } catch (err) {
+    console.error(err);
+    alert("Signup failed.");
+  }
 });
 
-// ===============================
-// LOGIN BACKEND (Guest + Admin)
-// ===============================
+// User Authentication
 loginForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const email = document.getElementById("login-email").value.trim();
-    const password = document.getElementById("login-password").value.trim();
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value.trim();
 
-    try {
-        const res = await fetch("http://localhost:3000/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
+  try {
+    const res = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-        const data = await res.json();
-        alert(data.message);
+    const data = await res.json();
+    alert(data.message);
 
-        if (res.ok && data.user) {
-            if (data.user.isAdmin) {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("adminEmail", data.user.email);
-                window.location.href = "/admin.html";
-            } else {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("guestID", data.user.guestID);
-                localStorage.setItem("userEmail", data.user.email);
-                localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
-                localStorage.setItem("userContact", data.user.contactNo);
+    if (res.ok && data.user) {
+      if (data.user.isAdmin) {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("adminEmail", data.user.email);
+        window.location.href = "/admin.html";
+      } else {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("guestID", data.user.guestID);
+        localStorage.setItem("userEmail", data.user.email);
+        localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
+        localStorage.setItem("userContact", data.user.contactNo);
 
-                closeModal(loginModal);
-                updateNavbarState(true);
-                loadNotifications();
-                startNotifPolling();
-            }
-        }
-    } catch (err) {
-        console.error("Login error:", err);
-        alert("❌ Login failed due to server error.");
+        closeModal(loginModal);
+        updateNavbarState(true);
+        loadNotifications();
+        startNotifPolling();
+      }
     }
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Login failed due to server error.");
+  }
 });
 
-// ===============================
-// LOGOUT (Fixed for both admin and guest)
-// ===============================
+// User Logout
 logoutBtn?.addEventListener("click", () => {
-    const isAdmin = localStorage.getItem("adminEmail");
-    
-    if (isAdmin) {
-        // Admin logout - redirect to landing page
-        localStorage.clear();
-        window.location.href = "/index.html";
-    } else {
-        // Guest logout - just close modal and update UI
-        localStorage.clear();
-        closeModal(accountModal);
-        updateNavbarState(false);
-        if (notifInterval) clearInterval(notifInterval);
-    }
+  const isAdmin = localStorage.getItem("adminEmail");
+
+  if (isAdmin) {
+    localStorage.clear();
+    window.location.href = "/index.html";
+  } else {
+    localStorage.clear();
+    closeModal(accountModal);
+    updateNavbarState(false);
+    if (notifInterval) clearInterval(notifInterval);
+  }
 });
 
-// ===============================
-// ACCOUNT INFO
-// ===============================
+// Account Management
 async function loadAccountInfo() {
-    const email = localStorage.getItem("userEmail");
-    if (!email) return;
+  const email = localStorage.getItem("userEmail");
+  if (!email) return;
 
-    try {
-        const res = await fetch(`http://localhost:3000/auth/user/${email}`);
-        const data = await res.json();
+  try {
+    const res = await fetch(`http://localhost:3000/auth/user/${email}`);
+    const data = await res.json();
 
-        if (res.ok && data.user) {
-            accName.textContent = data.user.fullName;
-            accEmail.textContent = data.user.email;
-            accContact.textContent = data.user.contactNo;
-        }
-    } catch (err) {
-        console.error("Error loading account info:", err);
+    if (res.ok && data.user) {
+      accName.textContent = data.user.fullName;
+      accEmail.textContent = data.user.email;
+      accContact.textContent = data.user.contactNo;
     }
+  } catch (err) {
+    console.error("Error loading account info:", err);
+  }
 }
 
-// ===============================
-// NOTIFICATIONS
-// ===============================
+// Notification System
 let notifInterval;
+let unreadNotificationCount = 0;
 
 async function loadNotifications() {
-    const guestID = localStorage.getItem("guestID");
-    if (!guestID) return;
+  const guestID = localStorage.getItem("guestID");
+  if (!guestID) return;
 
-    try {
-        const res = await fetch(`http://localhost:3000/notifications/${guestID}`);
-        const data = await res.json();
-        const notifList = notifPopup.querySelector("ul");
-        notifList.innerHTML = "";
+  try {
+    const res = await fetch(`http://localhost:3000/notifications/${guestID}`);
+    const data = await res.json();
+    const notifList = notifPopup.querySelector("ul");
+    notifList.innerHTML = "";
 
-        if (!data || data.length === 0) {
-            notifList.innerHTML = "<li>No notifications.</li>";
-            notifBadge.style.display = "none";
-            return;
+    if (!data || data.length === 0) {
+      notifList.innerHTML = "<li class='no-notif'>No notifications</li>";
+      notifBadge.style.display = "none";
+      unreadNotificationCount = 0;
+      return;
+    }
+
+    unreadNotificationCount = data.filter((n) => !n.isRead).length;
+
+    notifBadge.textContent = unreadNotificationCount;
+    notifBadge.style.display = unreadNotificationCount > 0 ? "block" : "none";
+
+    data.forEach((notif) => {
+      const li = document.createElement("li");
+      li.className = `notif-item ${notif.isRead ? "read" : "unread"}`;
+      li.setAttribute("data-notifid", notif.notifID);
+      li.setAttribute("data-read", notif.isRead);
+
+      const msg = document.createElement("span");
+      msg.className = "notif-message";
+      msg.textContent = notif.message;
+
+      const time = document.createElement("span");
+      time.className = "notif-time";
+      time.textContent = formatNotificationTime(notif.createdAt);
+
+      const content = document.createElement("div");
+      content.className = "notif-content";
+      content.appendChild(msg);
+      content.appendChild(time);
+
+      li.appendChild(content);
+
+      li.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        if (li.getAttribute("data-read") === "0" || !notif.isRead) {
+          try {
+            const markRes = await fetch(
+              `http://localhost:3000/notifications/mark-read/${notif.notifID}`,
+              { method: "PATCH" }
+            );
+
+            if (markRes.ok) {
+              await loadNotifications();
+              
+              li.classList.remove("unread");
+              li.classList.add("read");
+              li.setAttribute("data-read", "1");
+
+              const updatedCount = Math.max(unreadNotificationCount - 1, 0);
+              notifBadge.textContent = updatedCount;
+              notifBadge.style.display = updatedCount > 0 ? "block" : "none";
+              unreadNotificationCount = updatedCount;
+            }
+          } catch (err) {
+            console.error("Failed to mark as read:", err);
+          }
         }
 
-        const unreadCount = data.filter((n) => !n.isRead).length;
-        notifBadge.textContent = unreadCount;
-        notifBadge.style.display = unreadCount > 0 ? "block" : "none";
+        if (notif.message.toLowerCase().includes("approved")) {
+          notifPopup.classList.remove("show");
 
-        data.forEach((notif) => {
-            const li = document.createElement("li");
-            li.className = "notif-item";
-            li.setAttribute("data-notifid", notif.notifID);
-
-            const msgWrap = document.createElement("div");
-            msgWrap.style.display = "flex";
-            msgWrap.style.justifyContent = "space-between";
-            msgWrap.style.alignItems = "center";
-
-            const msg = document.createElement("span");
-            msg.textContent = notif.message;
-            msg.style.flex = "1";
-            msgWrap.appendChild(msg);
-
-            const readPill = document.createElement("span");
-            readPill.className = "notif-read-pill";
-            readPill.style.marginLeft = "8px";
-            readPill.style.fontSize = "12px";
-            readPill.style.padding = "3px 6px";
-            readPill.style.borderRadius = "12px";
-            readPill.style.border = "1px solid transparent";
-
-            if (notif.isRead) {
-                li.classList.remove("unread");
-                li.setAttribute("data-read", "true");
-                readPill.textContent = "✓ Read";
-                readPill.style.background = "transparent";
-                readPill.style.color = "#4b5563";
-                readPill.style.borderColor = "#e5e7eb";
-                readPill.style.opacity = "0.8";
-            } else {
-                li.classList.add("unread");
-                li.removeAttribute("data-read");
-                readPill.textContent = "Mark as read";
-                readPill.style.background = "#eef2ff";
-                readPill.style.color = "#3730a3";
-                readPill.style.cursor = "pointer";
-                readPill.style.borderColor = "#c7d2fe";
+          try {
+            const guestID = localStorage.getItem("guestID");
+            if (!guestID) {
+              showModal(paymentModal);
+              return;
             }
 
-            msgWrap.appendChild(readPill);
-            li.appendChild(msgWrap);
+            const latestBookingRes = await fetch(`http://localhost:3000/api/bookings/latest/${guestID}`);
+            
+            if (latestBookingRes.ok) {
+              const bookingData = await latestBookingRes.json();
+              showPaymentModalWithActualData(bookingData);
+            } else {
+              showBasicPaymentModal();
+            }
+          } catch (err) {
+            console.error("Error fetching booking:", err);
+            showBasicPaymentModal();
+          }
+        }
+      });
+      notifList.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Error loading notifications:", err);
+  }
+}
 
-            li.addEventListener("click", async (e) => {
-                const target = e.target;
-                if (target.classList.contains("notif-read-pill") && !li.hasAttribute("data-read")) {
-                    e.stopPropagation();
-                    target.style.pointerEvents = "none";
+function formatNotificationTime(dateString) {
+  if (!dateString) return "Just now";
 
-                    try {
-                        const markRes = await fetch(`http://localhost:3000/notif/mark-read/${notif.notifID}`, {
-                            method: "PATCH",
-                        });
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
 
-                        if (!markRes.ok) throw new Error("Mark-read failed");
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
 
-                        li.classList.remove("unread");
-                        li.setAttribute("data-read", "true");
-                        target.textContent = "✓ Read";
-                        target.style.background = "transparent";
-                        target.style.color = "#4b5563";
-                        target.style.borderColor = "#e5e7eb";
-                        target.style.cursor = "default";
-
-                        const current = parseInt(notifBadge.textContent || "0", 10);
-                        const next = Math.max(current - 1, 0);
-                        notifBadge.textContent = next;
-                        notifBadge.style.display = next > 0 ? "block" : "none";
-
-                        li.style.transition = "opacity 0.3s ease";
-                        li.style.opacity = "0.7";
-
-                        setTimeout(() => loadNotifications(), 500);
-                    } catch (err) {
-                        console.error("Failed to mark as read:", err);
-                    }
-
-                    return;
-                }
-
-                if (notif.message.toLowerCase().includes("approved")) {
-                    notifPopup.classList.remove("show");
-                    showModal(paymentModal);
-                    const bookingInput = paymentModal.querySelector("#booking-id");
-                    if (bookingInput && notif.bookingID) bookingInput.value = notif.bookingID;
-                }
-            });
-
-            notifList.appendChild(li);
-        });
-    } catch (err) {
-        console.error("Error loading notifications:", err);
-    }
+  return date.toLocaleDateString();
 }
 
 notifBtn?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isVisible = notifPopup.classList.toggle("show");
-    if (isVisible) notifBadge.style.display = "none";
+  e.stopPropagation();
+  notifPopup.classList.toggle("show");
 });
 
 window.addEventListener("click", (e) => {
-    if (!notifPopup.contains(e.target) && e.target !== notifBtn) {
-        notifPopup.classList.remove("show");
-    }
+  if (!notifPopup.contains(e.target) && e.target !== notifBtn) {
+    notifPopup.classList.remove("show");
+  }
 });
 
 function startNotifPolling() {
-    if (notifInterval) clearInterval(notifInterval);
-    loadNotifications();
-    notifInterval = setInterval(() => {
-        if (!notifPopup.classList.contains("show")) loadNotifications();
-    }, 15000);
+  if (notifInterval) clearInterval(notifInterval);
+  loadNotifications();
+  notifInterval = setInterval(() => {
+    if (!notifPopup.classList.contains("show")) loadNotifications();
+  }, 15000);
 }
 
-// ===============================
-// HELPERS
-// ===============================
+// Payment Modal Functions
+function showPaymentModalWithActualData(bookingData) {
+  const paymentModal = document.getElementById("payment-modal");
+  
+  if (!paymentModal) {
+    console.error("Payment modal not found");
+    return;
+  }
+
+  const totalPrice = bookingData.totalPrice || 0;
+  const checkinDate = new Date(bookingData.checkinDate).toLocaleDateString();
+  const checkoutDate = new Date(bookingData.checkoutDate).toLocaleDateString();
+
+  const summaryBox = paymentModal.querySelector(".summary-box");
+  if (summaryBox) {
+    summaryBox.innerHTML = `
+        <h3>Booking Summary</h3>
+        <p><strong>Booking ID:</strong> ${bookingData.bookingID}</p>
+        <p><strong>Package:</strong> ${bookingData.packageName}</p>
+        <p><strong>Check-in:</strong> ${checkinDate} ${bookingData.checkinTime}</p>
+        <p><strong>Check-out:</strong> ${checkoutDate} ${bookingData.checkoutTime}</p>
+        <p><strong>Guests:</strong> ${bookingData.numGuests} + ${bookingData.additionalPax || 0} additional</p>
+        <p><strong>Additional Hours:</strong> ${bookingData.additionalHours || 0} hours</p>
+        <hr>
+        <p><strong>Base Price:</strong> ₱${Number(bookingData.basePrice).toLocaleString()}</p>
+        ${bookingData.additionalPax ? `<p><strong>Additional Pax:</strong> ₱${(bookingData.additionalPax * 150).toLocaleString()}</p>` : ''}
+        ${bookingData.additionalHours ? `<p><strong>Additional Hours:</strong> ₱${(bookingData.additionalHours * 500).toLocaleString()}</p>` : ''}
+        <p><strong>Total Amount:</strong> ₱${Number(totalPrice).toLocaleString()}</p>
+    `;
+  }
+
+  paymentModal.dataset.bookingId = bookingData.bookingID;
+  paymentModal.dataset.totalAmount = totalPrice;
+
+  showModal(paymentModal);
+}
+
+function showBasicPaymentModal() {
+  const paymentModal = document.getElementById("payment-modal");
+  const summaryBox = paymentModal.querySelector(".summary-box");
+  
+  summaryBox.innerHTML = `
+      <h3>Booking Summary</h3>
+      <p><strong>Status:</strong> Approved</p>
+      <p><strong>Note:</strong> Please contact admin for actual amount</p>
+  `;
+  
+  showModal(paymentModal);
+}
+
+// Utility Functions
 function showModal(modal) {
-    if (modal) modal.style.display = "flex";
+  if (modal) modal.style.display = "flex";
 }
 
 function closeModal(modal) {
-    if (modal) modal.style.display = "none";
+  if (modal) modal.style.display = "none";
 }
 
 function toggleVisibility(el, show) {
-    if (el) el.style.display = show ? "inline-block" : "none";
+  if (el) el.style.display = show ? "inline-block" : "none";
 }
 
 function updateNavbarState(isLoggedIn) {
-    toggleVisibility(loginBtn, !isLoggedIn);
-    toggleVisibility(signupBtn, !isLoggedIn);
-    toggleVisibility(accountBtn, isLoggedIn);
-    toggleVisibility(notifBtn, isLoggedIn);
+  toggleVisibility(loginBtn, !isLoggedIn);
+  toggleVisibility(signupBtn, !isLoggedIn);
+  toggleVisibility(accountBtn, isLoggedIn);
+  toggleVisibility(notifBtn, isLoggedIn);
 }
 
-// ===============================
-// SWITCH BETWEEN LOGIN & SIGNUP
-// ===============================
 function toggleSignup() {
-    closeModal(loginModal);
-    showModal(signupModal);
+  closeModal(loginModal);
+  showModal(signupModal);
 }
 
 function toggleLogin() {
-    closeModal(signupModal);
-    showModal(loginModal);
+  closeModal(signupModal);
+  showModal(loginModal);
 }
 
-// ===============================
-// INITIAL LOAD
-// ===============================
-const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-updateNavbarState(loggedIn);
-if (loggedIn) startNotifPolling();
+// Application Initialization
+async function initializeApp() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const guestID = localStorage.getItem("guestID");
+  const userEmail = localStorage.getItem("userEmail");
 
+  if (!isLoggedIn || !guestID || !userEmail) {
+    updateNavbarState(false);
+    return;
+  }
 
-// ===============================
-// EDIT PROFILE FUNCTIONALITY
-// ===============================
+  try {
+    const res = await fetch(`http://localhost:3000/auth/user/${userEmail}`);
+
+    if (res.ok) {
+      updateNavbarState(true);
+      startNotifPolling();
+    } else {
+      localStorage.clear();
+      updateNavbarState(false);
+    }
+  } catch (err) {
+    console.error("Session verification failed:", err);
+    localStorage.clear();
+    updateNavbarState(false);
+  }
+}
+
+initializeApp();
+
+// Profile Editing
 const editProfileBtn = document.getElementById("editProfileBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 const editProfileForm = document.getElementById("edit-profile-form");
 const accountView = document.getElementById("account-view");
 
-// Switch to edit mode
 editProfileBtn?.addEventListener("click", () => {
-    accountView.style.display = "none";
-    editProfileForm.style.display = "block";
-    
-    // Pre-fill the form with current data
-    document.getElementById("editFullName").value = accName.textContent;
-    document.getElementById("editEmail").value = accEmail.textContent;
-    document.getElementById("editContact").value = accContact.textContent;
+  accountView.style.display = "none";
+  editProfileForm.style.display = "block";
+
+  document.getElementById("editFullName").value = accName.textContent;
+  document.getElementById("editEmail").value = accEmail.textContent;
+  document.getElementById("editContact").value = accContact.textContent;
 });
 
-// Cancel edit
 cancelEditBtn?.addEventListener("click", () => {
-    editProfileForm.style.display = "none";
-    accountView.style.display = "block";
+  editProfileForm.style.display = "none";
+  accountView.style.display = "block";
 });
 
-// Submit edit form
 editProfileForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const fullName = document.getElementById("editFullName").value.trim();
-    const email = document.getElementById("editEmail").value.trim();
-    const contact = document.getElementById("editContact").value.trim();
-    const currentEmail = localStorage.getItem("userEmail");
+  e.preventDefault();
 
-    if (!fullName || !email || !contact) {
-        alert("All fields are required!");
-        return;
+  const fullName = document.getElementById("editFullName").value.trim();
+  const email = document.getElementById("editEmail").value.trim();
+  const contact = document.getElementById("editContact").value.trim();
+  const currentEmail = localStorage.getItem("userEmail");
+
+  if (!fullName || !email || !contact) {
+    alert("All fields are required!");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/auth/update-profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, email, contact, currentEmail }),
+    });
+
+    const data = await res.json();
+    alert(data.message);
+
+    if (res.ok) {
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userName", fullName);
+      localStorage.setItem("userContact", contact);
+
+      await loadAccountInfo();
+      editProfileForm.style.display = "none";
+      accountView.style.display = "block";
     }
-
-    try {
-        const res = await fetch("http://localhost:3000/auth/update-profile", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                fullName, 
-                email, 
-                contact,
-                currentEmail // Send current email to identify the user
-            }),
-        });
-
-        const data = await res.json();
-        alert(data.message);
-
-        if (res.ok) {
-            // Update localStorage
-            localStorage.setItem("userEmail", email);
-            localStorage.setItem("userName", fullName);
-            localStorage.setItem("userContact", contact);
-            
-            // Reload account info
-            await loadAccountInfo();
-            
-            // Switch back to view mode
-            editProfileForm.style.display = "none";
-            accountView.style.display = "block";
-        }
-    } catch (err) {
-        console.error("Error updating profile:", err);
-        alert("Profile update failed.");
-    }
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    alert("Profile update failed.");
+  }
 });

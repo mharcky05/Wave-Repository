@@ -1,8 +1,6 @@
-/* ==============================
-   SIGNUP MODAL STYLES
-   ============================== */
+/* SIGNUP MODAL STYLES */
 
-/* Overlay background */
+/* OVERLAY BACKGROUND */
 #signup-modal {
     display: none;
     position: fixed;
@@ -16,7 +14,7 @@
     align-items: center;
 }
 
-/* Modal container */
+/* MODAL CONTAINER */
 #signup-modal .modal-content {
     background: #fff;
     border-radius: 15px;
@@ -31,7 +29,7 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Close button */
+/* CLOSE BUTTON */
 #signup-modal .close-btn {
     position: absolute;
     top: 12px;
@@ -46,7 +44,7 @@
     color: #d9534f;
 }
 
-/* Title */
+/* TITLE */
 #signup-modal h2 {
     margin-bottom: 20px;
     font-size: 28px;
@@ -55,7 +53,7 @@
     text-align: center;
 }
 
-/* Form layout */
+/* FORM LAYOUT */
 #signup-modal form {
     display: flex;
     flex-direction: column;
@@ -63,7 +61,7 @@
     gap: 15px;
 }
 
-/* Input fields */
+/* INPUT FIELDS */
 #signup-modal input[type="text"],
 #signup-modal input[type="email"],
 #signup-modal input[type="password"] {
@@ -80,7 +78,7 @@
     outline: none;
 }
 
-/* Show password section */
+/* SHOW PASSWORD SECTION */
 #signup-modal .show-pass {
     display: flex;
     align-items: center;
@@ -89,7 +87,7 @@
     color: #555;
 }
 
-/* Terms text */
+/* TERMS AND CONDITIONS TEXT */
 #signup-modal .terms {
     font-size: 13px;
     color: #666;
@@ -97,7 +95,7 @@
     margin-top: 5px;
 }
 
-/* Submit button */
+/* SUBMIT BUTTON */
 #signup-modal .submit-btn {
     background: #5b85a8;
     color: white;
@@ -114,7 +112,7 @@
     background: #4a7191;
 }
 
-/* Switch to login text */
+/* SWITCH TO LOGIN TEXT */
 #signup-modal .old-account {
     font-size: 14px;
     color: #555;
@@ -127,13 +125,32 @@
     cursor: pointer;
     font-weight: 600;
     transition: color 0.2s ease;
+    text-decoration: none;
+    position: relative;
+    padding: 2px 0;
 }
 
+/* HOVER UNDERLINE EFFECT FOR LOGIN LINK */
 #signup-modal .old-account .switch:hover {
     color: #3c5c78;
 }
 
-/* Animation */
+#signup-modal .old-account .switch::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #3c5c78;
+    transition: width 0.3s ease;
+}
+
+#signup-modal .old-account .switch:hover::after {
+    width: 100%;
+}
+
+/* FADE IN ANIMATION */
 @keyframes fadeIn {
     from {
         opacity: 0;

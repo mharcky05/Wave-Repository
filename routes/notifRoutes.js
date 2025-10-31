@@ -1,4 +1,4 @@
-// routes/notificationRoutes.js
+// routes/notifRoutes.js
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
@@ -18,15 +18,20 @@ router.get("/:guestID", async (req, res) => {
   }
 });
 
-// 🟡 Mark all notifications as read
+// 🟡 Mark notification as read
 router.patch("/mark-read/:notifID", async (req, res) => {
   const { notifID } = req.params;
   try {
-    await db.promise().query(
-      "UPDATE tbl_notifications SET isRead = 1 WHERE notifID= ?",
+    const [result] = await db.promise().query(
+      "UPDATE tbl_notifications SET isRead = 1 WHERE notifID = ?",
       [notifID]
     );
-    res.json({ success: true });
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+    
+    res.json({ success: true, message: "Notification marked as read" });
   } catch (err) {
     console.error("❌ Error marking notification as read:", err);
     res.status(500).json({ message: "Server error" });

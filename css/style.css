@@ -1,4 +1,4 @@
-/* ===== GLOBAL STYLES ===== */
+/* GLOBAL STYLES */
 * {
   margin: 0;
   padding: 0;
@@ -12,7 +12,7 @@ body {
   line-height: 1.6;
 }
 
-/* ===== NAVBAR ===== */
+/* NAVBAR STYLES */
 .navbar {
   display: flex;
   align-items: center;
@@ -25,7 +25,6 @@ body {
 .logo {
   font-weight: bolder;
   font-size: 30px;
-
 }
 
 .nav-links {
@@ -43,7 +42,6 @@ body {
 
 .nav-links a:hover {
   color: #b81d24;
-  /* red accent */
 }
 
 .auth-buttons {
@@ -97,14 +95,13 @@ body {
   background-color: #ebebeb;
 }
 
-/* ===== HERO SECTION ===== */
+/* HERO SECTION STYLES */
 .hero {
   position: relative;
   height: 85vh;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  /* align left */
   padding-left: 8%;
   margin: 40px auto;
   max-width: 1400px;
@@ -173,8 +170,7 @@ body {
   margin-left: 20px;
 }
 
-
-/* ===== WELCOME SECTION ===== */
+/* WELCOME SECTION STYLES */
 .about {
   display: flex;
   align-items: center;
@@ -228,10 +224,9 @@ body {
   color: #333;
 }
 
-/* ===== ABOUT US INFO ===== */
+/* ABOUT US INFO SECTION */
 .about-info {
   background-color: rgba(207, 96, 92, 0.5);
-  /* Pink background outside */
   padding: 40px 0;
   display: flex;
   justify-content: center;
@@ -241,7 +236,6 @@ body {
   display: flex;
   justify-content: space-between;
   background-color: #fff;
-  /* White card background */
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   width: 95%;
@@ -249,7 +243,7 @@ body {
   gap: 60px;
 }
 
-/* Left side (details) */
+/* LEFT SIDE - DETAILS */
 .about-details {
   flex: 1;
 }
@@ -292,7 +286,7 @@ body {
   color: #fff;
 }
 
-/* Right side (map) */
+/* RIGHT SIDE - MAP */
 .about-map {
   flex: 1;
   border-radius: 20px;
@@ -307,8 +301,7 @@ body {
   border: none;
 }
 
-
-/* === OUR PACKAGES SECTION === */
+/* OUR PACKAGES SECTION */
 .packages-section {
   position: relative;
   width: 100%;
@@ -317,11 +310,10 @@ body {
   flex-direction: column;
   align-items: center;
   background-color: #441514;
-  /* full pink background */
   font-family: 'Poppins', sans-serif;
 }
 
-/* heading */
+/* HEADING STYLES */
 .packages-section h2 {
   font-size: 40px;
   font-weight: 600;
@@ -329,7 +321,7 @@ body {
   margin-bottom: 35px;
 }
 
-/* cards container */
+/* CARDS CONTAINER */
 .packages-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -338,7 +330,7 @@ body {
   max-width: 1200px;
 }
 
-/* individual package card */
+/* INDIVIDUAL PACKAGE CARD */
 .package-card {
   background-color: #fff;
   border-radius: 20px;
@@ -348,14 +340,14 @@ body {
   flex-direction: column;
 }
 
-/* image */
+/* IMAGE STYLES */
 .package-card img {
   width: 100%;
   height: 220px;
   object-fit: cover;
 }
 
-/* text container */
+/* TEXT CONTAINER */
 .package-info {
   padding: 25px 30px;
   text-align: center;
@@ -380,7 +372,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* Add-ons section */
+/* ADD-ONS SECTION */
 .add-ons {
   display: flex;
   justify-content: space-between;
@@ -407,7 +399,7 @@ body {
   color: #222;
 }
 
-/* Bottom row: total + button */
+/* BOTTOM ROW: TOTAL + BUTTON */
 .bottom-info {
   display: flex;
   justify-content: space-between;
@@ -434,11 +426,10 @@ body {
 
 .bottom-info .reserve-btn:hover {
   background-color: rgba(155, 61, 54, 0.85);
-  ;
   transform: scale(1.05);
 }
 
-/* ===== AMENITIES ===== */
+/* AMENITIES SECTION */
 .amenities {
   padding: 20px 160px;
   background-color: #f7f7f7;
@@ -488,7 +479,6 @@ body {
   color: #333;
   font-weight: 600;
   line-height: 1;
-
 }
 
 .view-all-card {
@@ -515,16 +505,13 @@ body {
   color: white;
   font-weight: 600;
   line-height: 1;
-
 }
 
 .view-all-card:hover {
   background-color: #a0181e;
 }
 
-
-
-/* ===== FEEDBACK SECTION ===== */
+/* FEEDBACK SECTION */
 .feedback {
   width: 100%;
   padding: 100px 0;
@@ -541,7 +528,7 @@ body {
   margin: 0 auto;
 }
 
-/* LEFT SIDE: Review Card */
+/* LEFT SIDE: REVIEW CARD */
 .feedback-left {
   flex: 1;
   background-color: #f6d5d5;
@@ -586,7 +573,7 @@ body {
   background-color: #a0181e;
 }
 
-/* RIGHT SIDE: Feedbacks Card */
+/* RIGHT SIDE: FEEDBACKS CARD */
 .feedback-right {
   flex: 1;
   background-color: #f7f7f7;
@@ -596,7 +583,6 @@ body {
   text-align: left;
   height: 500px;
   overflow-y: auto;
-  /* scroll kung madami feedback */
 }
 
 .feedback-right h3 {
@@ -606,7 +592,7 @@ body {
   margin-bottom: 25px;
 }
 
-/* FEEDBACK ITEMS */
+/* FEEDBACK ITEMS CONTAINER */
 .feedback {
   width: 100%;
   height: 100%;
@@ -616,7 +602,7 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Container for both sides */
+/* CONTAINER FOR BOTH SIDES */
 .feedback-container {
   display: flex;
   justify-content: center;
@@ -627,7 +613,7 @@ body {
   margin: 0 auto;
 }
 
-/* LEFT SIDE (Form) */
+/* LEFT SIDE (FORM) */
 .feedback-left {
   flex: 1;
   background-color: #f7f7f7;
@@ -667,7 +653,7 @@ body {
   background-color: #a0181e;
 }
 
-/* RIGHT SIDE (Feedbacks) */
+/* RIGHT SIDE (FEEDBACKS) */
 .feedback-right {
   flex: 1;
   background-color: #f7f7f7;
@@ -740,7 +726,7 @@ body {
   margin-right: 15px;
 }
 
-/* ===== FOOTER ===== */
+/* FOOTER STYLES */
 footer {
   text-align: center;
   padding: 20px;
@@ -758,6 +744,39 @@ footer {
   display: none;
   z-index: 50;
 }
+
 .overlay.active {
   display: block;
+}
+
+/* NOTIFICATION BADGE STYLING */
+.notif-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+    display: none;
+}
+
+.notif-btn {
+    position: relative;
+    display: inline-block;
+}
+
+/* NOTIFICATION ITEM STATES */
+.notif-item.unread {
+    background-color: #f0f8ff;
+    border-left: 3px solid #b81d24;
+}
+
+.notif-item.read {
+    background-color: #f9f9f9;
+    opacity: 0.8;
 }

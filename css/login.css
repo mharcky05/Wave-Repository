@@ -1,8 +1,6 @@
-/* ==============================
-   LOGIN MODAL STYLES
-   ============================== */
+/* LOGIN MODAL STYLES */
 
-/* Overlay */
+/* OVERLAY BACKGROUND */
 #login-modal {
     display: none;
     position: fixed;
@@ -16,7 +14,7 @@
     align-items: center;
 }
 
-/* Modal Container */
+/* MODAL CONTAINER */
 #login-modal .modal-content {
     background: #ffffff;
     padding: 35px 30px;
@@ -31,7 +29,7 @@
     align-items: center;
 }
 
-/* Close Button */
+/* CLOSE BUTTON */
 #login-modal .close-btn {
     position: absolute;
     top: 12px;
@@ -46,7 +44,7 @@
     color: #d9534f;
 }
 
-/* Title */
+/* TITLE */
 #login-modal h2 {
     margin-bottom: 20px;
     font-size: 28px;
@@ -54,7 +52,7 @@
     color: #252f37;
 }
 
-/* Form Layout */
+/* FORM LAYOUT */
 #login-modal .form {
     display: flex;
     flex-direction: column;
@@ -62,7 +60,7 @@
     gap: 15px;
 }
 
-/* Input Fields */
+/* INPUT FIELDS */
 #login-modal input[type="email"],
 #login-modal input[type="password"] {
     padding: 12px;
@@ -86,11 +84,11 @@
     font-size: 14px;
     transition: border-color 0.2s ease;
     box-sizing: border-box;
-    height: 42px; /* ✅ fix: consistent height across input types */
-    line-height: normal; /* ✅ avoid height shift when switching */
+    height: 42px;
+    line-height: normal;
 }
 
-/* Show Password + Forgot */
+/* SHOW PASSWORD AND FORGOT PASSWORD SECTION */
 .show-pass {
     display: flex;
     justify-content: space-between;
@@ -108,15 +106,40 @@
 .forgot a {
     color: #44627a;
     text-decoration: none;
-    transition: 0.2s;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 2px 0;
 }
 
 .forgot a:hover {
     color: #5b85a8;
-    text-decoration: underline;
 }
 
-/* Login Button */
+/* HOVER UNDERLINE EFFECT FOR FORGOT PASSWORD LINK */
+.forgot a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1.5px;
+    bottom: 0;
+    left: 0;
+    background-color: #5b85a8;
+    transition: width 0.3s ease;
+}
+
+.forgot a:hover::after {
+    width: 100%;
+}
+
+/* SIGNUP SWITCH SECTION */
+.signup {
+    font-size: 13px;
+    text-align: center;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* LOGIN BUTTON */
 .submit-btn.login {
     background: #44627a;
     color: #fff;
@@ -133,7 +156,7 @@
     background: #5b85a8;
 }
 
-/* Divider */
+/* DIVIDER STYLES */
 .divider {
     display: flex;
     align-items: center;
@@ -150,28 +173,38 @@
     border-bottom: 1px solid #aaa;
 }
 
-/* Signup Switch */
-.signup {
-    font-size: 13px;
-    text-align: center;
-    margin-top: 10px;
-    color: #333;
-}
-
+/* SIGNUP SWITCH LINK STYLES */
 .signup .switch {
     color: #44627a;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 2px 0;
 }
 
 .signup .switch:hover {
     color: #5b85a8;
-    text-decoration: underline;
 }
 
-/* Fade Animation */
+/* HOVER UNDERLINE EFFECT FOR SIGNUP LINK */
+.signup .switch::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #5b85a8;
+    transition: width 0.3s ease;
+}
+
+.signup .switch:hover::after {
+    width: 100%;
+}
+
+/* FADE IN ANIMATION */
 @keyframes fadeIn {
     from {
         opacity: 0;

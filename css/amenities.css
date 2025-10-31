@@ -1,4 +1,4 @@
-/* ===== AMENITIES MODAL (TEXT-ONLY) ===== */
+/* ===== AMENITIES MODAL STYLES ===== */
 #amenities-modal {
   display: none;
   position: fixed;
@@ -45,6 +45,7 @@
   margin-bottom: 0.5rem;
 }
 
+/* CLOSE BUTTON */
 #closeAmenities {
   position: absolute;
   top: 12px;
@@ -59,6 +60,7 @@
   color: #ff5a5a;
 }
 
+/* FADE IN ANIMATION */
 @keyframes fadeIn {
   from {
     opacity: 0;

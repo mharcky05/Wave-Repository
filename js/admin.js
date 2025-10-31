@@ -1,3 +1,4 @@
+// ===== ADMIN PANEL MANAGEMENT SYSTEM =====
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".nav-btn");
   const sections = document.querySelectorAll(".tab-section");
@@ -8,9 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let notifList = [];
 
-  // ======================
-  // NAVIGATION
-  // ======================
+  // ===== TAB NAVIGATION SYSTEM =====
   tabs.forEach((btn) => {
     btn.addEventListener("click", () => {
       tabs.forEach((b) => b.classList.remove("active"));
@@ -20,9 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ======================
-  // NOTIFICATION DROPDOWN
-  // ======================
+  // ===== NOTIFICATION DROPDOWN TOGGLE =====
   if (notifBell) {
     notifBell.addEventListener("click", () => {
       notifDropdown.classList.toggle("show");
@@ -30,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ===== NOTIFICATION MANAGEMENT FUNCTIONS =====
   function addNotification(message) {
     notifList.unshift(message);
     notifCount.textContent = notifList.length;
@@ -44,9 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => popup.remove(), 5000);
   }
 
-  // ======================
-  // PACKAGE MODAL
-  // ======================
+  // ===== PACKAGE MANAGEMENT MODAL =====
   const packageModal = document.getElementById("packageModal");
   const addPackageBtn = document.getElementById("addPackageBtn");
   const packageForm = document.getElementById("packageForm");
@@ -62,9 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ======================
-  // AMENITY MODAL
-  // ======================
+  // ===== AMENITY MANAGEMENT MODAL =====
   const amenityModal = document.getElementById("amenityModal");
   const addAmenityBtn = document.getElementById("addAmenityBtn");
   const amenityForm = document.getElementById("amenityForm");
@@ -80,32 +74,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // // ======================
-  // // LOGOUT (FIXED)
-  // // ======================
-  // document.addEventListener("click", (e) => {
-  //   if (e.target && e.target.id === "logoutBtn") {
-  //     e.preventDefault();
-  //     console.log("✅ Logout button clicked!");
-  //     localStorage.removeItem("adminLoggedIn");
-  //     alert("Logged out successfully!");
-  //     window.location.href = "../index.html";
-  //   }
-  // });
+  // ===== ADMIN LOGOUT FUNCTIONALITY =====
+  const logoutBtn = document.getElementById('logoutBtn');
+  logoutBtn?.addEventListener('click', function() {
+      localStorage.clear();
+      alert('Logout successful!');
+      window.location.href = '/index.html';
+  });
 
-  // ======================
-  // INITIAL LOAD
-  // ======================
+  // ===== INITIAL DATA LOAD =====
   loadBookings();
 
   const guestRecordsBtn = document.getElementById("guest-records-btn");
   if (guestRecordsBtn) guestRecordsBtn.addEventListener("click", loadBookings);
 });
 
-// ======================
-// OUTSIDE FUNCTIONS
-// ======================
-
+// ===== BOOKINGS DATA LOADER =====
 async function loadBookings() {
   try {
     const res = await fetch("http://localhost:3000/admin/bookings");
@@ -120,7 +104,7 @@ async function loadBookings() {
       return;
     }
 
-    // ✅ Format date as MM/DD/YYYY
+    // DATE FORMATTING HELPER
     const formatDate = (dateStr) => {
       if (!dateStr) return "N/A";
       const date = new Date(dateStr);
@@ -131,6 +115,7 @@ async function loadBookings() {
       return `${mm}/${dd}/${yyyy}`;
     };
 
+    // POPULATE BOOKINGS TABLE
     bookings.forEach((b) => {
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -161,9 +146,7 @@ async function loadBookings() {
       tableBody.appendChild(row);
     });
 
-    // ======================
-    // APPROVE / DECLINE BUTTONS
-    // ======================
+    // ===== BOOKING STATUS UPDATE BUTTONS =====
     document.querySelectorAll(".approve-btn").forEach((btn) => {
       btn.addEventListener("click", () => updateBookingStatus(btn.dataset.id, "Approved"));
     });
@@ -175,9 +158,7 @@ async function loadBookings() {
   }
 }
 
-// ======================
-// UPDATE BOOKING STATUS
-// ======================
+// ===== BOOKING STATUS UPDATE FUNCTION =====
 async function updateBookingStatus(bookingID, status) {
   try {
     const res = await fetch(`http://localhost:3000/admin/bookings/${bookingID}/status`, {
@@ -191,7 +172,7 @@ async function updateBookingStatus(bookingID, status) {
       alert(`Booking ${status}!`);
       loadBookings();
 
-      // 🔔 Add notification to database
+      // SEND NOTIFICATION TO DATABASE
       await fetch("http://localhost:3000/admin/notifications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -208,15 +189,3 @@ async function updateBookingStatus(bookingID, status) {
     console.error("❌ Error updating status:", err);
   }
 }
-
-// ===============================
-// Add this to admin.js if not exists
-document.addEventListener('DOMContentLoaded', function() {
-    const logoutBtn = document.getElementById('logoutBtn'); // or whatever your admin logout button ID is
-    
-    logoutBtn?.addEventListener('click', function() {
-        localStorage.clear();
-        alert('Logout successful!');
-        window.location.href = '/index.html';
-    });
-});

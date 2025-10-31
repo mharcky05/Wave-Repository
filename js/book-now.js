@@ -1,6 +1,6 @@
-// ===== BOOK-NOW SCRIPT (with Login Check & Backend Booking) =====
+// ===== BOOKING SYSTEM WITH LOGIN CHECK & BACKEND INTEGRATION =====
 (() => {
-  // Elements
+  // DOM ELEMENTS
   const overlay = document.getElementById("overlay");
   const modal = document.getElementById("book-modal");
   const bookingModal = document.querySelector(".booking-modal");
@@ -10,7 +10,7 @@
   const cancelBooking = document.getElementById("cancelBooking");
   const bookingForm = document.getElementById("bookingForm");
 
-  // Display elements in form
+  // FORM DISPLAY ELEMENTS
   const packageNameEl = document.getElementById("selected-package-name");
   const packageTimeEl = document.getElementById("selected-package-time");
   const packagePaxEl = document.getElementById("selected-package-pax");
@@ -29,11 +29,11 @@
   const oneDayOptionRow = document.getElementById("one-day-option-row");
   const oneDayOptionSelect = document.getElementById("one-day-option");
 
-  // constants
+  // PRICE CONSTANTS
   const PRICE_PER_PERSON = 150;
   const PRICE_PER_HOUR = 500;
 
-  // ========== LOGIN CHECK ==========
+  // ===== USER AUTHENTICATION CHECK =====
   async function checkLoginStatus() {
     try {
       const res = await fetch("/api/check-session", { credentials: "include" });
@@ -48,7 +48,7 @@
     return loggedIn === "true";
   }
 
-  // Helpers
+  // ===== UTILITY FUNCTIONS =====
   function parsePriceString(p) {
     if (!p) return 0;
     const n = p.replace(/[^0-9.]/g, "");
@@ -86,7 +86,7 @@
     basePriceEl.value = formatPHP(base);
   }
 
-  // Open modal
+  // ===== MODAL CONTROL FUNCTIONS =====
   function openModal() {
     modal.classList.add("show");
     bookingModal.classList.remove("step2");
@@ -95,7 +95,6 @@
     document.body.classList.add("modal-open");
   }
 
-  // Close modal
   function closeModal() {
     modal.classList.remove("show");
     bookingModal.classList.remove("step2");
@@ -112,7 +111,7 @@
     oneDayOptionSelect.innerHTML = "";
   }
 
-  // ========= BOOK NOW BUTTON BEHAVIOR =========
+  // ===== BOOK NOW BUTTON EVENT HANDLER =====
   document.querySelectorAll(".book-now").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -127,7 +126,7 @@
     });
   });
 
-  // ========= PACKAGE SELECTION =========
+  // ===== PACKAGE SELECTION LOGIC =====
   packageCards.forEach((card) => {
     const btn = card.querySelector(".choose-package-btn");
     btn.addEventListener("click", (e) => {
@@ -190,7 +189,7 @@
     });
   });
 
-  // ========= OPTION CHANGE & FORM EVENTS =========
+  // ===== FORM EVENT HANDLERS =====
   oneDayOptionSelect.addEventListener("change", () => {
     const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
     const parts = selectedText.split(" - ");
@@ -221,7 +220,7 @@
     if (e.target === modal) closeModal();
   });
 
-  // ========= FORM SUBMIT (POST TO BACKEND) =========
+  // ===== FORM SUBMISSION TO BACKEND =====
   bookingForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
