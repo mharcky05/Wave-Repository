@@ -27,12 +27,13 @@
     <header class="navbar">
       <h1 class="logo">LESCAPADE</h1>
       <nav class="nav-links">
-        <a href="#">Home</a>
-        <a href="#">Packages</a>
-        <a href="#">Amenities</a>
-        <a href="#">Calendar</a>
-        <a href="#">Ratings</a>
-        <a href="#">About Us</a>
+        <!-- CHANGED: ADDED HREF LINKS FOR SMOOTH SCROLLING -->
+        <a href="#home">Home</a>
+        <a href="#packages">Packages</a>
+        <a href="#amenities">Amenities</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#feedback">Ratings</a>
+        <a href="#about">About Us</a>
       </nav>
       <div class="auth-buttons" style="position: relative">
         <button id="loginBtn" class="login-btn">Login</button>
@@ -55,7 +56,7 @@
     </header>
 
     <!-- ===== HERO / CAROUSEL ===== -->
-    <section class="hero">
+    <section class="hero" id="home">
       <img
         src="../images/hero1.jpg"
         class="carousel-image active"
@@ -101,8 +102,9 @@
         <span class="dot" data-index="4"></span>
       </div>
     </section>
+
     <!-- ===== WELCOME SECTION ===== -->
-    <section class="about-info">
+    <section class="about-info" id="about">
       <div class="about-card">
         <div class="about-details">
           <h2>ABOUT US</h2>
@@ -873,7 +875,9 @@
       </div>
     </div>
   </body>
+
   <!-- JS -->
+  <script src="../js/navigation.js"></script>
   <script src="../js/amenities.js"></script>
   <script src="../js/book-now.js"></script>
   <script src="../js/auth.js"></script>

@@ -780,3 +780,36 @@ footer {
     background-color: #f9f9f9;
     opacity: 0.8;
 }
+
+/* ===== STICKY HEADER & SMOOTH SCROLL STYLES ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: white;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+/* ADJUST BODY PADDING TO ACCOUNT FOR FIXED HEADER */
+body {
+    padding-top: 90px;
+}
+
+/* SMOOTH SCROLL BEHAVIOR FOR ENTIRE PAGE */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ACTIVE NAV LINK STYLING */
+.nav-links a.active {
+    color: #b81d24;
+    font-weight: 600;
+}
+
+/* SCROLL PADDING FOR ALL SECTIONS */
+section {
+    scroll-margin-top: 90px;
+}
+
