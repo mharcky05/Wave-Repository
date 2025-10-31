@@ -107,4 +107,27 @@ router.post("/book", (req, res) => {
   );
 });
 
+// 🟢 Get latest APPROVED booking for a guest
+router.get("/latest/:guestID", async (req, res) => {
+  const { guestID } = req.params;
+  
+  try {
+    const [rows] = await db.promise().query(
+      `SELECT * FROM tbl_bookings 
+       WHERE guestID = ? AND status = 'Approved'
+       ORDER BY createdAt DESC LIMIT 1`,
+      [guestID]
+    );
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No approved bookings found" });
+    }
+    
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("❌ Error fetching latest booking:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

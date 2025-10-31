@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/account.css" />
     <link rel="stylesheet" href="../css/book-now.css" />
     <link rel="stylesheet" href="../css/amenities.css" />
+    <link rel="stylesheet" href="../css/payment.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Poppins&display=swap"
       rel="stylesheet"
@@ -26,22 +27,36 @@
     <header class="navbar">
       <h1 class="logo">LESCAPADE</h1>
       <nav class="nav-links">
-        <a href="#">Home</a>
-        <a href="#">Packages</a>
-        <a href="#">Amenities</a>
-        <a href="#">Calendar</a>
-        <a href="#">Ratings</a>
-        <a href="#">About Us</a>
+        <!-- CHANGED: ADDED HREF LINKS FOR SMOOTH SCROLLING -->
+        <a href="#home">Home</a>
+        <a href="#packages">Packages</a>
+        <a href="#amenities">Amenities</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#feedback">Ratings</a>
+        <a href="#about">About Us</a>
       </nav>
-      <div class="auth-buttons">
+      <div class="auth-buttons" style="position: relative">
         <button id="loginBtn" class="login-btn">Login</button>
         <button id="signupBtn" class="signup-btn">Signup</button>
-        <button id="accountBtn" class="account-btn">My Account</button>
+
+        <!-- 🔔 Notification Button -->
+        <button id="notifBtn" class="notif-btn">
+          <i class="fas fa-bell"></i>
+          <span id="notifBadge" class="notif-badge"></span>
+        </button>
+
+        <div id="notifPopup" class="notif-popup">
+          <ul></ul>
+        </div>
+
+        <button id="accountBtn" class="account-btn" style="display: none">
+          My Account
+        </button>
       </div>
     </header>
 
     <!-- ===== HERO / CAROUSEL ===== -->
-    <section class="hero">
+    <section class="hero" id="home">
       <img
         src="../images/hero1.jpg"
         class="carousel-image active"
@@ -87,8 +102,9 @@
         <span class="dot" data-index="4"></span>
       </div>
     </section>
+
     <!-- ===== WELCOME SECTION ===== -->
-    <section class="about-info">
+    <section class="about-info" id="about">
       <div class="about-card">
         <div class="about-details">
           <h2>ABOUT US</h2>
@@ -115,7 +131,7 @@
             width="600"
             height="450"
             style="border: 0"
-            allowfullscreen=""
+            allowfullscreen
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
           ></iframe>
@@ -153,7 +169,7 @@
         </div>
 
         <div class="package-card">
-          <img src="../images/hero1.jpg" alt="Overnight Package" />
+          <img src="../images/hero1.jpg" alt="Overnight" />
           <div class="package-info">
             <h3>Overnight Package</h3>
             <p class="time">7:00 PM - 7:00 AM</p>
@@ -653,7 +669,7 @@
               <p><strong>Email:</strong> <span id="acc-email">—</span></p>
               <p>
                 <strong>Contact No:</strong>
-                  <span id="acc-contact">—</span>
+                <span id="acc-contact">—</span>
               </p>
             </div>
           </div>
@@ -717,7 +733,7 @@
             <!-- Daytime -->
             <div
               class="modal-package-card"
-              data-name="Daytime Package"
+              data-name="Daytime"
               data-time="9:00 AM - 5:00 PM"
               data-pax="20"
               data-price="₱5,500.00"
@@ -736,7 +752,7 @@
             <!-- Overnight -->
             <div
               class="modal-package-card"
-              data-name="Overnight Package"
+              data-name="Overnight"
               data-time="7:00 PM - 7:00 AM"
               data-pax="15"
               data-price="₱6,500.00"
@@ -755,7 +771,7 @@
             <!-- One-Day (has two options) -->
             <div
               class="modal-package-card"
-              data-name="One-Day Package"
+              data-name="One-Day"
               data-time="9:00 AM - 7:00 AM"
               data-pax="15"
               data-price="₱9,000.00"
@@ -883,7 +899,7 @@
                   Back
                 </button>
                 <button type="submit" class="btn confirm">
-                  Confirm Booking
+                  Confirm Payment
                 </button>
               </div>
             </form>
@@ -928,11 +944,106 @@
         </ul>
       </div>
     </div>
+
+    <div id="payment-modal" class="modal-overlay">
+      <div class="modal-content animate-in">
+        <div class="modal-header">
+          <h2>Complete Your Payment</h2>
+          <p>Choose your preferred payment method to proceed.</p>
+        </div>
+
+        <div class="payment-modal-body">
+          <!-- LEFT SECTION -->
+          <div class="left-section">
+            <div class="summary-box glass">
+              <h3>Booking Summary</h3>
+              <p><strong>Date:</strong> October 30, 2025</p>
+              <p><strong>Package:</strong> One-Day Package</p>
+              <p><strong>Total:</strong> ₱6,100</p>
+            </div>
+
+            <div class="payment-methods">
+              <button class="payment-btn gcash-btn" data-method="gcash">
+                Pay with GCash
+              </button>
+              <button class="payment-btn bank-btn" data-method="bank">
+                Bank Transfer
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT SECTION -->
+          <div class="right-section glass">
+            <div class="placeholder active">
+              <p>Please select a payment method to view details.</p>
+            </div>
+
+            <div class="gcash-details hidden fade">
+              <h3>GCash Payment</h3>
+              <div class="gcash-qr">
+                <img src="../images/qr-image.jpg" alt="Scan QR Code" />
+                <p>Scan this QR code using your GCash app</p>
+              </div>
+            </div>
+
+            <div class="bank-details hidden fade">
+              <h3>Bank Transfer Details</h3>
+              <div class="bank-field">
+                <label>Bank Name</label>
+                <select id="bankName">
+                  <option value="">-- Select Bank --</option>
+                  <option value="RCBC">RCBC</option>
+                  <option value="BDO">BDO</option>
+                  <option value="BPI">BPI</option>
+                </select>
+              </div>
+
+              <div class="bank-field">
+                <label>Account No.</label>
+                <input type="text" placeholder="Enter account no." />
+              </div>
+
+              <div class="bank-field">
+                <label>Account Name</label>
+                <input type="text" placeholder="Enter account name" />
+              </div>
+
+              <div class="bank-field">
+                <label>Amount</label>
+                <input type="text" id="bank-amount" value="₱0" readonly />
+              </div>
+
+              <div class="bank-field">
+                <label>Purpose / Remarks</label>
+                <input
+                  type="text"
+                  id="remarks"
+                  placeholder="Enter purpose or remarks"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="confirmPayment">Confirm Payment</button>
+        </div>
+
+        <div class="popup" id="popup">Processing your payment...</div>
+      </div>
+    </div>
   </body>
+<<<<<<< HEAD
   <!-- JS ----->
+=======
+
+  <!-- JS -->
+  <script src="../js/navigation.js"></script>
+>>>>>>> main
   <script src="../js/amenities.js"></script>
   <script src="../js/book-now.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../js/payment.js"></script>
   <script src="../js/hero.js"></script>
   <script src="../js/location.js"></script>
 </html>

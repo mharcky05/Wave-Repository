@@ -11,15 +11,18 @@
     <header class="admin-header">
       <h1 class="logo">LESCAPADE ADMIN</h1>
       <nav class="admin-nav">
-        <button class="nav-btn active" data-section="guest-records" id="guest-records-btn">Guest Records</button>
+        <button
+          class="nav-btn active"
+          data-section="guest-records"
+          id="guest-records-btn"
+        >
+          Guest Records
+        </button>
         <button class="nav-btn" data-section="packages">Packages</button>
         <button class="nav-btn" data-section="amenities">Amenities</button>
         <button class="nav-btn" data-section="feedback">Feedback</button>
 
         <div class="notif-wrapper">
-          <button id="notifBell" class="notif-btn">
-            🔔<span id="notifCount" class="notif-count">0</span>
-          </button>
           <div id="notifDropdown" class="notif-dropdown"></div>
         </div>
 
@@ -34,23 +37,28 @@
         <h2>Guest Records</h2>
         <table>
           <thead>
-            <tr>  
-              <th>Guest ID</th>
+            <tr>
+              <th>Book ID</th>
               <th>Guest Name</th>
               <th>Package Name</th>
-              <th>Check-In</th>
-              <th>Check-Out</th>
-              <th>Guest Quantity</th>
-              <th>Additional Pax. </th>
-              <th>Addtional Hours</th>
+              <th>Check-in Date</th>
+              <th>Check-in Time</th>
+              <th>Checkout Date</th>
+              <th>Checkout Time</th>
+              <th>Pax</th>
               <th>Base Price</th>
+              <th>Additional Pax</th>
+              <th>Additional Hour</th>
               <th>Total Price</th>
               <th>Status</th>
               <th>Created At</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody id="guestTableBody">
-            <tr><td colspan="4" style="text-align:center;">No records yet</td></tr>
+            <tr>
+              <td colspan="15" style="text-align: center">No records yet</td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -74,7 +82,9 @@
             </tr>
           </thead>
           <tbody id="packageTableBody">
-            <tr><td colspan="7" style="text-align:center;">No packages yet</td></tr>
+            <tr>
+              <td colspan="7" style="text-align: center">No packages yet</td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -94,7 +104,9 @@
             </tr>
           </thead>
           <tbody id="amenityTableBody">
-            <tr><td colspan="3" style="text-align:center;">No amenities yet</td></tr>
+            <tr>
+              <td colspan="3" style="text-align: center">No amenities yet</td>
+            </tr>
           </tbody>
         </table>
       </section>

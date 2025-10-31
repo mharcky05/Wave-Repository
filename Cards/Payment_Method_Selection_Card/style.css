@@ -1,156 +1,251 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+body {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/*  HEADER  */
-header {
-  background-color: #191852;
-  color: #fff;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.header-content {
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-}
-
-.resort-name {
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-.btn-logout {
-  background: #d4af37;
-  border: none;
-  color: #1a3c40;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-.btn-logout:hover {
-  background: #c19d2e;
-}
-
-/* CARD */
-main {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 90vh;
-  background: #f6f8f7;
 }
 
-.card {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+/* ===== MODAL ===== */
+.modal-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f7f9fb 100%);
   width: 90%;
+  max-width: 950px;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+  transform: scale(0.98);
+  opacity: 0;
+  transition: all 0.4s ease;
+  min-height: 520px;
 }
 
-.card h2 {
+.modal-content.animate-in {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-header {
   text-align: center;
-  color: #1a3c40;
-  margin-bottom: 1.2rem;
-}
-
-.booking-summary, .payment-section, .payment-details {
   margin-bottom: 1.5rem;
 }
 
-h3 {
-  color: #2a5c60;
-  margin-bottom: 0.6rem;
+.modal-header h2 {
+  font-size: 1.8rem;
+  color: #1a1a1a;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.6rem;
+.modal-header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ===== BODY ===== */
+.payment-modal-body {
+  display: flex;
+  gap: 2rem;
+  min-height: 380px;
+}
+
+.left-section {
+  flex: 1;
+}
+
+.summary-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.summary-box h3 {
+  margin-bottom: 0.5rem;
   color: #333;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="file"] {
-  width: 100%;
-  padding: 0.6rem;
-  margin-top: 0.3rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-input[type="radio"] {
-  margin-right: 0.4rem;
-}
-
-/*  BUTTONS */
-.btn-container {
+/* PAYMENT BUTTONS */
+.payment-methods {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.payment-btn {
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.9rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.payment-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+/* GCash Style */
+.gcash-btn {
+  background: linear-gradient(135deg, #0077ff, #00b2ff);
+}
+
+/* Bank Style */
+.bank-btn {
+  background: linear-gradient(135deg, #28a745, #56d364);
+}
+
+/* Active Button */
+.payment-btn.active {
+  outline: 3px solid rgba(0,0,0,0.2);
+  transform: scale(1.02);
+}
+
+/* ===== RIGHT SIDE ===== */
+.right-section {
+  flex: 1.6;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+}
+
+/* Placeholder */
+.placeholder {
+  display: none;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.placeholder.active {
+  display: flex;
+}
+
+/* GCash */
+.gcash-qr {
+  text-align: center;
   margin-top: 1rem;
 }
 
-.btn-back,
-.btn-proceed {
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+.gcash-qr img {
+  width: 290px;
+  height: 290px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
 }
 
-.btn-back {
-  background: #ccc;
+.gcash-qr img:hover {
+  transform: scale(1.05);
+}
+
+.gcash-qr p {
+  color: #555;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* Bank Transfer */
+.bank-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bank-field label {
+  font-weight: 500;
   color: #333;
+  margin-bottom: 0.3rem;
+  display: block;
 }
 
-.btn-proceed {
-  background: #3744d4;
-  color: #ffffff;
-}
-
-.btn-back:hover {
-  background: #bbb;
-}
-
-.btn-proceed:hover {
-  background: #6a89fd;
-}
-
-/* POPUP */
-.popup {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
+.bank-field input,
+.bank-field select {
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
 }
 
-.popup-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
+/* Fade Animation */
+.hidden {
+  display: none;
+}
+
+.fade {
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(10px);
+}
+
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+/* ===== FOOTER ===== */
+.modal-footer {
   text-align: center;
-  font-weight: 600;
-  color: #1a3c40;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  margin-top: 2rem;
+}
+
+#confirmPayment {
+  background: linear-gradient(135deg, #2e86de, #6ab1f7);
+  color: white;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(46,134,222,0.4);
+}
+
+#confirmPayment:hover {
+  background: linear-gradient(135deg, #1b5dbf, #4f9ff3);
+  transform: translateY(-2px);
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .popup.show {
-  display: flex;
+  opacity: 1;
 }

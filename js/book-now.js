@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 // ===== BOOK-NOW SCRIPT (with Login Check) =====
 =======
 // ===== MODAL SCRIPTS =====
@@ -9,6 +10,12 @@
 >>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
 (() => {
   // ----- BOOK NOW -----
+=======
+// ===== BOOKING SYSTEM WITH LOGIN CHECK & BACKEND INTEGRATION =====
+(() => {
+  // DOM ELEMENTS
+  const overlay = document.getElementById("overlay");
+>>>>>>> main
   const modal = document.getElementById("book-modal");
   const bookingModal = document.querySelector(".booking-modal");
   const packageSection = document.getElementById("modal-package-selection");
@@ -18,9 +25,13 @@
   const bookingForm = document.getElementById("bookingForm");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   // Display elements in form
 >>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
+=======
+  // FORM DISPLAY ELEMENTS
+>>>>>>> main
   const packageNameEl = document.getElementById("selected-package-name");
   const packageTimeEl = document.getElementById("selected-package-time");
   const packagePaxEl = document.getElementById("selected-package-pax");
@@ -38,11 +49,19 @@
   const oneDayOptionRow = document.getElementById("one-day-option-row");
   const oneDayOptionSelect = document.getElementById("one-day-option");
 
+<<<<<<< HEAD
   const PRICE_PER_PERSON = 150;
   const PRICE_PER_HOUR = 500;
 
 <<<<<<< HEAD
   // ========== LOGIN CHECK ==========
+=======
+  // PRICE CONSTANTS
+  const PRICE_PER_PERSON = 150;
+  const PRICE_PER_HOUR = 500;
+
+  // ===== USER AUTHENTICATION CHECK =====
+>>>>>>> main
   async function checkLoginStatus() {
     try {
       const res = await fetch("/api/check-session", { credentials: "include" });
@@ -57,7 +76,7 @@
     return loggedIn === "true";
   }
 
-  // Helpers
+  // ===== UTILITY FUNCTIONS =====
   function parsePriceString(p) {
     if (!p) return 0;
     const n = p.replace(/[^0-9.]/g, "");
@@ -116,12 +135,16 @@
 >>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
   }
 
+<<<<<<< HEAD
   // Open modal
 =======
     totalPriceEl.value = formatPHP(base + (addPax * PRICE_PER_PERSON) + (addHrs * PRICE_PER_HOUR));
   }
 
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
+=======
+  // ===== MODAL CONTROL FUNCTIONS =====
+>>>>>>> main
   function openModal() {
     modal.classList.add("show");
     bookingModal.classList.remove("step2");
@@ -131,9 +154,12 @@
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Close modal
 =======
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
+=======
+>>>>>>> main
   function closeModal() {
     modal.classList.remove("show");
     bookingModal.classList.remove("step2");
@@ -154,6 +180,7 @@
     oneDayOptionSelect.innerHTML = "";
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -178,6 +205,9 @@ document.querySelectorAll(".book-now").forEach(btn => {
       setTimeout(() => {
 =======
   // ========= BOOK NOW BUTTON BEHAVIOR =========
+=======
+  // ===== BOOK NOW BUTTON EVENT HANDLER =====
+>>>>>>> main
   document.querySelectorAll(".book-now").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -193,7 +223,7 @@ document.querySelectorAll(".book-now").forEach(btn => {
     });
   });
 
-  // ========= PACKAGE SELECTION =========
+  // ===== PACKAGE SELECTION LOGIC =====
   packageCards.forEach((card) => {
     const btn = card.querySelector(".choose-package-btn");
     btn.addEventListener("click", (e) => {
@@ -307,12 +337,16 @@ document.querySelectorAll(".book-now").forEach(btn => {
     });
   });
 
+<<<<<<< HEAD
   // ========= OPTION CHANGE & FORM EVENTS =========
 =======
     });
   });
 
 >>>>>>> 63b505a63800a278b92ce2b08dff24423b63d8a7
+=======
+  // ===== FORM EVENT HANDLERS =====
+>>>>>>> main
   oneDayOptionSelect.addEventListener("change", () => {
     const selectedText = oneDayOptionSelect.options[oneDayOptionSelect.selectedIndex].text;
     const parts = selectedText.split(" - ");
@@ -349,6 +383,7 @@ document.querySelectorAll(".book-now").forEach(btn => {
   });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // ========= FORM SUBMIT =========
 =======
   modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
@@ -358,6 +393,9 @@ document.querySelectorAll(".book-now").forEach(btn => {
   bookingForm.addEventListener("submit", e => {
 =======
   // ========= FORM SUBMIT (POST TO BACKEND) =========
+=======
+  // ===== FORM SUBMISSION TO BACKEND =====
+>>>>>>> main
   bookingForm.addEventListener("submit", async (e) => {
 >>>>>>> cd998cc84cbf11974d15eb714fac78d595a405fa
     e.preventDefault();

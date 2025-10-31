@@ -1,3 +1,4 @@
+// ===== HERO CAROUSEL FUNCTIONALITY =====
 document.addEventListener("DOMContentLoaded", function() {
     const images = document.querySelectorAll('.hero .carousel-image');
     const dots = document.querySelectorAll('.carousel-dots .dot');
@@ -5,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const nextBtn = document.querySelector('.carousel-btn.next');
     let current = 0;
 
+    // ===== IMAGE DISPLAY CONTROL =====
     function showImage(index) {
         images.forEach((img, i) => {
             img.classList.toggle('active', i === index);
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
         current = index;
     }
 
+    // ===== NAVIGATION FUNCTIONS =====
     function showNextImage() {
         showImage((current + 1) % images.length);
     }
@@ -21,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
         showImage((current - 1 + images.length) % images.length);
     }
 
-    // Dots click
+    // ===== DOT INDICATOR CLICK HANDLERS =====
     dots.forEach(dot => {
         dot.addEventListener('click', () => {
             const index = parseInt(dot.getAttribute('data-index'));
@@ -29,10 +32,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Buttons click
+    // ===== NAVIGATION BUTTON HANDLERS =====
     nextBtn.addEventListener('click', showNextImage);
     prevBtn.addEventListener('click', showPrevImage);
 
-    // Auto slide every 5 seconds
+    // ===== AUTO-SLIDE INTERVAL =====
     setInterval(showNextImage, 5000);
 });
