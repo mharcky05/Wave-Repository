@@ -1,0 +1,35 @@
+[33m64404ee[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mbackup-main[m[33m)[m check mo mharcky
+[33m0fd203f[m clickable header
+[33m99f3fde[m .
+[33m0b1f464[m Fix Notif, payment card, Fix comments of css and js file
+[33m932dcbc[m Payment Modal Working
+[33m3491f33[m Fix buttons and Profile
+[33m4aa76eb[m 2/4 Notification
+[33m8640097[m Notification Partially Done
+[33m81d6060[m Merge remote-tracking branch 'origin' into anfernee-branch
+[33mc88a8d4[m Fix Admin Table
+[33mcd998cc[m Add booking validations: prevent past date bookings and date conflicts
+[33m03525e5[m Add booking validations: prevent past date bookings and date conflicts
+[33mf7b1ff7[m Connected Login with Admin
+[33ma17b6ab[m Finished Book Request
+[33m940e7ed[m Finished View My Account Button
+[33m89f3ac5[m Fix Again Login Signup
+[33m7af5d57[m Pulled the Cards folder
+[33m021cb49[m Merge branch 'main' of https://github.com/mharcky05/Wave-Repository into mharcky-branch
+[33m73806f4[m Clear user session data on account form submission
+[33me1a67cd[m Login Signup & Book Now
+[33m58222e3[m Merge branch 'anfernee-branch'
+[33m00890a7[m Amenities
+[33mf70b623[m Book Request Form
+[33m916f06f[m Book Request Form
+[33m76211ad[m Merge branch 'mharcky-branch'
+[33mc5a9a16[m All of the cards examples
+[33m395614c[m del
+[33m65dfa6d[m Commit Test
+[33m2aa8170[m Remove Google Login
+[33m6af07be[m Second Test Commit
+[33m5688c50[m[33m ([m[1;31morigin/new-feature[m[33m)[m Test Push
+[33mfcbfa23[m Merge branch 'main' of https://github.com/mharcky05/Wave-Repository
+[33m99d09d2[m Initial commit
+[33m09e19f5[m Moved HTML files to new folder
+[33mc5429a2[m First commit
