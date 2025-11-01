@@ -38,4 +38,23 @@ router.patch("/mark-read/:notifID", async (req, res) => {
   }
 });
 
+// routes/notiRoutes.js - dagdag ng function for payment notifications
+router.post("/payment-reminder", (req, res) => {
+    const { guestID, bookingID, message } = req.body;
+    
+    const notiID = "N" + Math.floor(100000 + Math.random() * 900000);
+    const sql = `
+        INSERT INTO tbl_notifications (notiID, guestID, bookingID, message, type, status)
+        VALUES (?, ?, ?, ?, 'payment_reminder', 'unread')
+    `;
+    
+    db.query(sql, [notiID, guestID, bookingID, message], (err) => {
+        if (err) {
+            console.error("❌ Notification error:", err);
+            return res.status(500).json({ message: "Notification failed" });
+        }
+        res.json({ message: "Notification sent" });
+    });
+}); 
+
 module.exports = router;

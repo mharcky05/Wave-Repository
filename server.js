@@ -8,6 +8,7 @@ const db = require("./db");
 const bookingRoutes = require("./routes/bookingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const notifRoutes = require("./routes/notifRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/notifications", notifRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.post("/notifications/send", (req, res) => {
   const { guestID, message } = req.body;

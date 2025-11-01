@@ -1,7 +1,7 @@
 // routes/bookingRoutes.js
 const express = require("express");
 const router = express.Router();
-const db = require("../db"); // your MySQL connection
+const db = require("../db");
 
 // POST /api/bookings/book
 router.post("/book", (req, res) => {
@@ -26,7 +26,7 @@ router.post("/book", (req, res) => {
 
   // ======= CHECK FOR PAST DATES =======
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // reset time for accurate comparison
+  today.setHours(0, 0, 0, 0);
   const checkin = new Date(checkinDate);
   const checkout = new Date(checkoutDate);
 
@@ -69,12 +69,14 @@ router.post("/book", (req, res) => {
 
       // ===== INSERT BOOKING =====
       const bookingID = "B" + Math.floor(100000 + Math.random() * 900000);
+      
+      // FIXED SQL - 12 parameters only (walang duplicate status)
       const sql = `
         INSERT INTO tbl_bookings
         (bookingID, guestID, packageName, checkinDate, checkoutDate,
          checkinTime, checkoutTime, numGuests, additionalPax, additionalHours,
          basePrice, totalPrice, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
       `;
 
       db.query(
@@ -91,8 +93,8 @@ router.post("/book", (req, res) => {
           additionalPaxNum,
           additionalHoursNum,
           basePriceNum,
-          totalPriceNum,
-          "Pending",
+          totalPriceNum
+          // Status 'Pending' is already in the SQL VALUES
         ],
         (err) => {
           if (err) {
@@ -100,7 +102,9 @@ router.post("/book", (req, res) => {
             return res.status(500).json({ message: "Database error: " + err.message });
           }
 
-          return res.json({ message: "Booking confirmed successfully!" });
+          return res.json({ 
+            message: "Booking submitted for admin approval! You will be notified once approved." 
+          });
         }
       );
     }
@@ -126,6 +130,25 @@ router.get("/latest/:guestID", async (req, res) => {
     res.json(rows[0]);
   } catch (err) {
     console.error("❌ Error fetching latest booking:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// 🟢 Get all bookings for a guest
+router.get("/guest/:guestID", async (req, res) => {
+  const { guestID } = req.params;
+  
+  try {
+    const [rows] = await db.promise().query(
+      `SELECT * FROM tbl_bookings 
+       WHERE guestID = ? 
+       ORDER BY createdAt DESC`,
+      [guestID]
+    );
+    
+    res.json(rows);
+  } catch (err) {
+    console.error("❌ Error fetching guest bookings:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

@@ -3,10 +3,11 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1001; 
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -29,8 +30,10 @@ body.modal-open {
   max-width: 850px;
   overflow: hidden;
   animation: fadeInUp 0.25s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); 
   padding: 30px;
+  position: relative;
+  z-index: 1002; 
 }
 
 /* STEP 2 REMOVES OUTER VISUAL CARD */
@@ -128,8 +131,10 @@ body.modal-open {
   border-radius: 16px;
   padding: 24px;
   max-width: 700px;
-  margin: 20px auto;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  margin: 0 auto; /* CENTERED */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 1003;
 }
 
 /* VILLA INFO SECTION */
@@ -253,7 +258,7 @@ body.modal-open {
   
   .booking-card { 
     padding: 16px; 
-    margin: 8px; 
+    margin: 0; 
   }
   
   .form-actions { 
