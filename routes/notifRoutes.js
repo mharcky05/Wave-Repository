@@ -55,6 +55,6 @@ router.post("/payment-reminder", (req, res) => {
         }
         res.json({ message: "Notification sent" });
     });
-}); 
+});  
 
 module.exports = router;

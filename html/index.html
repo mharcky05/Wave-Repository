@@ -32,7 +32,7 @@
         <a href="#packages">Packages</a>
         <a href="#amenities">Amenities</a>
         <a href="#calendar">Calendar</a>
-        <a href="#feedback">Ratings</a>
+        <a href="#public-feedbacks">Ratings</a>
         <a href="#about">About Us</a>
       </nav>
       <div class="auth-buttons" style="position: relative">
@@ -288,66 +288,18 @@
       </div>
     </section>
 
-    <!-- ===== FEEDBACK SECTION ===== -->
-    <section class="feedback" id="feedback">
-      <div class="feedback-container">
-        <!-- Left Side: Review Form -->
-        <div class="feedback-left">
-          <h3>Write a Review</h3>
-          <textarea
-            placeholder="Share your experience..."
-            rows="8"
-            cols="40"
-          ></textarea>
-          <br />
-          <button class="review-btn">Submit Review</button>
+    <!-- ===== PUBLIC FEEDBACKS SECTION ===== -->
+    <section class="public-feedbacks" id="public-feedbacks">
+      <div class="public-feedbacks-container">
+        <h2>What Our Guests Say</h2>
+        <div class="feedbacks-slider">
+          <div class="feedbacks-track" id="feedbacksTrack">
+            <!-- Feedbacks will be loaded here dynamically -->
+          </div>
         </div>
-
-        <!-- Right Side: Feedbacks Card -->
-        <div class="feedback-right">
-          <h2>Recent Feedbacks</h2>
-
-          <div class="feedback-item">
-            <div class="feedback-content">
-              <h4>Anfernee Cruz</h4>
-              <p class="stars">⭐⭐⭐⭐⭐</p>
-              <p>Yes Galing! Taina!</p>
-            </div>
-            <img
-              src="../images/icon1.jpg"
-              alt="Anfernee Profile"
-              class="profile-pic"
-            />
-          </div>
-
-          <div class="feedback-item">
-            <div class="feedback-content">
-              <h4>Mharcky Conquilla</h4>
-              <p class="stars">⭐⭐⭐⭐⭐</p>
-              <p>Ang galinghayna! Sulit na sulithayna!</p>
-            </div>
-            <img
-              src="../images/icon2.jpg"
-              alt="Mharcky Profile"
-              class="profile-pic"
-            />
-          </div>
-
-          <div class="feedback-item">
-            <div class="feedback-content">
-              <h4>Quirsten Durion</h4>
-              <p class="stars">⭐⭐⭐⭐⭐</p>
-              <p>
-                Ano? Kanina pa ako babad na babad dito oh! Huy anong kanina pa
-                babad na babad!
-              </p>
-            </div>
-            <img
-              src="../images/icon3.jpg"
-              alt="Quirsten Profile"
-              class="profile-pic"
-            />
-          </div>
+        <div class="slider-controls">
+          <button class="slider-btn prev-btn">‹</button>
+          <button class="slider-btn next-btn">›</button>
         </div>
       </div>
     </section>
@@ -786,7 +738,7 @@
         </ul>
       </div>
     </div>
-
+    <!-- ===== PAYMENT MODAL ===== -->
     <div id="payment-modal" class="modal-overlay">
       <div class="modal-content animate-in">
         <div class="modal-header">
@@ -956,6 +908,48 @@
         <div class="popup" id="popup">Processing your payment...</div>
       </div>
     </div>
+
+    <!-- FEEDBACK MODAL -->
+    <div id="feedback-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeFeedback">&times;</span>
+        <h2>Share Your Experience</h2>
+        <form id="feedbackForm">
+          <div class="form-group">
+            <label for="feedbackRating">Rating:</label>
+            <div class="star-rating">
+              <input type="radio" id="star5" name="rating" value="5" />
+              <label for="star5">⭐</label>
+              <input type="radio" id="star4" name="rating" value="4" />
+              <label for="star4">⭐</label>
+              <input type="radio" id="star3" name="rating" value="3" />
+              <label for="star3">⭐</label>
+              <input type="radio" id="star2" name="rating" value="2" />
+              <label for="star2">⭐</label>
+              <input type="radio" id="star1" name="rating" value="1" />
+              <label for="star1">⭐</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="feedbackComments">Your Feedback:</label>
+            <textarea
+              id="feedbackComments"
+              rows="6"
+              placeholder="Tell us about your experience at L'Escapade..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn primary">Submit Feedback</button>
+            <button type="button" class="btn secondary" id="cancelFeedback">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
 
   <!-- JS -->
@@ -966,4 +960,5 @@
   <script src="../js/payment.js"></script>
   <script src="../js/hero.js"></script>
   <script src="../js/location.js"></script>
+  <script src="../js/public-feedbacks.js"></script> 
 </html>

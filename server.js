@@ -9,6 +9,7 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const notifRoutes = require("./routes/notifRoutes");
 const transacRoutes = require("./routes/transacRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
 
 const app = express();
 
@@ -28,7 +29,9 @@ app.use("/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/notifications", notifRoutes);
 app.use("/api/payments", transacRoutes);
+app.use("/api/feedback", feedbackRoutes);
 app.use("/admin", adminRoutes);
+
 
 app.post("/notifications/send", (req, res) => {
   const { guestID, message } = req.body;

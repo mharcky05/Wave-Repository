@@ -114,13 +114,53 @@
 
       <!-- Feedback -->
       <section id="feedback" class="tab-section">
-        <h2>Guests’ Feedback</h2>
-        <ul id="feedbackList">
-          <li>No feedback yet</li>
-        </ul>
+        <div class="header-flex">
+          <h2>Guests' Feedback</h2>
+          <button id="requestFeedbackBtn" class="add-btn">
+            Generate Feedback Form
+          </button>
+        </div>
+
+        <!-- Feedback Request Modal -->
+        <div id="feedbackRequestModal" class="modal">
+          <div class="modal-content">
+            <h3>Request Feedback Form</h3>
+            <form id="feedbackRequestForm">
+              <div class="form-group">
+                <label for="feedbackGuestSelect">Select Guest:</label>
+                <select id="feedbackGuestSelect" required>
+                  <option value="">-- Select Guest --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="feedbackBookingSelect"
+                  >Select Booking (Optional):</label
+                >
+                <select id="feedbackBookingSelect">
+                  <option value="">-- Select Booking --</option>
+                </select>
+              </div>
+              <div class="modal-actions">
+                <button type="submit" class="btn primary">Send Request</button>
+                <button
+                  type="button"
+                  class="btn secondary close-feedback-modal"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Feedbacks List -->
+        <div class="feedbacks-container">
+          <div id="feedbacksList">
+            <p style="text-align: center; color: #666">No feedbacks yet</p>
+          </div>
+        </div>
       </section>
 
-      
       <!-- Transaction -->
       <section id="transaction" class="tab-section">
         <h2>Guests' Transactions</h2>

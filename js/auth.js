@@ -131,6 +131,7 @@ loginForm?.addEventListener("submit", async (e) => {
         updateNavbarState(true);
         loadNotifications();
         startNotifPolling();
+        initFeedbackSystem(); // ✅ Initialize feedback system after login
       }
     }
   } catch (err) {
@@ -247,6 +248,7 @@ async function loadNotifications() {
           }
         }
 
+        // ✅ UPDATED NOTIFICATION HANDLER - IMPROVED FEEDBACK CONDITION
         if (notif.message.toLowerCase().includes("approved")) {
           notifPopup.classList.remove("show");
 
@@ -268,6 +270,21 @@ async function loadNotifications() {
           } catch (err) {
             console.error("Error fetching booking:", err);
             showBasicPaymentModal();
+          }
+        }
+        
+        // ✅ IMPROVED: Handle feedback request notifications
+        if (notif.message.toLowerCase().includes("feedback")) {
+          console.log("🎯 Feedback notification clicked - opening modal");
+          notifPopup.classList.remove("show");
+          
+          const feedbackModal = document.getElementById("feedback-modal");
+          if (feedbackModal) {
+            showModal(feedbackModal);
+            console.log("✅ Feedback modal opened successfully");
+          } else {
+            console.log("❌ Feedback modal not found!");
+            alert("Feedback system is not available. Please try again later.");
           }
         }
       });
@@ -367,11 +384,17 @@ function showBasicPaymentModal() {
 
 // Utility Functions
 function showModal(modal) {
-  if (modal) modal.style.display = "flex";
+  if (modal) {
+    console.log(`🔄 Showing modal: ${modal.id}`);
+    modal.style.display = "flex";
+  }
 }
 
 function closeModal(modal) {
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    console.log(`🔄 Closing modal: ${modal.id}`);
+    modal.style.display = "none";
+  }
 }
 
 function toggleVisibility(el, show) {
@@ -397,33 +420,41 @@ function toggleLogin() {
 
 // Application Initialization
 async function initializeApp() {
+  console.log("🚀 Initializing application...");
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const guestID = localStorage.getItem("guestID");
   const userEmail = localStorage.getItem("userEmail");
 
+  console.log("Login status:", isLoggedIn);
+  console.log("Guest ID:", guestID);
+  console.log("User Email:", userEmail);
+
   if (!isLoggedIn || !guestID || !userEmail) {
+    console.log("❌ User not logged in, hiding navbar buttons");
     updateNavbarState(false);
     return;
   }
 
   try {
     const res = await fetch(`http://localhost:3000/auth/user/${userEmail}`);
+    console.log("🔍 Session verification response:", res.status);
 
     if (res.ok) {
+      console.log("✅ User session valid, initializing systems...");
       updateNavbarState(true);
       startNotifPolling();
+      initFeedbackSystem();
     } else {
+      console.log("❌ Session invalid, clearing storage");
       localStorage.clear();
       updateNavbarState(false);
     }
   } catch (err) {
-    console.error("Session verification failed:", err);
+    console.error("❌ Session verification failed:", err);
     localStorage.clear();
     updateNavbarState(false);
   }
 }
-
-initializeApp();
 
 // Profile Editing
 const editProfileBtn = document.getElementById("editProfileBtn");
@@ -482,3 +513,102 @@ editProfileForm?.addEventListener("submit", async (e) => {
     alert("Profile update failed.");
   }
 });
+
+// ===== FEEDBACK SYSTEM FOR GUEST =====
+function initFeedbackSystem() {
+  const feedbackModal = document.getElementById("feedback-modal");
+  const closeFeedback = document.getElementById("closeFeedback");
+  const cancelFeedback = document.getElementById("cancelFeedback");
+  const feedbackForm = document.getElementById("feedbackForm");
+
+  console.log("🔄 Initializing feedback system...");
+  console.log("Feedback modal:", feedbackModal);
+  console.log("Close button:", closeFeedback);
+  console.log("Cancel button:", cancelFeedback);
+  console.log("Feedback form:", feedbackForm);
+
+  // Close feedback modal
+  if (closeFeedback) {
+    closeFeedback.addEventListener("click", () => {
+      console.log("❌ Closing feedback modal");
+      closeModal(feedbackModal);
+    });
+  }
+
+  if (cancelFeedback) {
+    cancelFeedback.addEventListener("click", () => {
+      console.log("❌ Canceling feedback modal");
+      closeModal(feedbackModal);
+    });
+  }
+
+  // Handle feedback form submission
+  if (feedbackForm) {
+    feedbackForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      console.log("📝 Feedback form submitted");
+      
+      const rating = document.querySelector('input[name="rating"]:checked');
+      const comments = document.getElementById("feedbackComments").value.trim();
+      const guestID = localStorage.getItem("guestID");
+
+      console.log("Rating:", rating?.value);
+      console.log("Comments:", comments);
+      console.log("Guest ID:", guestID);
+
+      if (!rating || !comments) {
+        alert("❌ Please provide both rating and comments");
+        return;
+      }
+
+      if (!guestID) {
+        alert("❌ Please login to submit feedback");
+        return;
+      }
+
+      try {
+        console.log("🔄 Submitting feedback to server...");
+        const res = await fetch("http://localhost:3000/api/feedback/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            guestID: guestID,
+            rating: rating.value,
+            comments: comments,
+          }),
+        });
+
+        const data = await res.json();
+        console.log("📡 Server response:", data);
+
+        if (data.success) {
+          alert("✅ Thank you for your feedback!");
+          closeModal(feedbackModal);
+          feedbackForm.reset();
+
+          // Reset star ratings
+          document.querySelectorAll('input[name="rating"]').forEach((radio) => {
+            radio.checked = false;
+          });
+        } else {
+          alert(`❌ ${data.message}`);
+        }
+      } catch (err) {
+        console.error("❌ Error submitting feedback:", err);
+        alert("Failed to submit feedback");
+      }
+    });
+  }
+
+  // Add click outside to close modal
+  if (feedbackModal) {
+    feedbackModal.addEventListener("click", (e) => {
+      if (e.target === feedbackModal) {
+        closeModal(feedbackModal);
+      }
+    });
+  }
+}
+
+// Initialize the application
+initializeApp();
