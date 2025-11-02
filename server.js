@@ -8,14 +8,14 @@ const db = require("./db");
 const bookingRoutes = require("./routes/bookingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const notifRoutes = require("./routes/notifRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
+const transacRoutes = require("./routes/transacRoutes");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use("/admin", adminRoutes);
+
 
 // ✅ Serve your static files correctly
 app.use(express.static(path.join(__dirname, "html")));
@@ -27,7 +27,8 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/notifications", notifRoutes);
-app.use("/api/payments", paymentRoutes);
+app.use("/api/payments", transacRoutes);
+app.use("/admin", adminRoutes);
 
 app.post("/notifications/send", (req, res) => {
   const { guestID, message } = req.body;
@@ -66,7 +67,6 @@ app.patch("/notifications/mark-read/:guestID", (req, res) => {
   });
 });
 
-
 // Default route — serve index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "html", "index.html"));
@@ -74,4 +74,3 @@ app.get("/", (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
-

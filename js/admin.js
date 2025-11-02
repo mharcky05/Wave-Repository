@@ -12,10 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== TAB NAVIGATION SYSTEM =====
   tabs.forEach((btn) => {
     btn.addEventListener("click", () => {
+      // Remove active class from all tabs and sections
       tabs.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
       sections.forEach((s) => s.classList.remove("active"));
+      
+      // Add active class to clicked tab and corresponding section
+      btn.classList.add("active");
       document.getElementById(btn.dataset.section).classList.add("active");
+
+      // Load data based on active tab
+      switch(btn.dataset.section) {
+        case 'guest-records':
+          loadBookings();
+          break;
+        case 'transaction':
+          loadTransactions();
+          break;
+        case 'packages':
+          // loadPackages(); - Add later if needed
+          break;
+        case 'amenities':
+          // loadAmenities(); - Add later if needed
+          break;
+        case 'feedback':
+          // loadFeedback(); - Add later if needed
+          break;
+      }
     });
   });
 
@@ -83,10 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===== INITIAL DATA LOAD =====
-  loadBookings();
-
-  const guestRecordsBtn = document.getElementById("guest-records-btn");
-  if (guestRecordsBtn) guestRecordsBtn.addEventListener("click", loadBookings);
+  loadBookings(); // Load guest records by default
 });
 
 // ===== BOOKINGS DATA LOADER =====
@@ -187,5 +206,124 @@ async function updateBookingStatus(bookingID, status) {
 
   } catch (err) {
     console.error("❌ Error updating status:", err);
+  }
+}
+
+// ===== TRANSACTIONS DATA LOADER =====
+async function loadTransactions() {
+  try {
+    console.log('🔄 Loading transactions...'); // DEBUG
+    const res = await fetch("http://localhost:3000/api/payments/transactions");
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const transactions = await res.json();
+    console.log('📊 Transactions loaded:', transactions); // DEBUG
+
+    const tableBody = document.getElementById("transactionTableBody");
+    if (!tableBody) {
+      console.error('❌ transactionTableBody not found!');
+      return;
+    }
+    
+    tableBody.innerHTML = "";
+
+    if (transactions.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center;">No transactions yet</td></tr>`;
+      return;
+    }
+
+    // DATE FORMATTING HELPER
+    const formatDate = (dateStr) => {
+      if (!dateStr) return "N/A";
+      const date = new Date(dateStr);
+      if (isNaN(date)) return "N/A";
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const dd = String(date.getDate()).padStart(2, "0");
+      const yyyy = date.getFullYear();
+      return `${mm}/${dd}/${yyyy}`;
+    };
+
+    // POPULATE TRANSACTIONS TABLE
+    transactions.forEach((t) => {
+      const row = document.createElement("tr");
+      const guestName = `${t.firstName || ''} ${t.lastName || ''}`.trim() || 'N/A';
+      
+      // ✅ IMPROVED: Handle booking data properly
+      const packageName = t.packageName || 'N/A';
+      const checkinDate = t.checkinDate ? formatDate(t.checkinDate) : 'N/A';
+      const bookingTotal = t.bookingTotal ? `₱${Number(t.bookingTotal).toLocaleString()}` : 'N/A';
+      
+      // FIX: Check both possible status values
+      const isPending = t.status === 'Pending Completion' || t.status === 'Pending_Completion';
+      
+      row.innerHTML = `
+        <td>${t.transactionID}</td>
+        <td>${guestName}</td>
+        <td>${t.contactNo || 'N/A'}</td>
+        <td>${packageName}</td>
+        <td>${checkinDate}</td>
+        <td class="price">${bookingTotal}</td>
+        <td class="price">₱${Number(t.amount).toLocaleString()}</td>
+        <td>${t.paymentMethod}</td>
+        <td>${formatDate(t.transactionDate)}</td>
+        <td class="status-cell ${t.status === 'Completed' ? 'completed' : 'pending'}">${t.status}</td>
+        <td>${t.remarks || 'First Payment'}</td>
+        <td class="action-buttons">
+          ${isPending 
+            ? `<button class="complete-btn" data-id="${t.transactionID}" title="Mark as Completed">✓ Complete</button>`
+            : `<span class="completed-text">Completed</span>`
+          }
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+    // ===== COMPLETE TRANSACTION BUTTONS =====
+    document.querySelectorAll(".complete-btn").forEach((btn) => {
+      btn.addEventListener("click", () => markTransactionCompleted(btn.dataset.id));
+    });
+
+  } catch (err) {
+    console.error("❌ Error loading transactions:", err);
+  }
+}
+
+// ===== MARK TRANSACTION AS COMPLETED =====
+async function markTransactionCompleted(transactionID) {
+  if (!confirm("Mark this transaction as completed? This means guest has paid fully at resort.")) {
+    return;
+  }
+
+  try {
+    console.log('🔄 Marking transaction as completed:', transactionID); // DEBUG
+    
+    const res = await fetch(`http://localhost:3000/api/payments/transactions/${transactionID}/status`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "Completed" }),
+    });
+
+    // ✅ IMPROVED ERROR HANDLING
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('❌ Server response:', errorText);
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log('📡 Status update response:', data); // DEBUG
+    
+    if (data.success) {
+      alert("✅ Transaction marked as completed!");
+      loadTransactions(); // Reload the table
+    } else {
+      alert(`❌ Failed: ${data.message}`);
+    }
+  } catch (err) {
+    console.error("❌ Error completing transaction:", err);
+    alert("❌ Error updating transaction status. Please check console for details.");
   }
 }
