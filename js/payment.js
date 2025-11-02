@@ -101,13 +101,9 @@ function setupPaymentConfirmation() {
     const activeBtn = document.querySelector(".payment-btn.active");
     const amount = parseFloat(document.getElementById("paymentAmount").value);
 
-    // Get guest ID from multiple sources
     const guestID = document.getElementById("paymentGuestID").value || localStorage.getItem("guestID");
     const bookingID = document.getElementById("paymentBookingID").value;
 
-    console.log("🔍 PAYMENT DEBUG - GuestID:", guestID, "BookingID:", bookingID, "Amount:", amount);
-
-    // Validation
     if (!activeBtn) {
       alert("Please select a payment method.");
       return;
@@ -123,7 +119,6 @@ function setupPaymentConfirmation() {
       return;
     }
 
-    // Additional validation for Bank Transfer
     const method = activeBtn.getAttribute("data-method");
     if (method === "Bank Transfer") {
       const bankName = document.getElementById("bankName").value;
@@ -139,22 +134,23 @@ function setupPaymentConfirmation() {
       }
     }
 
-    // Show processing popup
     if (popup) {
       popup.style.display = "block";
       popup.textContent = "Processing your payment...";
     }
 
     try {
+      // ✅ Determine remarks based on full payment
+      const bookingTotal = parseFloat(document.getElementById("booking-summary-total")?.textContent.replace(/[₱,]/g, "")) || 0;
+      let remarks = amount === bookingTotal ? "Payment Completed" : `First Payment - ${method} - Complete at resort`;
+
       const paymentData = {
         guestID: guestID,
-        bookingID: bookingID || null, // ✅ FIX: Always send bookingID even if empty
+        bookingID: bookingID || null,
         amount: amount,
         paymentMethod: method,
-        remarks: `First Payment - ${method} - Complete at resort`,
+        remarks: remarks
       };
-
-      console.log("📤 SENDING PAYMENT DATA:", paymentData);
 
       const response = await fetch("/api/payments/process", {
         method: "POST",
@@ -162,29 +158,23 @@ function setupPaymentConfirmation() {
         body: JSON.stringify(paymentData),
       });
 
-      console.log("📥 PAYMENT RESPONSE STATUS:", response.status);
-
       const result = await response.json();
-      console.log("📥 PAYMENT RESPONSE DATA:", result);
 
       if (response.ok) {
-        console.log("✅ PAYMENT SUCCESS - Transaction ID:", result.transactionID);
-        showPaymentSuccess(popup);
+        showPaymentSuccess(popup, remarks);
       } else {
-        console.error("❌ PAYMENT FAILED:", result.message);
         showPaymentError(popup, result.message);
       }
     } catch (error) {
-      console.error("❌ PAYMENT NETWORK ERROR:", error);
       showPaymentError(popup, "Payment failed. Please try again.");
     }
   });
 }
 
 // ===== PAYMENT SUCCESS HANDLER =====
-function showPaymentSuccess(popup) {
+function showPaymentSuccess(popup, remarks) {
   if (popup) {
-    popup.textContent = "✅ First payment successful! Complete payment at resort.";
+    popup.textContent = `✅ ${remarks}!`;
     popup.style.backgroundColor = "#4CAF50";
   }
 
@@ -198,7 +188,7 @@ function showPaymentSuccess(popup) {
       popup.style.backgroundColor = "";
     }
 
-    alert("✅ First payment successful! Please complete payment at resort.");
+    alert(`✅ ${remarks}!`);
   }, 2000);
 }
 

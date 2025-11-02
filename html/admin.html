@@ -1,234 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard | L’Escapade</title>
-    <link rel="stylesheet" href="../css/admin.css" />
-  </head>
-  <body>
-    <!-- HEADER -->
-    <header class="admin-header">
-      <h1 class="logo">LESCAPADE ADMIN</h1>
-      <nav class="admin-nav">
-        <button
-          class="nav-btn active"
-          data-section="guest-records"
-          id="guest-records-btn"
-        >
-          Guest Records
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | L’Escapade</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="admin-header">
+    <h1 class="logo">LESCAPADE ADMIN</h1>
+    <nav class="admin-nav">
+      <button class="nav-btn active" data-section="guest-records" id="guest-records-btn">
+        Guest Records
+      </button>
+      <button class="nav-btn" data-section="transaction">Transactions</button>
+      <button class="nav-btn" data-section="packages">Packages</button>
+      <button class="nav-btn" data-section="amenities">Amenities</button>
+      <button class="nav-btn" data-section="feedback">Feedback</button>
+
+      <div class="notif-wrapper">
+        <div id="notifDropdown" class="notif-dropdown"></div>
+      </div>
+
+      <button id="logoutBtn" class="logout-btn">LOGOUT</button>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-main">
+    <!-- Guest Records -->
+    <section id="guest-records" class="tab-section active">
+      <h2>Guest Records</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Book ID</th>
+            <th>Guest Name</th>
+            <th>Package Name</th>
+            <th>Check-in Date</th>
+            <th>Check-in Time</th>
+            <th>Checkout Date</th>
+            <th>Checkout Time</th>
+            <th>Pax</th>
+            <th>Base Price</th>
+            <th>Additional Pax</th>
+            <th>Additional Hour</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="guestTableBody">
+          <tr>
+            <td colspan="15" style="text-align: center">No records yet</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Packages -->
+    <section id="packages" class="tab-section">
+      <div class="header-flex">
+        <h2>Packages</h2>
+        <button id="addPackageBtn" class="add-btn">+ Add Package</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Package Type</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Pax No.</th>
+            <th>Extra Hour Price</th>
+            <th>Extra Person Price</th>
+            <th>Max Capacity</th>
+          </tr>
+        </thead>
+        <tbody id="packageTableBody">
+          <tr>
+            <td colspan="7" style="text-align: center">No packages yet</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Amenities -->
+    <section id="amenities" class="tab-section">
+      <div class="header-flex">
+        <h2>Amenities</h2>
+        <button id="addAmenityBtn" class="add-btn">+ Add Amenity</button>
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Amenity</th>
+            <th>Description</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="amenityTableBody">
+          <tr>
+            <td colspan="5" style="text-align: center">Loading amenities...</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Feedback -->
+    <section id="feedback" class="tab-section">
+      <div class="header-flex">
+        <h2>Guests' Feedback</h2>
+        <button id="requestFeedbackBtn" class="add-btn">
+          Generate Feedback Form
         </button>
-        <button class="nav-btn" data-section="transaction">Transactions</button>
-        <button class="nav-btn" data-section="packages">Packages</button>
-        <button class="nav-btn" data-section="amenities">Amenities</button>
-        <button class="nav-btn" data-section="feedback">Feedback</button>
+      </div>
 
-        <div class="notif-wrapper">
-          <div id="notifDropdown" class="notif-dropdown"></div>
+      <!-- Feedback Request Modal -->
+      <div id="feedbackRequestModal" class="modal">
+        <div class="modal-content">
+          <h3>Request Feedback Form</h3>
+          <form id="feedbackRequestForm">
+            <div class="form-group">
+              <label for="feedbackGuestSelect">Select Guest:</label>
+              <select id="feedbackGuestSelect" required>
+                <option value="">-- Select Guest --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="feedbackBookingSelect">Select Booking (Optional):</label>
+              <select id="feedbackBookingSelect">
+                <option value="">-- Select Booking --</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn primary">Send Request</button>
+              <button type="button" class="btn secondary close-feedback-modal">
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <button id="logoutBtn" class="logout-btn">LOGOUT</button>
-      </nav>
-    </header>
+      <!-- Feedbacks List -->
+      <div class="feedbacks-container">
+        <div id="feedbacksList">
+          <p style="text-align: center; color: #666">No feedbacks yet</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- MAIN CONTENT -->
-    <main class="admin-main">
-      <!-- Guest Records -->
-      <section id="guest-records" class="tab-section active">
-        <h2>Guest Records</h2>
+    <!-- Transaction -->
+    <section id="transaction" class="tab-section">
+      <h2>Guests' Transactions</h2>
+      <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>Book ID</th>
+              <th>Transaction ID</th>
               <th>Guest Name</th>
-              <th>Package Name</th>
+              <th>Contact No.</th>
+              <th>Package</th>
               <th>Check-in Date</th>
-              <th>Check-in Time</th>
-              <th>Checkout Date</th>
-              <th>Checkout Time</th>
-              <th>Pax</th>
-              <th>Base Price</th>
-              <th>Additional Pax</th>
-              <th>Additional Hour</th>
-              <th>Total Price</th>
+              <th>Booking Total</th>
+              <th>Amount Paid</th>
+              <th>Payment Method</th>
+              <th>Transaction Date</th>
               <th>Status</th>
-              <th>Created At</th>
+              <th>Remarks</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="guestTableBody">
+          <tbody id="transactionTableBody">
             <tr>
-              <td colspan="15" style="text-align: center">No records yet</td>
+              <td colspan="12" style="text-align: center">
+                No transactions yet
+              </td>
             </tr>
           </tbody>
         </table>
-      </section>
-
-      <!-- Packages -->
-      <section id="packages" class="tab-section">
-        <div class="header-flex">
-          <h2>Packages</h2>
-          <button id="addPackageBtn" class="add-btn">+ Add Package</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Package Type</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Pax No.</th>
-              <th>Extra Hour Price</th>
-              <th>Extra Person Price</th>
-              <th>Max Capacity</th>
-            </tr>
-          </thead>
-          <tbody id="packageTableBody">
-            <tr>
-              <td colspan="7" style="text-align: center">No packages yet</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Amenities -->
-      <section id="amenities" class="tab-section">
-        <div class="header-flex">
-          <h2>Amenities</h2>
-          <button id="addAmenityBtn" class="add-btn">+ Add Amenity</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Image</th>
-            </tr>
-          </thead>
-          <tbody id="amenityTableBody">
-            <tr>
-              <td colspan="3" style="text-align: center">No amenities yet</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Feedback -->
-      <section id="feedback" class="tab-section">
-        <div class="header-flex">
-          <h2>Guests' Feedback</h2>
-          <button id="requestFeedbackBtn" class="add-btn">
-            Generate Feedback Form
-          </button>
-        </div>
-
-        <!-- Feedback Request Modal -->
-        <div id="feedbackRequestModal" class="modal">
-          <div class="modal-content">
-            <h3>Request Feedback Form</h3>
-            <form id="feedbackRequestForm">
-              <div class="form-group">
-                <label for="feedbackGuestSelect">Select Guest:</label>
-                <select id="feedbackGuestSelect" required>
-                  <option value="">-- Select Guest --</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="feedbackBookingSelect"
-                  >Select Booking (Optional):</label
-                >
-                <select id="feedbackBookingSelect">
-                  <option value="">-- Select Booking --</option>
-                </select>
-              </div>
-              <div class="modal-actions">
-                <button type="submit" class="btn primary">Send Request</button>
-                <button
-                  type="button"
-                  class="btn secondary close-feedback-modal"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Feedbacks List -->
-        <div class="feedbacks-container">
-          <div id="feedbacksList">
-            <p style="text-align: center; color: #666">No feedbacks yet</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Transaction -->
-      <section id="transaction" class="tab-section">
-        <h2>Guests' Transactions</h2>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Transaction ID</th>
-                <th>Guest Name</th>
-                <th>Contact No.</th>
-                <th>Package</th>
-                <th>Check-in Date</th>
-                <th>Booking Total</th>
-                <th>Amount Paid</th>
-                <th>Payment Method</th>
-                <th>Transaction Date</th>
-                <th>Status</th>
-                <th>Remarks</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="transactionTableBody">
-              <tr>
-                <td colspan="12" style="text-align: center">
-                  No transactions yet
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-
-    <!-- PACKAGE MODAL -->
-    <div id="packageModal" class="modal">
-      <div class="modal-content">
-        <h3>Add New Package</h3>
-        <form id="packageForm">
-          <input type="text" placeholder="Package Type" required />
-          <input type="text" placeholder="Description" required />
-          <input type="number" placeholder="Price" required />
-          <input type="number" placeholder="Pax No." required />
-          <input type="number" placeholder="Add Hour Price" required />
-          <input type="number" placeholder="Add Person Price" required />
-          <input type="number" placeholder="Max Capacity" required />
-          <button type="submit">Add Package</button>
-          <button type="button" class="close-btn">Cancel</button>
-        </form>
       </div>
+    </section>
+  </main>
+
+  <!-- PACKAGE MODAL -->
+  <div id="packageModal" class="modal">
+    <div class="modal-content">
+      <h3>Add New Package</h3>
+      <form id="packageForm">
+        <input type="text" placeholder="Package Type" required />
+        <input type="text" placeholder="Description" required />
+        <input type="number" placeholder="Price" required />
+        <input type="number" placeholder="Pax No." required />
+        <input type="number" placeholder="Add Hour Price" required />
+        <input type="number" placeholder="Add Person Price" required />
+        <input type="number" placeholder="Max Capacity" required />
+        <button type="submit">Add Package</button>
+        <button type="button" class="close-btn">Cancel</button>
+      </form>
     </div>
+  </div>
 
-    <!-- AMENITY MODAL -->
-    <div id="amenityModal" class="modal">
-      <div class="modal-content">
-        <h3>Add New Amenity</h3>
-        <form id="amenityForm">
-          <input type="text" placeholder="Name" required />
-          <input type="text" placeholder="Description" required />
-          <input type="file" accept="image/*" required />
-          <button type="submit">Add Amenity</button>
-          <button type="button" class="close-btn">Cancel</button>
-        </form>
-      </div>
+  <!-- ADD AMENITY MODAL -->
+  <div id="amenityModal" class="modal">
+    <div class="modal-content">
+      <h3>Add New Amenity</h3>
+      <form id="amenityForm">
+        <input type="text" placeholder="Name" required />
+        <input type="text" placeholder="Description" required />
+        <button type="submit">Save Amenity</button>
+        <button type="button" class="close-btn">Cancel</button>
+      </form>
     </div>
+  </div>
 
-    <!-- POPUP NOTIFICATION -->
-    <div id="popupContainer" class="popup-container"></div>
+  <!-- EDIT AMENITY MODAL -->
+  <div id="editAmenityModal" class="modal">
+    <div class="modal-content">
+      <h3>Edit Amenity</h3>
+      <form id="editAmenityForm">
+        <input type="hidden" id="editAmenityID" />
+        <input type="text" id="editAmenityName" required />
+        <textarea id="editAmenityDesc" required></textarea>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary close-btn">Cancel</button>
+          <button type="submit" class="btn primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    <script src="../js/admin.js"></script>
-  </body>
+  <!-- POPUP NOTIFICATION -->
+  <div id="popupContainer" class="popup-container"></div>
+
+  <script src="../js/admin.js"></script>
+</body>
+
 </html>

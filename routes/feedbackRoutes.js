@@ -31,32 +31,32 @@ router.get("/", (req, res) => {
 });
 
 // 🟢 REQUEST FEEDBACK FROM GUEST
-router.post("/request", (req, res) => {
-  const { guestID, bookingID } = req.body;
+// router.post("/request", (req, res) => {
+//   const { guestID, bookingID } = req.body;
 
-  if (!guestID) {
-    return res.status(400).json({ message: "Guest ID is required" });
-  }
+//   if (!guestID) {
+//     return res.status(400).json({ message: "Guest ID is required" });
+//   }
 
-  // Send notification to guest
-  const message = "Please provide feedback for your recent stay at L'Escapade";
-  const notifSql = `
-    INSERT INTO tbl_notifications (guestID, message, isRead, createdAt)
-    VALUES (?, ?, 0, NOW())
-  `;
+//   // Send notification to guest
+//   const message = "Please provide feedback for your recent stay at L'Escapade";
+//   const notifSql = `
+//     INSERT INTO tbl_notifications (guestID, message, isRead, createdAt)
+//     VALUES (?, ?, 0, NOW())
+//   `;
 
-  db.query(notifSql, [guestID, message], (err, result) => {
-    if (err) {
-      console.error("❌ Error sending feedback request:", err);
-      return res.status(500).json({ message: "Failed to send feedback request" });
-    }
+//   db.query(notifSql, [guestID, message], (err, result) => {
+//     if (err) {
+//       console.error("❌ Error sending feedback request:", err);
+//       return res.status(500).json({ message: "Failed to send feedback request" });
+//     }
 
-    res.json({ 
-      success: true, 
-      message: "Feedback request sent to guest" 
-    });
-  });
-});
+//     res.json({ 
+//       success: true, 
+//       message: "Feedback request sent to guest" 
+//     });
+//   });
+// });
 
 // 🟢 SUBMIT FEEDBACK (from guest)
 router.post("/submit", (req, res) => {

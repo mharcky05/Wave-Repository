@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* PAYMENT MODAL WRAPPER */
 #payment-modal {
   display: none;
@@ -14,7 +20,7 @@
 /* MODAL CONTAINER */
 #payment-modal .modal-content {
   background: linear-gradient(135deg, #ffffff 0%, #f7f9fb 100%);
-  width: 95%;
+  width: 90%;
   max-width: 1000px;
   border-radius: 20px;
   padding: 25px;
@@ -33,14 +39,18 @@
 }
 
 #payment-modal .modal-content.animate-in {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ✅ content flows top-down */
   transform: scale(1);
   opacity: 1;
+  background: transparent;
 }
 
 /* HEADER SECTION */
 #payment-modal .modal-header {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-top: 10px;
   padding: 0;
 }
 
@@ -73,25 +83,28 @@
 /* BODY SECTION */
 .payment-modal-body {
   display: flex;
-  gap: 1.5rem;
+  background: none;
+  gap: 2rem;
   flex: 1;
-  min-height: 100px;
-  max-height: 55vh;
+  max-height: calc(85vh - 120px);
+  /* leave space for header + footer */
   overflow: hidden;
-  margin-bottom: 0.5rem;
+
 }
 
 .left-section {
-  flex: 0 0 50%;
-  overflow-y: auto;
-  padding-right: 10px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overflow-y: hid;
+  overflow-x: hidden;
+  max-height: 100%;
+  margin-right: 50px;
 }
 
 .left-section::-webkit-scrollbar {
-  width: 6px;
+  width: 2px;
 }
 
 .left-section::-webkit-scrollbar-thumb {
@@ -101,6 +114,12 @@
 
 .left-section::-webkit-scrollbar-thumb:hover {
   background: #aaa;
+}
+
+.left-scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* Amount Section */
@@ -148,12 +167,12 @@
 }
 
 .summary-box {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  flex: 1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border: 1px solid #eaeaea;
+  flex-shrink: 0;
 }
 
 .summary-box h3 {
@@ -253,18 +272,15 @@
 
 /* RIGHT SIDE CONTENT */
 .right-section {
-  flex: 0 0 48%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-  height: auto;
-  min-height: 300px;
+  flex: 0 0 45%;
+  min-height: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  overflow-x: hidden;
+  width: 600px;
+  margin-right: 50px;
 }
 
 .right-section::-webkit-scrollbar {
@@ -274,6 +290,12 @@
 .right-section::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 3px;
+}
+
+/* GLASS EFFECT RIGHT SECTION */
+.right-section.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
 }
 
 /* PLACEHOLDER STATE */
@@ -324,18 +346,17 @@
 }
 
 .gcash-qr img {
-  width: 180px;
-  height: 180px;
+  width: 350px;
+  height: 350px;
   border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 119, 255, 0.3);
-  border: 2px solid #0077ff;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
   background: white;
   padding: 8px;
 }
 
 .gcash-qr img:hover {
   transform: scale(1.02);
-  box-shadow: 0 8px 25px rgba(0, 119, 255, 0.4);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
 }
 
 .gcash-qr p {
@@ -343,38 +364,6 @@
   margin-top: 0.8rem;
   font-size: 0.9rem;
   font-weight: 600;
-}
-
-/* Payment Instructions */
-.payment-instructions {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 8px;
-  border-left: 4px solid #0077ff;
-  text-align: left;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.payment-instructions p {
-  margin: 6px 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.payment-instructions p strong {
-  color: #0077ff;
-}
-
-.payment-instructions ol {
-  margin: 10px 0;
-  padding-left: 20px;
-}
-
-.payment-instructions li {
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  line-height: 1.4;
 }
 
 /* BANK TRANSFER FORM STYLES */
@@ -395,22 +384,26 @@
   padding-bottom: 0.5rem;
 }
 
-.bank-field {
-  margin-bottom: 1rem;
-}
-
 .bank-field label {
   font-weight: 600;
   color: #333;
-  margin-bottom: 0.5rem;
   display: block;
   text-align: left;
   font-size: 0.9rem;
 }
 
-.bank-field input,
 .bank-field select {
   width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.bank-field input {
+  width: 1px;
   padding: 0.8rem;
   border-radius: 8px;
   border: 2px solid #ddd;
@@ -458,14 +451,23 @@
   align-items: center;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #eaeaea;
-  position: relative;
-  z-index: 100;
+  border-radius: 0 0 20px 20px;
+  width: 90%;
+  max-width: 1000px;
+  margin-inline: auto; /* center align */
 }
 
-/* REMOVE CANCEL BUTTON */
-#cancelPayment {
-  display: none;
+.modal-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f9fb 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  max-width: 1000px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
 }
 
 #confirmPayment {
@@ -531,6 +533,7 @@
     opacity: 0;
     transform: translateY(-15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -600,34 +603,33 @@
 @media (max-width: 968px) {
   .payment-modal-body {
     flex-direction: column;
-    height: auto;
-    max-height: none;
     gap: 1rem;
+    max-height: none;
   }
-  
+
+
   .left-section,
   .right-section {
     flex: 1;
     width: 100%;
     min-height: auto;
   }
-  
+
   .right-section {
-    position: static;
-    margin-top: 0;
     min-height: 300px;
+    max-height: 300px;
   }
-  
+
   #payment-modal {
     padding: 20px 10px;
   }
-  
+
   #payment-modal .modal-content {
     width: 98%;
     padding: 20px;
     min-height: auto;
   }
-  
+
   .gcash-qr img {
     width: 160px;
     height: 160px;
@@ -639,24 +641,24 @@
     padding: 15px;
     min-height: 450px;
   }
-  
+
   .payment-modal-body {
     gap: 0.8rem;
     min-height: 280px;
   }
-  
+
   .left-section,
   .right-section {
     padding: 0;
   }
-  
+
   #confirmPayment {
     width: 90%;
     min-width: auto;
     font-size: 1rem;
     padding: 0.8rem 2rem;
   }
-  
+
   .modal-footer {
     margin-top: 0.8rem;
     padding-top: 0.8rem;
@@ -664,7 +666,9 @@
 }
 
 /* ENSURE BUTTONS ARE CLICKABLE */
-button, input, select {
+button,
+input,
+select {
   pointer-events: auto !important;
 }
 
@@ -696,7 +700,24 @@ select:focus {
   animation: spin 1s linear infinite;
 }
 
+.disabled-row {
+  pointer-events: none;
+  /* disables all clicks */
+  opacity: 0.6;
+  /* visually greyed out */
+}
+
+.completed-text.disabled {
+  color: #888;
+  cursor: default;
+}
+
 @keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }

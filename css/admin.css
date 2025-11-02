@@ -169,13 +169,18 @@ tr:hover {
   transition: 0.2s ease;
 }
 
+/* COMPLETED ROW HIGHLIGHT */
+tr.completed {
+  background-color: #e0f8e9;
+}
+
 /* TABLE CONTAINER FOR SCROLLING */
 .table-container {
   width: 100%;
   overflow-x: auto;
 }
 
-/* ===== ACTION BUTTONS (APPROVE/DECLINE) ===== */
+/* ===== ACTION BUTTONS (APPROVE/DECLINE/COMPLETE) ===== */
 .action-btns {
   display: flex;
   justify-content: center;
@@ -198,12 +203,29 @@ tr:hover {
   color: #dc3545;
 }
 
+.complete-btn {
+  color: #3498db;
+}
+
 .action-btns button:hover {
   transform: scale(1.15);
 }
 
+/* DISABLED ROWS */
+.disabled-row {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.completed-text.disabled {
+  color: #888;
+  cursor: default;
+}
+
 /* ===== MODAL AND POPUP STYLES ===== */
-.modal {
+.modal,
+#amenityModal,
+#feedbackRequestModal {
   display: none;
   position: fixed;
   inset: 0;
@@ -218,6 +240,7 @@ tr:hover {
   padding: 1.5rem;
   border-radius: 10px;
   width: 400px;
+  max-width: 95%;
 }
 
 .modal-content h3 {
@@ -230,7 +253,8 @@ tr:hover {
   gap: 0.8rem;
 }
 
-.modal-content input {
+.modal-content input,
+.modal-content select {
   padding: 0.6rem;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -274,44 +298,10 @@ tr:hover {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 1000px) {
-  th,
-  td {
-    font-size: 0.75rem;
-    padding: 0.5rem 0.7rem;
-  }
-
-  .action-btns button {
-    font-size: 18px;
-  }
-}
-
-@media (max-width: 700px) {
-  .admin-header {
-    flex-direction: column;
-    height: auto;
-    gap: 10px;
-  }
-
-  .admin-nav {
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-
-  .logout-btn {
-    padding: 0.5rem 1.2rem;
-    font-size: 0.9rem;
-  }
-
-  table {
-    font-size: 0.7rem;
   }
 }
 
@@ -349,6 +339,7 @@ tr:hover {
 .feedback-rating {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  color: #f1c40f;
 }
 
 .feedback-comments {
@@ -439,8 +430,178 @@ tr:hover {
   transition: color 0.2s;
 }
 
-.star-rating input:checked ~ label,
+.star-rating input:checked~label,
 .star-rating label:hover,
-.star-rating label:hover ~ label {
+.star-rating label:hover~label {
   color: #ffc107;
+}
+
+/* ===== AMENITIES TABLE & MODAL STYLES ===== */
+#amenityTableBody td img {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+#amenityModal .modal-content {
+  width: 450px;
+  max-width: 90%;
+}
+
+#amenityModal input[type="file"] {
+  padding: 0.3rem;
+}
+
+#amenityModal button {
+  margin-top: 0.5rem;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1000px) {
+
+  th,
+  td {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .action-btns button {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-header {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+  }
+
+  .admin-nav {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .logout-btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  table {
+    font-size: 0.7rem;
+  }
+}
+
+/* ===== AMENITIES TABLE & MODAL STYLES ===== */
+#amenityTableBody td img {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+#amenityModal .modal-content {
+  width: 450px;
+  max-width: 90%;
+}
+
+#amenityModal input[type="file"],
+#amenityModal input,
+#amenityModal textarea {
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 0.7rem;
+}
+
+#amenityModal button {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #b81d24;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#amenityModal button:hover {
+  background-color: #910f18;
+  transform: scale(1.05);
+}
+
+/* Edit button styling (admin only) */
+.edit-amenity-btn {
+  padding: 0.4rem 0.8rem;
+  background-color: #0077cc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-amenity-btn:hover {
+  background-color: #005fa3;
+  transform: scale(1.05);
+}
+
+/* N/A placeholder for non-admin users */
+#amenityTableBody td span {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+th,
+td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+th {
+  background-color: #b81d24;
+  color: white;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+  transition: 0.2s ease;
+}
+
+/* Modal overlay */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 450px;
+  max-width: 90%;
+  box-sizing: border-box;
 }

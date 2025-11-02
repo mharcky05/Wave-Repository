@@ -6,7 +6,7 @@ const db = require("../db");
 // POST /api/payments/process - ULTIMATE VERSION WITH BOOKING LINK
 router.post("/process", (req, res) => {
   console.log("🚨 PAYMENT ATTEMPT - RAW BODY:", req.body);
-  
+
   // GET LATEST APPROVED BOOKING FOR THIS GUEST
   const getLatestBookingSQL = `
     SELECT bookingID, packageName, checkinDate, totalPrice 
@@ -19,60 +19,90 @@ router.post("/process", (req, res) => {
   db.query(getLatestBookingSQL, [req.body.guestID || 'G163540'], (err, bookingResults) => {
     if (err) {
       console.error("❌ Booking fetch error:", err);
-      return res.status(500).json({ 
-        success: false, 
-        message: "Database error: " + err.message 
+      return res.status(500).json({
+        success: false,
+        message: "Database error: " + err.message
       });
     }
 
     let bookingID = null;
     let packageName = "N/A";
     let checkinDate = "N/A";
-    let bookingTotal = "N/A";
+    let bookingTotal = 0;
 
     if (bookingResults.length > 0) {
       bookingID = bookingResults[0].bookingID;
       packageName = bookingResults[0].packageName;
       checkinDate = bookingResults[0].checkinDate;
-      bookingTotal = bookingResults[0].totalPrice;
+      bookingTotal = Number(bookingResults[0].totalPrice) || 0;
     }
 
-    // CREATE TRANSACTION WITH BOOKING INFO
     const transactionID = "TXN" + Date.now();
-    
+    const amountPaid = Number(req.body.amount) || 0;
+
+    // ✅ GET BOOKING TOTAL FROM DATABASE
+    const bookingTotalNum = bookingResults.length > 0 ? Number(bookingResults[0].totalPrice) : 0;
+
+    // ✅ DETERMINE STATUS AND REMARKS
+    let status, remarks;
+
+    if (amountPaid === bookingTotalNum) {
+      status = "Completed";
+      remarks = "Full payment received";
+    } else {
+      status = "Pending Balance";
+      remarks = `Partial payment - ${req.body.paymentMethod}`;
+    }
     const sql = `
-      INSERT INTO tbl_transactions 
-      (transactionID, guestID, bookingID, paymentType, amount, paymentMethod, status, remarks)
-      VALUES (?, ?, ?, 'partial', ?, ?, 'Pending Completion', ?)
-    `;
+  INSERT INTO tbl_transactions 
+  (transactionID, guestID, bookingID, paymentType, amount, paymentMethod, status, remarks)
+  VALUES (?, ?, ?, 'partial', ?, ?, ?, ?)
+`;
 
     const values = [
       transactionID,
       req.body.guestID || 'G163540',
-      bookingID, // ✅ NOW INCLUDES BOOKING ID
-      req.body.amount || 1000,
+      bookingID,
+      amountPaid,
       req.body.paymentMethod || 'GCash',
-      req.body.remarks || 'First Payment'
+      status,
+      remarks
     ];
-
-    console.log("💾 SAVING TO DB WITH:", values);
 
     db.query(sql, values, (err, result) => {
       if (err) {
         console.error("❌ DB ERROR:", err);
-        return res.status(500).json({ 
-          success: false, 
-          message: "Database error: " + err.message 
+        return res.status(500).json({
+          success: false,
+          message: "Database error: " + err.message
         });
       }
 
-      console.log("✅ PAYMENT SAVED! ID:", transactionID);
-      
+      console.log(`✅ Payment inserted for ${req.body.guestID}, Status: ${status}`);
+
+      // 🟢 If payment is fully completed, auto-generate feedback request
+      if (status === "Completed" && bookingID) {
+        const feedbackMessage = "Please share your experience at L'Escapade!";
+
+        const feedbackNotifSQL = `
+      INSERT INTO tbl_notifications (guestID, message, isRead, createdAt)
+      VALUES (?, ?, 0, NOW())
+    `;
+
+        db.query(feedbackNotifSQL, [req.body.guestID, feedbackMessage], (notifErr) => {
+          if (notifErr) {
+            console.error("❌ Failed to send feedback notification:", notifErr);
+          } else {
+            console.log(`🎉 Feedback notification auto-sent to guest ${req.body.guestID}`);
+          }
+        });
+      }
+
       res.json({
         success: true,
-        message: "Payment successful!",
+        message: `Payment successful! Transaction ${status.toLowerCase()}.`,
         transactionID: transactionID,
-        bookingLinked: bookingID !== null
+        status: status
       });
     });
   });
@@ -94,7 +124,7 @@ router.get("/transactions", (req, res) => {
     LEFT JOIN tbl_bookings b ON t.bookingID = b.bookingID
     ORDER BY t.transactionDate DESC
   `;
-  
+
   db.query(sql, (err, results) => {
     if (err) {
       console.error("Fetch error:", err);
@@ -104,7 +134,7 @@ router.get("/transactions", (req, res) => {
   });
 });
 
-// ✅ ADDED: PUT /api/payments/transactions/:transactionID/status - Update transaction status
+// ✅ UPDATED: PUT /api/payments/transactions/:transactionID/status - Update transaction status + auto feedback notif
 router.put("/transactions/:transactionID/status", (req, res) => {
   const { transactionID } = req.params;
   const { status } = req.body;
@@ -112,37 +142,72 @@ router.put("/transactions/:transactionID/status", (req, res) => {
   console.log(`🔄 Updating transaction ${transactionID} status to: ${status}`);
 
   if (!status) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Status is required" 
+    return res.status(400).json({
+      success: false,
+      message: "Status is required"
     });
   }
 
   const sql = `UPDATE tbl_transactions SET status = ? WHERE transactionID = ?`;
-  
+
   db.query(sql, [status, transactionID], (err, result) => {
     if (err) {
       console.error("❌ DB Update Error:", err);
-      return res.status(500).json({ 
-        success: false, 
-        message: "Database error: " + err.message 
+      return res.status(500).json({
+        success: false,
+        message: "Database error: " + err.message
       });
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Transaction not found" 
+      console.warn(`⚠️ Transaction not found for ID: ${transactionID}`);
+      return res.status(404).json({
+        success: false,
+        message: "Transaction not found"
       });
     }
 
     console.log(`✅ Transaction ${transactionID} status updated to: ${status}`);
-    
+
+    // 🎯 Trigger feedback notification automatically when marked Completed
+    if (status === "Completed") {
+      console.log(`🎯 Transaction ${transactionID} completed — inserting feedback notification...`);
+
+      const getGuestSQL = `SELECT guestID FROM tbl_transactions WHERE transactionID = ?`;
+      db.query(getGuestSQL, [transactionID], (err2, guestRes) => {
+        if (err2) {
+          console.error("❌ Error fetching guest:", err2);
+          return;
+        }
+
+        if (guestRes.length === 0) {
+          console.warn(`⚠️ No guest found for transaction ${transactionID}`);
+          return;
+        }
+
+        const guestID = guestRes[0].guestID;
+        const feedbackMessage = "Please provide feedback for your recent stay at L'Escapade.";
+
+        const insertNotifSQL = `
+          INSERT INTO tbl_notifications (guestID, message, isRead, createdAt)
+          VALUES (?, ?, 0, NOW())
+        `;
+
+        db.query(insertNotifSQL, [guestID, feedbackMessage], (err3, notifResult) => {
+          if (err3) {
+            console.error("❌ Notification insert error:", err3);
+          } else {
+            console.log(`✅ Feedback notification created for guest ${guestID} (notifID: ${notifResult.insertId})`);
+          }
+        });
+      });
+    }
+
     res.json({
       success: true,
       message: `Transaction status updated to ${status}`,
-      transactionID: transactionID,
-      status: status
+      transactionID,
+      status
     });
   });
 });

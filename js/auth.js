@@ -206,6 +206,21 @@ async function loadNotifications() {
       li.setAttribute("data-notifid", notif.notifID);
       li.setAttribute("data-read", notif.isRead);
 
+      if (!notif.isRead && notif.message.toLowerCase().includes("feedback")) {
+        const feedbackModal = document.getElementById("feedback-modal");
+        if (feedbackModal) {
+          showModal(feedbackModal);
+          console.log("🪄 Auto-opened feedback modal for new feedback notification");
+        }
+      }
+
+      // ✅ Apply handled state on load
+      if (notif.isHandled) {
+        li.classList.add("disabled-notif");
+        li.setAttribute("data-handled", "1");
+        li.title = "Payment already completed";
+      }
+
       const msg = document.createElement("span");
       msg.className = "notif-message";
       msg.textContent = notif.message;
@@ -224,6 +239,10 @@ async function loadNotifications() {
       li.addEventListener("click", async (e) => {
         e.stopPropagation();
 
+        // Do nothing if already handled
+        if (li.getAttribute("data-handled") === "1") return;
+
+        // MARK AS READ
         if (li.getAttribute("data-read") === "0" || !notif.isRead) {
           try {
             const markRes = await fetch(
@@ -232,8 +251,6 @@ async function loadNotifications() {
             );
 
             if (markRes.ok) {
-              await loadNotifications();
-              
               li.classList.remove("unread");
               li.classList.add("read");
               li.setAttribute("data-read", "1");
@@ -248,7 +265,7 @@ async function loadNotifications() {
           }
         }
 
-        // ✅ UPDATED NOTIFICATION HANDLER - IMPROVED FEEDBACK CONDITION
+        // PAYMENT APPROVED HANDLER
         if (notif.message.toLowerCase().includes("approved")) {
           notifPopup.classList.remove("show");
 
@@ -260,34 +277,40 @@ async function loadNotifications() {
             }
 
             const latestBookingRes = await fetch(`http://localhost:3000/api/bookings/latest/${guestID}`);
-            
+
             if (latestBookingRes.ok) {
               const bookingData = await latestBookingRes.json();
               showPaymentModalWithActualData(bookingData);
             } else {
               showBasicPaymentModal();
             }
+
           } catch (err) {
             console.error("Error fetching booking:", err);
             showBasicPaymentModal();
           }
         }
-        
-        // ✅ IMPROVED: Handle feedback request notifications
+
+        // FEEDBACK HANDLER
         if (notif.message.toLowerCase().includes("feedback")) {
-          console.log("🎯 Feedback notification clicked - opening modal");
+          console.log("🎯 Feedback notification clicked - attempting to open modal");
           notifPopup.classList.remove("show");
-          
-          const feedbackModal = document.getElementById("feedback-modal");
-          if (feedbackModal) {
-            showModal(feedbackModal);
-            console.log("✅ Feedback modal opened successfully");
-          } else {
-            console.log("❌ Feedback modal not found!");
-            alert("Feedback system is not available. Please try again later.");
-          }
+
+          // slight delay to ensure popup is closed before modal opens
+          setTimeout(() => {
+            const feedbackModal = document.getElementById("feedback-modal");
+
+            if (feedbackModal) {
+              feedbackModal.style.display = "flex";
+              console.log("✅ Feedback modal opened successfully (via notification)");
+            } else {
+              console.error("❌ Feedback modal element not found!");
+              alert("Feedback system unavailable. Please refresh and try again.");
+            }
+          }, 200); // wait 200ms
         }
       });
+
       notifList.appendChild(li);
     });
   } catch (err) {
@@ -335,7 +358,7 @@ function startNotifPolling() {
 // Payment Modal Functions
 function showPaymentModalWithActualData(bookingData) {
   const paymentModal = document.getElementById("payment-modal");
-  
+
   if (!paymentModal) {
     console.error("Payment modal not found");
     return;
@@ -372,30 +395,50 @@ function showPaymentModalWithActualData(bookingData) {
 function showBasicPaymentModal() {
   const paymentModal = document.getElementById("payment-modal");
   const summaryBox = paymentModal.querySelector(".summary-box");
-  
+
   summaryBox.innerHTML = `
       <h3>Booking Summary</h3>
       <p><strong>Status:</strong> Approved</p>
       <p><strong>Note:</strong> Please contact admin for actual amount</p>
   `;
-  
+
   showModal(paymentModal);
 }
 
 // Utility Functions
 function showModal(modal) {
-  if (modal) {
-    console.log(`🔄 Showing modal: ${modal.id}`);
+  if (!modal) return;
+
+  modal.classList.add("show");
+
+  // 🧠 Use flex centering for certain modals
+  const flexModals = ["login-modal", "signup-modal", "account-modal", "payment-modal"];
+  if (flexModals.includes(modal.id)) {
     modal.style.display = "flex";
+  } else {
+    modal.style.display = "block";
   }
+
+  document.body.style.overflow = "hidden";
 }
 
 function closeModal(modal) {
-  if (modal) {
-    console.log(`🔄 Closing modal: ${modal.id}`);
-    modal.style.display = "none";
-  }
+  if (!modal) return;
+  modal.classList.remove("show");
+  modal.style.display = "none";
+  document.body.style.overflow = "";
 }
+
+// 🧹 Optional: close modal when clicking outside
+window.addEventListener("click", (e) => {
+  const modals = document.querySelectorAll(".modal");
+  modals.forEach((modal) => {
+    if (e.target === modal) {
+      closeModal(modal);
+    }
+  });
+});
+
 
 function toggleVisibility(el, show) {
   if (el) el.style.display = show ? "inline-block" : "none";
@@ -547,7 +590,7 @@ function initFeedbackSystem() {
     feedbackForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       console.log("📝 Feedback form submitted");
-      
+
       const rating = document.querySelector('input[name="rating"]:checked');
       const comments = document.getElementById("feedbackComments").value.trim();
       const guestID = localStorage.getItem("guestID");
