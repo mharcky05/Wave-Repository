@@ -1,4 +1,3 @@
-// ===== AMENITIES MODAL SYSTEM =====
 document.addEventListener("DOMContentLoaded", () => {
   const viewAllCard = document.querySelector(".view-all-card");
   const amenitiesModal = document.getElementById("amenities-modal");
@@ -8,93 +7,104 @@ document.addEventListener("DOMContentLoaded", () => {
   const amenitiesError = document.getElementById("amenitiesError");
   const amenitiesSearch = document.getElementById("amenitiesSearch");
   const amenitiesRefresh = document.getElementById("amenitiesRefresh");
-  const fallbackList = Array.from(
-    document.querySelectorAll("#amenitiesFallback li")
-  ).map((li) => li.textContent.trim());
 
   const AMENITIES_ENDPOINT = "/admin/amenities"; // adjust if needed
-  const POLL_INTERVAL_MS = 15000;
-  let lastAmenitiesJson = null;
   let currentAmenities = [];
-  let pollTimer = null;
 
-  // ===== Modal Control =====
-  function openModal() {
+  const fallbackList = [
+    "3 ft to 5 ft Swimming Pool",
+    "WiFi Access",
+    "1 AC Room with CR/Toilet",
+    "Gym Equipment",
+    "Microwave Oven",
+    "Minibar",
+    "Extra Mattresses",
+    "Charcoal Griller",
+    "Free Parking",
+    "Karaoke",
+    "Game Room (Billiards, Ping Pong, Darts)",
+    "Gas Stove",
+    '65" LED Smart TV',
+    "Refrigerator",
+    "Outdoor Shower Area",
+    "24/7 CCTV Security"
+  ];
+
+  // Open / Close modal
+  const openModal = () => {
     amenitiesModal.classList.add("active");
-    amenitiesModal.setAttribute("aria-hidden", "false");
     loadAmenities();
-  }
-
-  function closeModal() {
-    amenitiesModal.classList.remove("active");
-    amenitiesModal.setAttribute("aria-hidden", "true");
-  }
+  };
+  const closeModal = () => amenitiesModal.classList.remove("active");
 
   if (viewAllCard) viewAllCard.addEventListener("click", openModal);
   closeAmenities.addEventListener("click", closeModal);
+  window.addEventListener("keydown", e => e.key === "Escape" && amenitiesModal.classList.contains("active") && closeModal());
+  window.addEventListener("click", e => e.target === amenitiesModal && closeModal());
 
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && amenitiesModal.classList.contains("active")) closeModal();
-  });
-
-  window.addEventListener("click", (e) => {
-    if (e.target === amenitiesModal) closeModal();
-  });
-
-  // ===== Fetch Amenities =====
+  // Fetch amenities
   async function fetchAmenities() {
+    let dbItems = [];
     try {
       const res = await fetch(`${AMENITIES_ENDPOINT}?_=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      if (!Array.isArray(data)) throw new Error("Invalid response format");
-      return data.map((a) => ({
-        id: a.amenityID ?? a.id ?? null,
-        name: a.name ?? a.amenityName ?? a.amenity ?? "Untitled",
-        description: a.description ?? a.desc ?? "",
-      }));
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          dbItems = data.map((a) => ({
+            id: a.amenityID ?? a.id ?? null,
+            name: a.name ?? a.amenityName ?? a.amenity ?? "Untitled",
+            description: a.description ?? a.desc ?? "",
+          }));
+        }
+      } else {
+        console.warn("Amenities fetch failed:", res.status);
+      }
     } catch (err) {
-      console.warn("Amenities fetch failed:", err);
-      return null;
+      console.warn("Amenities fetch error:", err);
     }
+
+    // ===== Merge fallback items =====
+    const fallbackItems = fallbackList.map((name, i) => ({
+      id: `f${i}`,
+      name,
+      description: ""
+    }));
+
+    // Avoid duplicates: only add fallback items not already in dbItems
+    const merged = [...dbItems];
+    fallbackItems.forEach(fb => {
+      if (!dbItems.some(db => db.name.toLowerCase() === fb.name.toLowerCase())) {
+        merged.push(fb);
+      }
+    });
+
+    return merged;
   }
 
-  // ===== Render Amenities =====
+  // Render amenities
   function renderAmenities(items) {
     currentAmenities = items.slice();
     const query = amenitiesSearch.value.trim().toLowerCase();
-    const filtered = items.filter(
-      (it) =>
-        it.name.toLowerCase().includes(query) ||
-        (it.description && it.description.toLowerCase().includes(query))
+    const filtered = items.filter(it =>
+      it.name.toLowerCase().includes(query) ||
+      (it.description && it.description.toLowerCase().includes(query))
     );
 
-    amenitiesGrid.innerHTML = filtered
-      .map(
-        (it) => `
+    amenitiesGrid.innerHTML = filtered.map(it => `
       <div class="amenity-item" data-id="${escapeHtml(it.id)}" tabindex="0">
         <div class="amenity-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div>
           <div class="amenity-title">${escapeHtml(it.name)}</div>
-          ${
-            it.description
-              ? `<div class="amenity-desc">${escapeHtml(it.description)}</div>`
-              : ""
-          }
+          ${it.description ? `<div class="amenity-desc">${escapeHtml(it.description)}</div>` : ""}
         </div>
-      </div>`
-      )
-      .join("");
+      </div>
+    `).join("");
 
-    amenitiesCount.textContent = `${filtered.length} amenit${
-      filtered.length === 1 ? "y" : "ies"
-    } available`;
+    amenitiesCount.textContent = `${filtered.length} amenit${filtered.length === 1 ? "y" : "ies"} available`;
   }
 
   function escapeHtml(str = "") {
@@ -106,52 +116,24 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  // ===== Fallback =====
-  function renderFallback() {
-    renderAmenities(fallbackList.map((t, i) => ({ id: `f${i}`, name: t })));
-    amenitiesError.hidden = false;
-  }
-
-  // ===== Loader =====
+  // Load amenities
   async function loadAmenities() {
     amenitiesError.hidden = true;
     amenitiesCount.textContent = "Loading amenities...";
     const items = await fetchAmenities();
     if (!items) {
-      renderFallback();
+      amenitiesGrid.innerHTML = "<p>No amenities available.</p>";
+      amenitiesError.hidden = false;
       return;
     }
-
-    const json = JSON.stringify(items);
-    if (json !== lastAmenitiesJson) {
-      lastAmenitiesJson = json;
-      renderAmenities(items);
-    } else {
-      renderAmenities(items);
-    }
+    renderAmenities(items);
   }
 
-  // ===== Search + Refresh =====
+  // Search & Refresh
   amenitiesSearch.addEventListener("input", () => renderAmenities(currentAmenities));
-
   amenitiesRefresh.addEventListener("click", async () => {
     amenitiesRefresh.disabled = true;
     await loadAmenities();
-    setTimeout(() => (amenitiesRefresh.disabled = false), 600);
-  });
-
-  // ===== Auto Refresh =====
-  function startPolling() {
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(() => {
-      if (amenitiesModal.classList.contains("active")) loadAmenities();
-    }, POLL_INTERVAL_MS);
-  }
-
-  startPolling();
-  loadAmenities();
-
-  window.addEventListener("beforeunload", () => {
-    if (pollTimer) clearInterval(pollTimer);
+    amenitiesRefresh.disabled = false;
   });
 });

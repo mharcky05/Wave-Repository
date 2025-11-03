@@ -77,15 +77,5 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     }
-
-    // ===== CALENDAR LINK PLACEHOLDER (FOR FUTURE IMPLEMENTATION) =====
-    const calendarLink = document.querySelector("a[href='#calendar']");
-    if (calendarLink) {
-        calendarLink.addEventListener("click", function(e) {
-            e.preventDefault();
-            alert("📅 Calendar feature coming soon!");
-        });
-    }
-
     console.log("✅ Navigation system loaded successfully!");
 });

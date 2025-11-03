@@ -672,14 +672,6 @@ select {
   pointer-events: auto !important;
 }
 
-/* FOCUS STATES FOR ACCESSIBILITY */
-button:focus,
-input:focus,
-select:focus {
-  outline: 2px solid #ed444d;
-  outline-offset: 2px;
-}
-
 /* LOADING STATE */
 .loading {
   opacity: 0.7;

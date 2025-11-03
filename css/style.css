@@ -402,14 +402,14 @@ body {
 /* BOTTOM ROW: TOTAL + BUTTON */
 .bottom-info {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
 }
 
 .bottom-info .total {
   font-weight: 700;
-  font-size: 18px;
+  font-size: 20px;
   color: #333;
 }
 
@@ -441,14 +441,6 @@ body {
   font-size: 50px;
   font-weight: bold;
   margin-bottom: 15px;
-}
-
-.amenities-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 20px;
-  justify-items: center;
-  align-items: start;
 }
 
 .amenity-card {

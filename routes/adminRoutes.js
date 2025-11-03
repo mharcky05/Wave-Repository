@@ -127,19 +127,45 @@ router.put("/bookings/:id/status", (req, res) => {
   });
 });
 
-// // ==========================
-// // 📦 GET ALL PACKAGES
-// // ==========================
-// router.get("/packages", (req, res) => {
-//   const sql = "SELECT * FROM tbl_packages";
-//   db.query(sql, (err, results) => {
-//     if (err) {
-//       console.error("❌ DB error (packages):", err);
-//       return res.status(500).json({ message: "Database error" });
-//     }
-//     res.json(results);
-//   });
-// });
+// ==========================
+// 📦 GET ALL PACKAGES
+// ==========================
+router.get("/packages", (req, res) => {
+  const sql = "SELECT * FROM tbl_packages";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("❌ DB error (packages):", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+router.put("/packages/:id", (req, res) => {
+  const { id } = req.params;
+  const { price, paxNo, extraHour, extraPerson } = req.body;
+
+  // Validate inputs
+  if (
+    price === undefined ||
+    paxNo === undefined ||
+    extraHour === undefined ||
+    extraPerson === undefined
+  ) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const sql =
+    "UPDATE tbl_packages SET price=?, paxNo=?, extraHour=?, extraPerson=? WHERE id=?";
+  db.query(sql, [price, paxNo, extraHour, extraPerson, id], (err, result) => {
+    if (err) {
+      console.error("❌ DB error (update package):", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    res.json({ success: true, message: "Package updated successfully" });
+  });
+});
 
 // ============================
 // 🏝 AMENITIES MANAGEMENT
@@ -184,7 +210,7 @@ router.put("/amenities/:id", (req, res) => {
     return res.status(400).json({ message: "Name and description required" });
   }
 
-  const sql = `UPDATE tbl_amenities SET name = ?, description = ? WHERE amenityID = ?`;
+  const sql = `UPDATE tbl_amenities SET amenityName = ?, description = ? WHERE amenityID = ?`;
   db.query(sql, [name, description, amenityID], (err, result) => {
     if (err) {
       console.error("❌ DB error (update amenity):", err);

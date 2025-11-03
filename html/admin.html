@@ -66,29 +66,25 @@
     <section id="packages" class="tab-section">
       <div class="header-flex">
         <h2>Packages</h2>
-        <button id="addPackageBtn" class="add-btn">+ Add Package</button>
       </div>
-      <table>
+      <table id="packageTable">
         <thead>
           <tr>
-            <th>Package Type</th>
+            <th>Package Name</th>
             <th>Description</th>
             <th>Price</th>
-            <th>Pax No.</th>
-            <th>Extra Hour Price</th>
-            <th>Extra Person Price</th>
-            <th>Max Capacity</th>
+            <th>Max Pax</th>
+            <th>Extra Hour</th>
+            <th>Extra Person</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="packageTableBody">
-          <tr>
-            <td colspan="7" style="text-align: center">No packages yet</td>
-          </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- Amenities -->
+    <!-- ===== AMENITIES TAB ===== -->
     <section id="amenities" class="tab-section">
       <div class="header-flex">
         <h2>Amenities</h2>
@@ -98,7 +94,6 @@
       <table class="admin-table">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Amenity</th>
             <th>Description</th>
             <th>Created At</th>
@@ -107,7 +102,7 @@
         </thead>
         <tbody id="amenityTableBody">
           <tr>
-            <td colspan="5" style="text-align: center">Loading amenities...</td>
+            <td colspan="5" style="text-align:center;">Loading amenities...</td>
           </tr>
         </tbody>
       </table>
@@ -117,9 +112,6 @@
     <section id="feedback" class="tab-section">
       <div class="header-flex">
         <h2>Guests' Feedback</h2>
-        <button id="requestFeedbackBtn" class="add-btn">
-          Generate Feedback Form
-        </button>
       </div>
 
       <!-- Feedback Request Modal -->
@@ -208,30 +200,28 @@
     </div>
   </div>
 
-  <!-- ADD AMENITY MODAL -->
-  <div id="amenityModal" class="modal">
-    <div class="modal-content">
-      <h3>Add New Amenity</h3>
-      <form id="amenityForm">
-        <input type="text" placeholder="Name" required />
-        <input type="text" placeholder="Description" required />
-        <button type="submit">Save Amenity</button>
-        <button type="button" class="close-btn">Cancel</button>
-      </form>
-    </div>
-  </div>
+  <!-- ===== ADD AMENITY MODAL ===== -->
+  <div id="amenityModal" class="modal-overlay">
+    <div class="modal-wrapper">
+      <form id="amenityForm" class="modal-content">
+        <!-- Header -->
+        <div class="modal-header">
+          <h2>Add Amenity</h2>
+          <button type="button" class="close-btn">&times;</button>
+        </div>
 
-  <!-- EDIT AMENITY MODAL -->
-  <div id="editAmenityModal" class="modal">
-    <div class="modal-content">
-      <h3>Edit Amenity</h3>
-      <form id="editAmenityForm">
-        <input type="hidden" id="editAmenityID" />
-        <input type="text" id="editAmenityName" required />
-        <textarea id="editAmenityDesc" required></textarea>
-        <div class="modal-actions">
-          <button type="button" class="btn secondary close-btn">Cancel</button>
-          <button type="submit" class="btn primary">Save Changes</button>
+        <!-- Body -->
+        <div class="modal-body">
+          <label for="name">Amenity Name</label>
+          <input id="name" name="name" type="text" placeholder="Enter name" required />
+
+          <label for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Enter description" rows="4" required></textarea>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button type="submit" class="save-btn">Add Amenities</button>
         </div>
       </form>
     </div>
