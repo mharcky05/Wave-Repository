@@ -50,7 +50,7 @@ router.post("/process", (req, res) => {
       status = "Completed";
       remarks = "Full payment received";
     } else {
-      status = "Pending Balance";
+      status = "Pending Completion";
       remarks = `Partial payment - ${req.body.paymentMethod}`;
     }
     const sql = `

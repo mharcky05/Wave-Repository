@@ -206,13 +206,7 @@ async function loadNotifications() {
       li.setAttribute("data-notifid", notif.notifID);
       li.setAttribute("data-read", notif.isRead);
 
-      if (!notif.isRead && notif.message.toLowerCase().includes("feedback")) {
-        const feedbackModal = document.getElementById("feedback-modal");
-        if (feedbackModal) {
-          showModal(feedbackModal);
-          console.log("🪄 Auto-opened feedback modal for new feedback notification");
-        }
-      }
+      
 
       // ✅ Apply handled state on load
       if (notif.isHandled) {

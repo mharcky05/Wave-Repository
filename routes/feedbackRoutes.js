@@ -51,21 +51,31 @@ router.get("/", (req, res) => {
 //       return res.status(500).json({ message: "Failed to send feedback request" });
 //     }
 
-//     res.json({ 
-//       success: true, 
-//       message: "Feedback request sent to guest" 
+//     res.json({
+//       success: true,
+//       message: "Feedback request sent to guest"
 //     });
 //   });
 // });
+
+// After successful feedback submission, mark notification as handled
+const markNotifSQL = `
+  UPDATE tbl_notifications 
+  SET feedbackSubmitted = 1 
+  WHERE guestID = ? AND message LIKE '%feedback%' AND feedbackSubmitted = 0
+`;
+db.query(markNotifSQL, [guestID], (err) => {
+  if (err) console.error("Error marking notification:", err);
+});
 
 // 🟢 SUBMIT FEEDBACK (from guest)
 router.post("/submit", (req, res) => {
   const { guestID, bookingID, rating, comments } = req.body;
 
   if (!guestID || !rating || !comments) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Guest ID, rating, and comments are required" 
+    return res.status(400).json({
+      success: false,
+      message: "Guest ID, rating, and comments are required",
     });
   }
 
@@ -77,15 +87,15 @@ router.post("/submit", (req, res) => {
   db.query(sql, [guestID, bookingID, rating, comments], (err, result) => {
     if (err) {
       console.error("❌ Error submitting feedback:", err);
-      return res.status(500).json({ 
-        success: false, 
-        message: "Failed to submit feedback" 
+      return res.status(500).json({
+        success: false,
+        message: "Failed to submit feedback",
       });
     }
 
-    res.json({ 
-      success: true, 
-      message: "Thank you for your feedback!" 
+    res.json({
+      success: true,
+      message: "Thank you for your feedback!",
     });
   });
 });
