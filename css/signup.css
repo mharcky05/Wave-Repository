@@ -75,7 +75,7 @@
 }
 
 #signup-modal input:focus {
-    border-color: #5b85a8;
+    border-color: #b81d24;
     outline: none;
 }
 
@@ -98,7 +98,7 @@
 
 /* SUBMIT BUTTON */
 #signup-modal .submit-btn {
-    background: #5b85a8;
+    background: #a0181e;
     color: white;
     border: none;
     padding: 12px;
@@ -110,7 +110,7 @@
 }
 
 #signup-modal .submit-btn:hover {
-    background: #4a7191;
+    background: #b81d24;
 }
 
 /* SWITCH TO LOGIN TEXT */
@@ -122,7 +122,7 @@
 }
 
 #signup-modal .old-account .switch {
-    color: #5b85a8;
+    color: #a0181e;
     cursor: pointer;
     font-weight: 600;
     transition: color 0.2s ease;
@@ -133,7 +133,7 @@
 
 /* HOVER UNDERLINE EFFECT FOR LOGIN LINK */
 #signup-modal .old-account .switch:hover {
-    color: #3c5c78;
+    color: #b81d24;
 }
 
 #signup-modal .old-account .switch::after {
@@ -143,7 +143,7 @@
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #3c5c78;
+    background-color: #a0181e;
     transition: width 0.3s ease;
 }
 

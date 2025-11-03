@@ -70,7 +70,7 @@
 }
 
 #login-modal input:focus {
-    border-color: #5b85a8;
+    border-color: #b81d24;
     outline: none;
 }
 
@@ -103,7 +103,7 @@
 }
 
 .forgot a {
-    color: #44627a;
+    color: #a0181e;
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
@@ -111,7 +111,7 @@
 }
 
 .forgot a:hover {
-    color: #5b85a8;
+    color: #b81d24;
 }
 
 /* HOVER UNDERLINE EFFECT FOR FORGOT PASSWORD LINK */
@@ -122,7 +122,7 @@
     height: 1.5px;
     bottom: 0;
     left: 0;
-    background-color: #5b85a8;
+    background-color: #a0181e;
     transition: width 0.3s ease;
 }
 
@@ -140,7 +140,7 @@
 
 /* LOGIN BUTTON */
 .submit-btn.login {
-    background: #44627a;
+    background: #a0181e;
     color: #fff;
     border: none;
     padding: 12px;
@@ -152,29 +152,12 @@
 }
 
 .submit-btn.login:hover {
-    background: #5b85a8;
-}
-
-/* DIVIDER STYLES */
-.divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #777;
-    font-size: 13px;
-    margin: 5px 0;
-}
-
-.divider::before,
-.divider::after {
-    content: "";
-    flex: 1;
-    border-bottom: 1px solid #aaa;
+    background: #b81d24;
 }
 
 /* SIGNUP SWITCH LINK STYLES */
 .signup .switch {
-    color: #44627a;
+    color: #a0181e;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -184,7 +167,7 @@
 }
 
 .signup .switch:hover {
-    color: #5b85a8;
+    color: #b81d24;
 }
 
 /* HOVER UNDERLINE EFFECT FOR SIGNUP LINK */
@@ -195,7 +178,7 @@
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #5b85a8;
+    background-color: #b81d24;
     transition: width 0.3s ease;
 }
 

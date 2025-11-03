@@ -97,13 +97,13 @@
   padding: 5px 10px;
   border-radius: 5px;
   border: none;
-  background: #3498db;
+  background: #7b0e14;
   color: #fff;
   cursor: pointer;
 }
 
 .amenities-controls button:hover {
-  background: #2980b9;
+  background: #a01c23;
 }
 
 .amenities-controls {
@@ -124,13 +124,13 @@
   padding: 5px 10px;
   border-radius: 5px;
   border: none;
-  background: #3498db;
+  background: #a01c23;
   color: #fff;
   cursor: pointer;
 }
 
 .amenities-controls button:hover {
-  background: #2980b9;
+  background: #b81d24;
 }
 
 .view-all-card {

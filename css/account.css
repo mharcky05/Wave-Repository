@@ -66,22 +66,7 @@
   margin-bottom: 25px;
   text-align: center;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
-}
-
-/* AVATAR CIRCLE */
-#account-modal .avatar-circle {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #67b26f, #4ca2cd);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 30px;
-  margin: 0 auto 15px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-}
+} 
 
 /* ACCOUNT INFO */
 #account-modal .account-info {
@@ -149,7 +134,7 @@
 }
 
 #account-modal .edit-btn {
-  background: #0275d8;
+  background: #441514;
   color: #fff;
   border: none;
   padding: 12px 24px;
@@ -162,12 +147,12 @@
 }
 
 #account-modal .edit-btn:hover {
-  background: #025aa5;
+  background: #7b0e14;
   transform: translateY(-2px);
 }
 
 #account-modal .logout-btn {
-  background: linear-gradient(135deg, #ff4e50, #f9d423);
+  background: linear-gradient(135deg, #b81d24, #ed444d);
   color: #fff;
   border: none;
   padding: 12px 24px;
@@ -181,7 +166,7 @@
 
 #account-modal .logout-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(249, 212, 35, 0.4);
+  box-shadow: 0 6px 15px rgba(200, 200, 200, 0.4);
 }
 
 /* SAVE AND CANCEL BUTTONS */
@@ -200,12 +185,12 @@
 
 /* SAVE BUTTON */
 #account-modal .save-btn {
-  background: linear-gradient(135deg, #56ab2f, #a8e063);
+  background: #441514;
 }
 
 #account-modal .save-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(168, 224, 99, 0.4);
+  box-shadow: 0 6px 15px rgba(200, 200, 200, 0.4);
 }
 
 /* CANCEL BUTTON */
@@ -221,10 +206,6 @@
 /* EDIT FORM SPECIFIC STYLES */
 #account-modal .edit-form .account-card {
   text-align: left;
-}
-
-#account-modal .edit-form .avatar-circle {
-  background: linear-gradient(135deg, #ff7e5f, #feb47b);
 }
 
 /* FORM LAYOUT IMPROVEMENTS */
@@ -284,7 +265,7 @@
 }
 
 .notif-btn:hover {
-  color: #007bff;
+  color: #b81d24;
 }
 
 /* BADGE - FACEBOOK STYLE */
@@ -375,7 +356,7 @@
 
 .notif-item.unread {
   background-color: #f0f8ff;
-  border-left: 3px solid #1877f2;
+  border-left: 3px solid #b81d24;
 }
 
 .notif-item.read {
@@ -470,7 +451,7 @@
 }
 
 #payment-modal button {
-  background: linear-gradient(135deg, #007bff, #00c6ff);
+  background: linear-gradient(135deg, #b81d24, #a01c23);
   color: white;
   border: none;
   font-weight: 600;
@@ -520,7 +501,7 @@
 .notif-item[data-type="feedback"] {
   cursor: pointer;
   background-color: #f7f7ff;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid #a01c23;
 }
 .notif-item[data-type="feedback"]:hover {
   background-color: #eef3ff;

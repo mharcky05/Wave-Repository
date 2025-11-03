@@ -108,7 +108,7 @@ body.modal-open {
 .choose-package-btn {
   margin-top: 12px;
   padding: 8px 14px;
-  background: #0a7b83;
+  background: #a01c23;
   color: white;
   border: none;
   border-radius: 8px;
@@ -118,7 +118,7 @@ body.modal-open {
 }
 
 .choose-package-btn:hover { 
-  background: #09666d; 
+  background: #b81d24; 
 }
 
 /* ===== STEP 2: BOOKING FORM ===== */
@@ -227,12 +227,12 @@ body.modal-open {
 }
 
 .btn.confirm {
-  background-color: #191852;
+  background-color: #7b0e14;
   color: white;
 }
 
 .btn.confirm:hover { 
-  background-color: #0f3b6b; 
+  background-color: #a01c23; 
 }
 
 .btn.cancel {

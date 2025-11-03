@@ -59,14 +59,6 @@ router.get("/", (req, res) => {
 // });
 
 // After successful feedback submission, mark notification as handled
-const markNotifSQL = `
-  UPDATE tbl_notifications 
-  SET feedbackSubmitted = 1 
-  WHERE guestID = ? AND message LIKE '%feedback%' AND feedbackSubmitted = 0
-`;
-db.query(markNotifSQL, [guestID], (err) => {
-  if (err) console.error("Error marking notification:", err);
-});
 
 // 🟢 SUBMIT FEEDBACK (from guest)
 router.post("/submit", (req, res) => {
@@ -92,6 +84,16 @@ router.post("/submit", (req, res) => {
         message: "Failed to submit feedback",
       });
     }
+
+    const markNotifSQL = `
+      UPDATE tbl_notifications 
+      SET feedbackSubmitted = 1 
+      WHERE guestID = ? AND message LIKE '%feedback%' AND feedbackSubmitted = 0
+    `;
+    
+    db.query(markNotifSQL, [guestID], (err) => {
+      if (err) console.error("Error marking notification:", err);
+    });
 
     res.json({
       success: true,
