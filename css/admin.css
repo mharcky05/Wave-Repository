@@ -222,6 +222,78 @@ tr.completed {
   cursor: default;
 }
 
+/* ===== PACKAGE EDIT/SAVE BUTTONS ===== */
+.edit-package-btn {
+  padding: 0.5rem 1rem;
+  background-color: #b81d24;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  min-width: 70px;
+}
+
+.edit-package-btn:hover {
+  background-color: #910f18;
+  transform: scale(1.05);
+}
+
+.edit-package-btn:active {
+  transform: scale(0.95);
+}
+
+/* Save button state - green when saving */
+.edit-package-btn.save-mode {
+  background-color: #28a745;
+}
+
+.edit-package-btn.save-mode:hover {
+  background-color: #218838;
+}
+
+/* ===== AMENITIES EDIT/DELETE BUTTONS ===== */
+.edit-amenity-btn,
+.delete-amenity-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  margin: 0 2px;
+}
+
+.edit-amenity-btn {
+  background-color: #b81d24;
+  color: white;
+}
+
+.edit-amenity-btn:hover {
+  background-color: #910f18;
+  transform: scale(1.05);
+}
+
+.delete-amenity-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-amenity-btn:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.edit-amenity-btn:disabled,
+.delete-amenity-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* ===== MODAL AND POPUP STYLES ===== */
 .modal,
 #amenityModal,

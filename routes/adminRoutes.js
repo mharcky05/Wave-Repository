@@ -27,7 +27,6 @@ router.post("/login", async (req, res) => {
   });
 });
 
-
 // =======================
 // GET ALL BOOKINGS (Guest Records Tab)
 // =======================
@@ -141,9 +140,15 @@ router.get("/packages", (req, res) => {
   });
 });
 
+// ==========================
+// 📦 UPDATE PACKAGE - FIXED VERSION
+// ==========================
 router.put("/packages/:id", (req, res) => {
-  const { id } = req.params;
+  const packageID = req.params.id;
   const { price, paxNo, extraHour, extraPerson } = req.body;
+
+  console.log("🔄 UPDATING PACKAGE - PackageID:", packageID);
+  console.log("📊 Update Data:", { price, paxNo, extraHour, extraPerson });
 
   // Validate inputs
   if (
@@ -155,12 +160,23 @@ router.put("/packages/:id", (req, res) => {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  const sql =
-    "UPDATE tbl_packages SET price=?, paxNo=?, extraHour=?, extraPerson=? WHERE id=?";
-  db.query(sql, [price, paxNo, extraHour, extraPerson, id], (err, result) => {
+  // ✅ CORRECT SQL QUERY - Using packageID and correct column names
+  const sql = "UPDATE tbl_packages SET price=?, paxNo=?, addHourPrice=?, addPersonPrice=? WHERE packageID=?";
+  
+  console.log("🔧 Executing SQL:", sql);
+  console.log("📋 With values:", [price, paxNo, extraHour, extraPerson, packageID]);
+
+  db.query(sql, [price, paxNo, extraHour, extraPerson, packageID], (err, result) => {
     if (err) {
       console.error("❌ DB error (update package):", err);
-      return res.status(500).json({ message: "Database error" });
+      console.error("❌ Error details:", err.message);
+      return res.status(500).json({ message: "Database error: " + err.message });
+    }
+
+    console.log("✅ DB Result:", result);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Package not found" });
     }
 
     res.json({ success: true, message: "Package updated successfully" });
@@ -191,7 +207,7 @@ router.post("/amenities", (req, res) => {
     return res.status(400).json({ message: "Name and description required" });
   }
 
-  const sql = `INSERT INTO tbl_amenities (name, description) VALUES (?, ?)`;
+  const sql = `INSERT INTO tbl_amenities (amenityName, description) VALUES (?, ?)`;
   db.query(sql, [name, description], (err, result) => {
     if (err) {
       console.error("❌ DB error (insert amenity):", err);
@@ -225,19 +241,23 @@ router.put("/amenities/:id", (req, res) => {
   });
 });
 
-// // GET all guest accounts
-// router.get("/guests", (req, res) => {
-//   const sql = "SELECT guestID, firstName, lastName, email, contactNo FROM tbl_guests";
+// Delete amenity
+router.delete("/amenities/:id", (req, res) => {
+  const amenityID = req.params.id;
 
-//   db.query(sql, (err, results) => {
-//     if (err) {
-//       console.error("❌ DB error:", err);
-//       return res.status(500).json({ message: "Database error" });
-//     }
+  const sql = `DELETE FROM tbl_amenities WHERE amenityID = ?`;
+  db.query(sql, [amenityID], (err, result) => {
+    if (err) {
+      console.error("❌ DB error (delete amenity):", err);
+      return res.status(500).json({ message: "Database error" });
+    }
 
-//     res.json(results);
-//   });
-// });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Amenity not found" });
+    }
 
+    res.json({ message: "Amenity deleted successfully" });
+  });
+});
 
 module.exports = router;

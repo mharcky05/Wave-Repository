@@ -14,7 +14,7 @@ const fallbackList = [
   '65" LED Smart TV',
   "Refrigerator",
   "Outdoor Shower Area",
-  "24/7 CCTV Security"
+  "24/7 CCTV Security",
 ];
 
 // ===== ADMIN PANEL MANAGEMENT SYSTEM =====
@@ -90,90 +90,58 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => popup.remove(), 5000);
   }
 
-  async function loadPackages() {
-    const tableBody = document.getElementById("packageTableBody");
-    if (!tableBody) return;
+ async function loadPackages() {
+  const tableBody = document.getElementById("packageTableBody");
+  if (!tableBody) return;
 
-    let packages = [];
-    try {
-      // Fetch packages from backend (or use static fallback for now)
-      const res = await fetch("http://localhost:3000/admin/packages");
-      if (res.ok) packages = await res.json();
-      else console.warn("Failed to fetch packages:", res.status);
-    } catch (err) {
-      console.warn("Fetch error:", err);
-    }
-
-    // Fallback packages if DB is empty
-    if (!packages.length) {
-      packages = [
-        {
-          name: "Daytime Package",
-          description: "9:00 AM - 5:00 PM",
-          price: 5500,
-          paxNo: 20,
-          extraHour: 500,
-          extraPerson: 150,
-          maxCapacity: 20
-        },
-        {
-          name: "Overnight Package",
-          description: "7:00 PM - 7:00 AM",
-          price: 6500,
-          paxNo: 15,
-          extraHour: 500,
-          extraPerson: 150,
-          maxCapacity: 15
-        },
-        {
-          name: "One-Day Package",
-          description: "9:00 AM - 7:00 AM",
-          price: 9000,
-          paxNo: 15,
-          extraHour: 500,
-          extraPerson: 150,
-          maxCapacity: 15
-        }
-      ];
-    }
-
-    // Render table
-    tableBody.innerHTML = "";
-    packages.forEach(pkg => {
-      const tr = document.createElement("tr");
-      tr.dataset.id = pkg.id;
-
-      tr.innerHTML = `
-    <td>${pkg.name}</td>
-    <td>${pkg.description}</td>
-    <td class="price">₱${Number(pkg.price).toLocaleString()}</td>
-    <td class="paxNo">${pkg.paxNo}</td>
-    <td class="extraHour">₱${Number(pkg.extraHour).toLocaleString()}</td>
-    <td class="extraPerson">₱${Number(pkg.extraPerson).toLocaleString()}</td>
-    <td>
-      <button class="edit-package-btn">Edit</button>
-    </td>
-  `;
-      tableBody.appendChild(tr);
-    });
-
-    if (!packages.length) {
-      tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No packages yet</td></tr>`;
-    }
+  let packages = [];
+  try {
+    const res = await fetch("http://localhost:3000/admin/packages");
+    if (res.ok) packages = await res.json();
+    else console.warn("Failed to fetch packages:", res.status);
+  } catch (err) {
+    console.warn("Fetch error:", err);
   }
 
-  tableBody.querySelectorAll(".edit-package-btn").forEach(btn => {
+  // Render table
+  tableBody.innerHTML = "";
+  packages.forEach((pkg) => {
+    const tr = document.createElement("tr");
+    tr.dataset.id = pkg.packageID;
+
+    tr.innerHTML = `
+      <td>${pkg.packageType.replace(/ Package/gi, '')}</td>
+      <td>${pkg.description}</td>
+      <td class="price">₱${Number(pkg.price).toLocaleString()}</td>
+      <td class="paxNo">${pkg.paxNo}</td>
+      <td class="extraHour">₱${Number(pkg.addHourPrice).toLocaleString()}</td>
+      <td class="extraPerson">₱${Number(pkg.addPersonPrice).toLocaleString()}</td>
+      <td>
+        <button class="edit-package-btn">Edit</button>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  if (!packages.length) {
+    tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No packages yet</td></tr>`;
+  }
+
+  // ✅ ADD EVENT LISTENERS FOR EDIT BUTTONS
+  document.querySelectorAll(".edit-package-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const row = btn.closest("tr");
       const pkgID = row.dataset.id;
 
       if (btn.textContent === "Edit") {
-        row.querySelector(".price").innerHTML = `<input type="number" value="${row.querySelector(".price").textContent.replace(/₱|,/g, '')}">`;
+        // Convert to edit mode
+        row.querySelector(".price").innerHTML = `<input type="number" value="${row.querySelector(".price").textContent.replace(/₱|,/g, "")}">`;
         row.querySelector(".paxNo").innerHTML = `<input type="number" value="${row.querySelector(".paxNo").textContent}">`;
-        row.querySelector(".extraHour").innerHTML = `<input type="number" value="${row.querySelector(".extraHour").textContent.replace(/₱|,/g, '')}">`;
-        row.querySelector(".extraPerson").innerHTML = `<input type="number" value="${row.querySelector(".extraPerson").textContent.replace(/₱|,/g, '')}">`;
+        row.querySelector(".extraHour").innerHTML = `<input type="number" value="${row.querySelector(".extraHour").textContent.replace(/₱|,/g, "")}">`;
+        row.querySelector(".extraPerson").innerHTML = `<input type="number" value="${row.querySelector(".extraPerson").textContent.replace(/₱|,/g, "")}">`;
         btn.textContent = "Save";
       } else {
+        // Save changes
         const updatedData = {
           price: Number(row.querySelector(".price input").value),
           paxNo: Number(row.querySelector(".paxNo input").value),
@@ -182,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-          const res = await fetch(`/admin/packages/${pkgID}`, {
+          const res = await fetch(`http://localhost:3000/admin/packages/${pkgID}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedData)
@@ -206,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-
+}
 
   // ===== AMENITY MANAGEMENT MODAL =====
   console.log("Add Amenity button:", document.getElementById("addAmenityBtn"));
@@ -226,12 +194,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Merge fallback items
     const mergedAmenities = [...amenities];
-    fallbackList.forEach(name => {
-      if (!mergedAmenities.some(a => a.amenityName?.toLowerCase() === name.toLowerCase())) {
+    fallbackList.forEach((name) => {
+      if (
+        !mergedAmenities.some(
+          (a) => a.amenityName?.toLowerCase() === name.toLowerCase()
+        )
+      ) {
         mergedAmenities.push({
           amenityID: ``,
           amenityName: name,
-          description: "-"
+          description: "-",
         });
       }
     });
@@ -252,8 +224,12 @@ document.addEventListener("DOMContentLoaded", () => {
     <td>${a.description || ""}</td>
     <td>${a.createdAt ? new Date(a.createdAt).toLocaleDateString() : "-"}</td>
     <td>
-      <button class="edit-amenity-btn" data-id="${a.amenityID || ""}" ${isFallback ? "disabled" : ""}>Edit</button>
-      <button class="delete-amenity-btn" data-id="${a.amenityID || ""}" ${isFallback ? "disabled" : ""}>Delete</button>
+      <button class="edit-amenity-btn" data-id="${a.amenityID || ""}" ${
+        isFallback ? "disabled" : ""
+      }>Edit</button>
+      <button class="delete-amenity-btn" data-id="${a.amenityID || ""}" ${
+        isFallback ? "disabled" : ""
+      }>Delete</button>
     </td>
   `;
       tableBody.appendChild(row);
@@ -271,20 +247,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add Amenity button
   if (addBtn && modal && form) {
-    addBtn.addEventListener("click", () => modal.style.display = "flex");
-    modal.querySelector(".close-btn").addEventListener("click", () => modal.style.display = "none");
+    addBtn.addEventListener("click", () => (modal.style.display = "flex"));
+    modal
+      .querySelector(".close-btn")
+      .addEventListener("click", () => (modal.style.display = "none"));
 
-    form.addEventListener("submit", async e => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = form.querySelector('input[name="name"]').value.trim();
-      const description = form.querySelector('textarea[name="description"]').value.trim();
+      const description = form
+        .querySelector('textarea[name="description"]')
+        .value.trim();
       if (!name) return alert("Amenity name is required.");
 
       try {
         const res = await fetch("/admin/amenities", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amenityName, description })
+          body: JSON.stringify({ amenityName, description }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Failed to add amenity");
@@ -361,13 +341,14 @@ async function loadBookings() {
         <td class="status-cell">${b.status}</td>
         <td>${formatDate(b.createdAt)}</td>
         <td class="action-buttons">
-          ${b.status === "Pending"
-          ? `
+          ${
+            b.status === "Pending"
+              ? `
                 <button class="approve-btn" data-id="${b.bookingID}" title="Approve">✔</button>
                 <button class="decline-btn" data-id="${b.bookingID}" title="Decline">✖</button>
               `
-          : `<span>${b.status}</span>`
-        }
+              : `<span>${b.status}</span>`
+          }
         </td>
       `;
       tableBody.appendChild(row);
@@ -487,14 +468,16 @@ async function loadTransactions() {
         <td class="price">₱${Number(t.amount).toLocaleString()}</td>
         <td>${t.paymentMethod}</td>
         <td>${formatDate(t.transactionDate)}</td>
-        <td class="status-cell ${t.status === "Completed" ? "completed" : "pending"
+        <td class="status-cell ${
+          t.status === "Completed" ? "completed" : "pending"
         }">${t.status}</td>
         <td>${t.remarks || "First Payment"}</td>
         <td class="action-buttons">
-          ${isPending
-          ? `<button class="complete-btn" data-id="${t.transactionID}" title="Mark as Completed">✓ Complete</button>`
-          : `<span class="completed-text">Completed</span>`
-        }
+          ${
+            isPending
+              ? `<button class="complete-btn" data-id="${t.transactionID}" title="Mark as Completed">✓ Complete</button>`
+              : `<span class="completed-text">Completed</span>`
+          }
         </td>
       `;
       tableBody.appendChild(row);
@@ -573,21 +556,28 @@ async function loadFeedbacks() {
       return;
     }
 
-    feedbacks.forEach(feedback => {
+    feedbacks.forEach((feedback) => {
       const feedbackCard = document.createElement("div");
       feedbackCard.className = "feedback-card";
 
       // Star rating
-      const stars = '⭐'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating);
+      const stars =
+        "⭐".repeat(feedback.rating) + "☆".repeat(5 - feedback.rating);
 
       feedbackCard.innerHTML = `
         <div class="feedback-header">
-          <strong>${feedback.guestName || 'Anonymous'}</strong>
-          <span class="feedback-date">${new Date(feedback.createdAt).toLocaleDateString()}</span>
+          <strong>${feedback.guestName || "Anonymous"}</strong>
+          <span class="feedback-date">${new Date(
+            feedback.createdAt
+          ).toLocaleDateString()}</span>
         </div>
         <div class="feedback-rating">${stars}</div>
         <div class="feedback-comments">${feedback.comments}</div>
-        ${feedback.packageName ? `<div class="feedback-booking">Package: ${feedback.packageName}</div>` : ''}
+        ${
+          feedback.packageName
+            ? `<div class="feedback-booking">Package: ${feedback.packageName}</div>`
+            : ""
+        }
       `;
 
       feedbacksList.appendChild(feedbackCard);
@@ -696,3 +686,4 @@ async function loadGuestsForFeedback() {
     console.error("❌ Error loading guests:", err);
   }
 }
+
