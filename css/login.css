@@ -196,4 +196,107 @@
         opacity: 1;
         transform: translateY(0);
     }
+}   
+
+/* ==================== VERIFICATION MODAL STYLES ==================== */
+.verification-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.verification-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.verification-text {
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.email-display {
+  font-weight: bold;
+  color: #2c5530;
+  margin-bottom: 25px;
+  font-size: 16px;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #e9ecef;
+}
+
+.verification-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  text-align: center;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+.verification-input:focus {
+  border-color: #4a7c59;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 124, 89, 0.25);
+}
+
+.verify-btn {
+  background: #4a7c59;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.verify-btn:hover {
+  background: #3a6b49;
+}
+
+.verification-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  font-size: 14px;
+  color: #666;
+}
+
+.resend-link {
+  color: #4a7c59;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.resend-link:hover {
+  text-decoration: underline;
+}
+
+/* User Type Dropdown Styles */
+.user-type-selector {
+    margin-bottom: 15px;
+}
+
+.user-type-selector label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.user-type-selector select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.user-type-selector select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }

@@ -101,7 +101,9 @@ function setupPaymentConfirmation() {
     const activeBtn = document.querySelector(".payment-btn.active");
     const amount = parseFloat(document.getElementById("paymentAmount").value);
 
-    const guestID = document.getElementById("paymentGuestID").value || localStorage.getItem("guestID");
+    const guestID =
+      document.getElementById("paymentGuestID").value ||
+      localStorage.getItem("guestID");
     const bookingID = document.getElementById("paymentBookingID").value;
 
     if (!activeBtn) {
@@ -117,6 +119,29 @@ function setupPaymentConfirmation() {
     if (!guestID) {
       alert("Please log in to make payment");
       return;
+    }
+
+    // ✅ ENHANCED VALIDATION - CHECK IF ALREADY PAID BEFORE PROCESSING
+    if (bookingID && bookingID !== "NO_BOOKING_ID") {
+      try {
+        const paymentCheckResponse = await fetch(`/api/payments/check/${bookingID}`);
+        if (paymentCheckResponse.ok) {
+          const paymentStatus = await paymentCheckResponse.json();
+          
+          if (paymentStatus.alreadyPaid) {
+            alert("⛔ Payment already completed for this booking!");
+            closePaymentModal();
+            
+            // DISABLE PAYMENT NOTIFICATION
+            if (window.disablePaymentNotification) {
+              window.disablePaymentNotification(bookingID);
+            }
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Error checking payment status:", error);
+      }
     }
 
     const method = activeBtn.getAttribute("data-method");
@@ -141,15 +166,23 @@ function setupPaymentConfirmation() {
 
     try {
       // ✅ Determine remarks based on full payment
-      const bookingTotal = parseFloat(document.getElementById("booking-summary-total")?.textContent.replace(/[₱,]/g, "")) || 0;
-      let remarks = amount === bookingTotal ? "Payment Completed" : `First Payment - ${method} - Complete at resort`;
+      const bookingTotal =
+        parseFloat(
+          document
+            .getElementById("booking-summary-total")
+            ?.textContent.replace(/[₱,]/g, "")
+        ) || 0;
+      let remarks =
+        amount === bookingTotal
+          ? "Payment Completed"
+          : `First Payment - ${method} - Complete at resort`;
 
       const paymentData = {
         guestID: guestID,
         bookingID: bookingID || null,
         amount: amount,
         paymentMethod: method,
-        remarks: remarks
+        remarks: remarks,
       };
 
       const response = await fetch("/api/payments/process", {
@@ -161,7 +194,7 @@ function setupPaymentConfirmation() {
       const result = await response.json();
 
       if (response.ok) {
-        showPaymentSuccess(popup, remarks);
+        showPaymentSuccess(popup, remarks, bookingID);
       } else {
         showPaymentError(popup, result.message);
       }
@@ -172,10 +205,26 @@ function setupPaymentConfirmation() {
 }
 
 // ===== PAYMENT SUCCESS HANDLER =====
-function showPaymentSuccess(popup, remarks) {
+function showPaymentSuccess(popup, remarks, bookingID) {
   if (popup) {
     popup.textContent = `✅ ${remarks}!`;
     popup.style.backgroundColor = "#4CAF50";
+  }
+
+  // ✅ ENHANCED: DISABLE PAYMENT NOTIFICATION AFTER SUCCESSFUL PAYMENT
+  const actualBookingID = bookingID || document.getElementById("paymentBookingID")?.value;
+  if (actualBookingID && actualBookingID !== "NO_BOOKING_ID") {
+    // Call the function from navigation.js
+    if (window.disablePaymentNotification) {
+      window.disablePaymentNotification(actualBookingID);
+    }
+    
+    // ✅ ALSO CHECK ALL GUEST BOOKINGS TO DISABLE ANY RELATED NOTIFICATIONS
+    if (window.checkAllGuestBookings) {
+      setTimeout(() => {
+        window.checkAllGuestBookings();
+      }, 1000);
+    }
   }
 
   setTimeout(() => {
@@ -222,7 +271,8 @@ function setupModalControls() {
 }
 
 // ===== OPEN PAYMENT MODAL =====
-function openPaymentModal(bookingData) {
+// ===== OPEN PAYMENT MODAL - WITH ENHANCED VALIDATION =====
+async function openPaymentModal(bookingData) {
   if (!bookingData) {
     console.error("❌ No booking data provided");
     return;
@@ -230,7 +280,58 @@ function openPaymentModal(bookingData) {
 
   console.log("🔄 OPENING PAYMENT MODAL with booking data:", bookingData);
 
-  // Ensure modal is properly closed first
+  // ✅ ENHANCED VALIDATION 1: CHECK BOOKING STATUS FIRST
+  if (bookingData.status === "Completed") {
+    alert("⛔ This booking is already completed. Payment not allowed.");
+    
+    // DISABLE PAYMENT NOTIFICATION IMMEDIATELY
+    const bookingID = bookingData.bookingID;
+    if (bookingID && window.disablePaymentNotification) {
+      window.disablePaymentNotification(bookingID);
+    }
+    return;
+  }
+
+  // ✅ ENHANCED VALIDATION 2: CHECK PAYMENT STATUS
+  try {
+    const bookingID = bookingData.bookingID || "NO_BOOKING_ID";
+    
+    if (bookingID !== "NO_BOOKING_ID") {
+      console.log(`🔍 Checking payment status for booking: ${bookingID}`);
+      const paymentCheckResponse = await fetch(`/api/payments/check/${bookingID}`);
+      
+      if (paymentCheckResponse.ok) {
+        const paymentStatus = await paymentCheckResponse.json();
+        console.log(`📊 Payment check result for ${bookingID}:`, paymentStatus.alreadyPaid);
+        
+        if (paymentStatus.alreadyPaid) {
+          alert("⛔ Payment already completed for this booking!");
+          
+          // ✅ DISABLE/HIDE THE PAYMENT NOTIFICATION BUTTON
+          if (window.disablePaymentNotification) {
+            window.disablePaymentNotification(bookingID);
+          }
+          
+          // ✅ ALSO UPDATE BOOKING STATUS LOCALLY
+          if (bookingData.status !== "Completed") {
+            console.log(`🔄 Updating local booking status to Completed for: ${bookingID}`);
+            // You might want to refresh the booking data here
+          }
+          
+          return; // Stop here if already paid
+        }
+      } else {
+        console.error('❌ Payment check failed:', paymentCheckResponse.status);
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error checking payment status:", error);
+  }
+
+  // ✅ ONLY PROCEED IF NOT PAID AND NOT COMPLETED
+  console.log(`✅ Payment allowed - proceeding with modal for booking: ${bookingData.bookingID}`);
+
+  // Continue with existing payment modal code...
   const paymentModal = document.getElementById("payment-modal");
   if (paymentModal) {
     paymentModal.style.display = "none";
@@ -256,7 +357,7 @@ function openPaymentModal(bookingData) {
     console.log("✅ Set paymentGuestID to:", currentGuestID);
   }
   if (bookingID) {
-    bookingID.value = bookingData.bookingID || "NO_BOOKING_ID"; // ✅ FIX: Always set bookingID
+    bookingID.value = bookingData.bookingID || "NO_BOOKING_ID";
     console.log("✅ Set paymentBookingID to:", bookingData.bookingID);
   }
 
@@ -284,13 +385,35 @@ function updateBookingSummary(bookingData) {
   const totalElement = document.getElementById("booking-summary-total");
 
   if (idElement) idElement.textContent = bookingData.bookingID || "N/A";
-  if (packageElement) packageElement.textContent = bookingData.packageName || "N/A";
-  if (checkinElement) checkinElement.textContent = formatDateTime(bookingData.checkinDate, bookingData.checkinTime);
-  if (checkoutElement) checkoutElement.textContent = formatDateTime(bookingData.checkoutDate, bookingData.checkoutTime);
-  if (guestsElement) guestsElement.textContent = formatGuests(bookingData.numGuests, bookingData.additionalPax);
-  if (baseElement) baseElement.textContent = `₱${(bookingData.basePrice || 0).toLocaleString()}`;
-  if (addpaxElement) addpaxElement.textContent = `₱${((bookingData.additionalPax || 0) * 150).toLocaleString()}`;
-  if (totalElement) totalElement.textContent = `₱${(bookingData.totalPrice || 0).toLocaleString()}`;
+  if (packageElement)
+    packageElement.textContent = bookingData.packageID || "N/A";
+  if (checkinElement)
+    checkinElement.textContent = formatDateTime(
+      bookingData.checkinDate,
+      bookingData.checkinTime
+    );
+  if (checkoutElement)
+    checkoutElement.textContent = formatDateTime(
+      bookingData.checkoutDate,
+      bookingData.checkoutTime
+    );
+  if (guestsElement)
+    guestsElement.textContent = formatGuests(
+      bookingData.numGuests,
+      bookingData.additionalPax
+    );
+  if (baseElement)
+    baseElement.textContent = `₱${(
+      bookingData.basePrice || 0
+    ).toLocaleString()}`;
+  if (addpaxElement)
+    addpaxElement.textContent = `₱${(
+      (bookingData.additionalPax || 0) * 150
+    ).toLocaleString()}`;
+  if (totalElement)
+    totalElement.textContent = `₱${(
+      bookingData.totalPrice || 0
+    ).toLocaleString()}`;
 }
 
 // ===== FORMAT DATE TIME =====

@@ -32,7 +32,6 @@ app.use("/api/payments", transacRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/admin", adminRoutes);
 
-
 app.post("/notifications/send", (req, res) => {
   const { guestID, message } = req.body;
 

@@ -1,6 +1,6 @@
 /* ===== BOOKING MODAL STYLES ===== */
 #book-modal {
-  display: none;
+  display: none; /* DEFAULT HIDDEN */
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
@@ -13,7 +13,7 @@
 }
 
 #book-modal.show {
-  display: flex;
+  display: flex !important; /* FORCE FLEX DISPLAY */
   opacity: 1;
 }
 
@@ -43,6 +43,8 @@ body.modal-open {
   padding: 0;
   border-radius: 0;
 }
+
+/* REST OF YOUR EXISTING CSS REMAINS THE SAME */
 
 /* ===== STEP 1: PACKAGE SELECTION ===== */
 #modal-package-selection {

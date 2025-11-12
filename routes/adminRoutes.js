@@ -11,20 +11,27 @@ router.post("/login", async (req, res) => {
   if (!email || !password)
     return res.status(400).json({ message: "Email and password required" });
 
-  db.query("SELECT * FROM tbl_admin WHERE email = ?", [email], async (err, results) => {
-    if (err) return res.status(500).json({ message: "Database error" });
-    if (!results || results.length === 0)
-      return res.status(400).json({ message: "Email not found" });
+  db.query(
+    "SELECT * FROM tbl_admin WHERE email = ?",
+    [email],
+    async (err, results) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      if (!results || results.length === 0)
+        return res.status(400).json({ message: "Email not found" });
 
-    const admin = results[0];
-    const isMatch = await bcrypt.compare(password, admin.password);
+      const admin = results[0];
+      const isMatch = await bcrypt.compare(password, admin.password);
 
-    if (!isMatch)
-      return res.status(400).json({ message: "Incorrect password" });
+      if (!isMatch)
+        return res.status(400).json({ message: "Incorrect password" });
 
-    // ✅ Login success
-    res.json({ message: "Admin login successful", admin: { email: admin.email, adminID: admin.AdminID } });
-  });
+      // ✅ Login success
+      res.json({
+        message: "Admin login successful",
+        admin: { email: admin.email, adminID: admin.AdminID },
+      });
+    }
+  );
 });
 
 // =======================
@@ -36,7 +43,7 @@ router.get("/bookings", (req, res) => {
         b.bookingID,
         b.guestID,
         CONCAT(g.firstName, ' ', g.lastName) AS guestName,
-        b.packageName,
+        b.packageID,
         b.checkinDate,
         b.checkoutDate,
         b.checkinTime,
@@ -102,7 +109,8 @@ router.put("/bookings/:id/status", (req, res) => {
 
       // ✅ Notification messages
       if (status === "Approved") {
-        message = "Your booking has been approved! You may now proceed to payment.";
+        message =
+          "Your booking has been approved! You may now proceed to payment.";
       } else if (status === "Declined") {
         message = "Sorry, your booking was declined by the admin.";
       } else if (status === "Completed") {
@@ -120,7 +128,9 @@ router.put("/bookings/:id/status", (req, res) => {
           return res.status(500).json({ message: "Notification insert error" });
         }
 
-        res.json({ message: `Booking ${status} successfully and notification sent.` });
+        res.json({
+          message: `Booking ${status} successfully and notification sent.`,
+        });
       });
     });
   });
@@ -161,26 +171,39 @@ router.put("/packages/:id", (req, res) => {
   }
 
   // ✅ CORRECT SQL QUERY - Using packageID and correct column names
-  const sql = "UPDATE tbl_packages SET price=?, paxNo=?, addHourPrice=?, addPersonPrice=? WHERE packageID=?";
-  
+  const sql =
+    "UPDATE tbl_packages SET price=?, paxNo=?, addHourPrice=?, addPersonPrice=? WHERE packageID=?";
+
   console.log("🔧 Executing SQL:", sql);
-  console.log("📋 With values:", [price, paxNo, extraHour, extraPerson, packageID]);
+  console.log("📋 With values:", [
+    price,
+    paxNo,
+    extraHour,
+    extraPerson,
+    packageID,
+  ]);
 
-  db.query(sql, [price, paxNo, extraHour, extraPerson, packageID], (err, result) => {
-    if (err) {
-      console.error("❌ DB error (update package):", err);
-      console.error("❌ Error details:", err.message);
-      return res.status(500).json({ message: "Database error: " + err.message });
+  db.query(
+    sql,
+    [price, paxNo, extraHour, extraPerson, packageID],
+    (err, result) => {
+      if (err) {
+        console.error("❌ DB error (update package):", err);
+        console.error("❌ Error details:", err.message);
+        return res
+          .status(500)
+          .json({ message: "Database error: " + err.message });
+      }
+
+      console.log("✅ DB Result:", result);
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Package not found" });
+      }
+
+      res.json({ success: true, message: "Package updated successfully" });
     }
-
-    console.log("✅ DB Result:", result);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Package not found" });
-    }
-
-    res.json({ success: true, message: "Package updated successfully" });
-  });
+  );
 });
 
 // ============================
@@ -199,35 +222,38 @@ router.get("/amenities", (req, res) => {
   });
 });
 
-// Add new amenity
+// Add new amenity - FIXED
 router.post("/amenities", (req, res) => {
-  const { name, description } = req.body;
+  const { amenityName } = req.body; // Changed to amenityName
 
-  if (!name || !description) {
-    return res.status(400).json({ message: "Name and description required" });
+  if (!amenityName) {
+    return res.status(400).json({ message: "Amenity name is required" });
   }
 
-  const sql = `INSERT INTO tbl_amenities (amenityName, description) VALUES (?, ?)`;
-  db.query(sql, [name, description], (err, result) => {
+  const sql = `INSERT INTO tbl_amenities (amenityName) VALUES (?)`; // Removed description
+  db.query(sql, [amenityName], (err, result) => {
     if (err) {
       console.error("❌ DB error (insert amenity):", err);
       return res.status(500).json({ message: "Database error" });
     }
-    res.json({ message: "Amenity added successfully", amenityID: result.insertId });
+    res.json({
+      message: "Amenity added successfully",
+      amenityID: result.insertId,
+    });
   });
 });
 
-// Update amenity
+// Update amenity - FIXED
 router.put("/amenities/:id", (req, res) => {
   const amenityID = req.params.id;
-  const { name, description } = req.body;
+  const { amenityName } = req.body; // Changed to amenityName
 
-  if (!name || !description) {
-    return res.status(400).json({ message: "Name and description required" });
+  if (!amenityName) {
+    return res.status(400).json({ message: "Amenity name is required" });
   }
 
-  const sql = `UPDATE tbl_amenities SET amenityName = ?, description = ? WHERE amenityID = ?`;
-  db.query(sql, [name, description, amenityID], (err, result) => {
+  const sql = `UPDATE tbl_amenities SET amenityName = ? WHERE amenityID = ?`; // Removed description
+  db.query(sql, [amenityName, amenityID], (err, result) => {
     if (err) {
       console.error("❌ DB error (update amenity):", err);
       return res.status(500).json({ message: "Database error" });
@@ -241,7 +267,7 @@ router.put("/amenities/:id", (req, res) => {
   });
 });
 
-// Delete amenity
+// Delete amenity route
 router.delete("/amenities/:id", (req, res) => {
   const amenityID = req.params.id;
 

@@ -90,91 +90,118 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => popup.remove(), 5000);
   }
 
- async function loadPackages() {
-  const tableBody = document.getElementById("packageTableBody");
-  if (!tableBody) return;
+  async function loadPackages() {
+    const tableBody = document.getElementById("packageTableBody");
+    if (!tableBody) return;
 
-  let packages = [];
-  try {
-    const res = await fetch("http://localhost:3000/admin/packages");
-    if (res.ok) packages = await res.json();
-    else console.warn("Failed to fetch packages:", res.status);
-  } catch (err) {
-    console.warn("Fetch error:", err);
-  }
+    let packages = [];
+    try {
+      const res = await fetch("http://localhost:3000/admin/packages");
+      if (res.ok) packages = await res.json();
+      else console.warn("Failed to fetch packages:", res.status);
+    } catch (err) {
+      console.warn("Fetch error:", err);
+    }
 
-  // Render table
-  tableBody.innerHTML = "";
-  packages.forEach((pkg) => {
-    const tr = document.createElement("tr");
-    tr.dataset.id = pkg.packageID;
+    // Render table
+    tableBody.innerHTML = "";
+    packages.forEach((pkg) => {
+      const tr = document.createElement("tr");
+      tr.dataset.id = pkg.packageID;
 
-    tr.innerHTML = `
-      <td>${pkg.packageType.replace(/ Package/gi, '')}</td>
+      tr.innerHTML = `
+      <td>${pkg.packageType.replace(/ Package/gi, "")}</td>
       <td>${pkg.description}</td>
       <td class="price">₱${Number(pkg.price).toLocaleString()}</td>
       <td class="paxNo">${pkg.paxNo}</td>
       <td class="extraHour">₱${Number(pkg.addHourPrice).toLocaleString()}</td>
-      <td class="extraPerson">₱${Number(pkg.addPersonPrice).toLocaleString()}</td>
+      <td class="extraPerson">₱${Number(
+        pkg.addPersonPrice
+      ).toLocaleString()}</td>
       <td>
         <button class="edit-package-btn">Edit</button>
       </td>
     `;
-    tableBody.appendChild(tr);
-  });
-
-  if (!packages.length) {
-    tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No packages yet</td></tr>`;
-  }
-
-  // ✅ ADD EVENT LISTENERS FOR EDIT BUTTONS
-  document.querySelectorAll(".edit-package-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const row = btn.closest("tr");
-      const pkgID = row.dataset.id;
-
-      if (btn.textContent === "Edit") {
-        // Convert to edit mode
-        row.querySelector(".price").innerHTML = `<input type="number" value="${row.querySelector(".price").textContent.replace(/₱|,/g, "")}">`;
-        row.querySelector(".paxNo").innerHTML = `<input type="number" value="${row.querySelector(".paxNo").textContent}">`;
-        row.querySelector(".extraHour").innerHTML = `<input type="number" value="${row.querySelector(".extraHour").textContent.replace(/₱|,/g, "")}">`;
-        row.querySelector(".extraPerson").innerHTML = `<input type="number" value="${row.querySelector(".extraPerson").textContent.replace(/₱|,/g, "")}">`;
-        btn.textContent = "Save";
-      } else {
-        // Save changes
-        const updatedData = {
-          price: Number(row.querySelector(".price input").value),
-          paxNo: Number(row.querySelector(".paxNo input").value),
-          extraHour: Number(row.querySelector(".extraHour input").value),
-          extraPerson: Number(row.querySelector(".extraPerson input").value)
-        };
-
-        try {
-          const res = await fetch(`http://localhost:3000/admin/packages/${pkgID}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedData)
-          });
-
-          const data = await res.json();
-          if (res.ok && data.success) {
-            row.querySelector(".price").textContent = `₱${updatedData.price.toLocaleString()}`;
-            row.querySelector(".paxNo").textContent = updatedData.paxNo;
-            row.querySelector(".extraHour").textContent = `₱${updatedData.extraHour.toLocaleString()}`;
-            row.querySelector(".extraPerson").textContent = `₱${updatedData.extraPerson.toLocaleString()}`;
-            btn.textContent = "Edit";
-            alert("✅ Package updated successfully!");
-          } else {
-            throw new Error(data.message || "Failed to update package");
-          }
-        } catch (err) {
-          console.error("❌ Update package error:", err);
-          alert("❌ Failed to update package. See console.");
-        }
-      }
+      tableBody.appendChild(tr);
     });
-  });
-}
+
+    if (!packages.length) {
+      tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No packages yet</td></tr>`;
+    }
+
+    // ✅ ADD EVENT LISTENERS FOR EDIT BUTTONS
+    document.querySelectorAll(".edit-package-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const row = btn.closest("tr");
+        const pkgID = row.dataset.id;
+
+        if (btn.textContent === "Edit") {
+          // Convert to edit mode
+          row.querySelector(
+            ".price"
+          ).innerHTML = `<input type="number" value="${row
+            .querySelector(".price")
+            .textContent.replace(/₱|,/g, "")}">`;
+          row.querySelector(
+            ".paxNo"
+          ).innerHTML = `<input type="number" value="${
+            row.querySelector(".paxNo").textContent
+          }">`;
+          row.querySelector(
+            ".extraHour"
+          ).innerHTML = `<input type="number" value="${row
+            .querySelector(".extraHour")
+            .textContent.replace(/₱|,/g, "")}">`;
+          row.querySelector(
+            ".extraPerson"
+          ).innerHTML = `<input type="number" value="${row
+            .querySelector(".extraPerson")
+            .textContent.replace(/₱|,/g, "")}">`;
+          btn.textContent = "Save";
+        } else {
+          // Save changes
+          const updatedData = {
+            price: Number(row.querySelector(".price input").value),
+            paxNo: Number(row.querySelector(".paxNo input").value),
+            extraHour: Number(row.querySelector(".extraHour input").value),
+            extraPerson: Number(row.querySelector(".extraPerson input").value),
+          };
+
+          try {
+            const res = await fetch(
+              `http://localhost:3000/admin/packages/${pkgID}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedData),
+              }
+            );
+
+            const data = await res.json();
+            if (res.ok && data.success) {
+              row.querySelector(
+                ".price"
+              ).textContent = `₱${updatedData.price.toLocaleString()}`;
+              row.querySelector(".paxNo").textContent = updatedData.paxNo;
+              row.querySelector(
+                ".extraHour"
+              ).textContent = `₱${updatedData.extraHour.toLocaleString()}`;
+              row.querySelector(
+                ".extraPerson"
+              ).textContent = `₱${updatedData.extraPerson.toLocaleString()}`;
+              btn.textContent = "Edit";
+              alert("✅ Package updated successfully!");
+            } else {
+              throw new Error(data.message || "Failed to update package");
+            }
+          } catch (err) {
+            console.error("❌ Update package error:", err);
+            alert("❌ Failed to update package. See console.");
+          }
+        }
+      });
+    });
+  }
 
   // ===== AMENITY MANAGEMENT MODAL =====
   console.log("Add Amenity button:", document.getElementById("addAmenityBtn"));
@@ -203,7 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
         mergedAmenities.push({
           amenityID: ``,
           amenityName: name,
-          description: "-",
         });
       }
     });
@@ -211,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render table
     tableBody.innerHTML = "";
     if (!mergedAmenities.length) {
-      tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No amenities yet</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No amenities yet</td></tr>`;
       return;
     }
 
@@ -220,32 +246,35 @@ document.addEventListener("DOMContentLoaded", () => {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-    <td>${a.amenityName}</td>
-    <td>${a.description || ""}</td>
-    <td>${a.createdAt ? new Date(a.createdAt).toLocaleDateString() : "-"}</td>
-    <td>
-      <button class="edit-amenity-btn" data-id="${a.amenityID || ""}" ${
+      <td>${a.amenityName}</td>
+
+      <td>
+        <button class="edit-amenity-btn" data-id="${a.amenityID || ""}" ${
         isFallback ? "disabled" : ""
       }>Edit</button>
-      <button class="delete-amenity-btn" data-id="${a.amenityID || ""}" ${
+        <button class="delete-amenity-btn" data-id="${a.amenityID || ""}" ${
         isFallback ? "disabled" : ""
       }>Delete</button>
-    </td>
-  `;
+      </td>
+    `;
       tableBody.appendChild(row);
     });
 
     // Attach DB item actions
-    document.querySelectorAll(".edit-amenity-btn").forEach((btn) => {
-      btn.addEventListener("click", () => editAmenity(btn.dataset.id));
-    });
+    document
+      .querySelectorAll(".edit-amenity-btn:not([disabled])")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => editAmenity(btn.dataset.id));
+      });
 
-    document.querySelectorAll(".delete-amenity-btn").forEach((btn) => {
-      btn.addEventListener("click", () => deleteAmenity(btn.dataset.id));
-    });
+    document
+      .querySelectorAll(".delete-amenity-btn:not([disabled])")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => deleteAmenity(btn.dataset.id));
+      });
   }
 
-  // Add Amenity button
+  // Add Amenity button - FIXED
   if (addBtn && modal && form) {
     addBtn.addEventListener("click", () => (modal.style.display = "flex"));
     modal
@@ -254,30 +283,91 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = form.querySelector('input[name="name"]').value.trim();
-      const description = form
-        .querySelector('textarea[name="description"]')
-        .value.trim();
-      if (!name) return alert("Amenity name is required.");
+      const nameInput = form.querySelector('input[name="name"]');
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        alert("Amenity name is required.");
+        return;
+      }
 
       try {
-        const res = await fetch("/admin/amenities", {
+        const res = await fetch("http://localhost:3000/admin/amenities", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amenityName, description }),
+          body: JSON.stringify({ amenityName: name }),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to add amenity");
 
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to add amenity");
+        }
+
+        const data = await res.json();
         alert("✅ Amenity added!");
         modal.style.display = "none";
         form.reset();
         loadAmenities(); // refresh table
       } catch (err) {
-        console.error(err);
+        console.error("Add amenity error:", err);
         alert("Failed to add amenity: " + err.message);
       }
     });
+  }
+
+  // Edit Amenity function - FIXED
+  async function editAmenity(amenityID) {
+    const newName = prompt("Enter new amenity name:");
+    if (!newName || !newName.trim()) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/admin/amenities/${amenityID}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amenityName: newName.trim() }),
+        }
+      );
+
+      if (res.ok) {
+        alert("✅ Amenity updated!");
+        loadAmenities();
+      } else {
+        const errorData = await res.json();
+        alert(
+          "❌ Failed to update amenity: " +
+            (errorData.message || "Unknown error")
+        );
+      }
+    } catch (err) {
+      console.error("Edit amenity error:", err);
+      alert("❌ Error updating amenity");
+    }
+  }
+
+  // Delete Amenity function
+  async function deleteAmenity(amenityID) {
+    if (!confirm("Are you sure you want to delete this amenity?")) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/admin/amenities/${amenityID}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (res.ok) {
+        alert("✅ Amenity deleted!");
+        loadAmenities();
+      } else {
+        alert("❌ Failed to delete amenity");
+      }
+    } catch (err) {
+      console.error("Delete amenity error:", err);
+      alert("❌ Error deleting amenity");
+    }
   }
 
   // Initial load
@@ -328,7 +418,7 @@ async function loadBookings() {
       row.innerHTML = `
         <td>${b.bookingID}</td>
         <td>${b.guestName || "N/A"}</td>
-        <td>${b.packageName}</td>
+        <td>${b.packageID}</td>
         <td>${formatDate(b.checkinDate)}</td>
         <td>${b.checkinTime}</td>
         <td>${formatDate(b.checkoutDate)}</td>
@@ -448,7 +538,7 @@ async function loadTransactions() {
         `${t.firstName || ""} ${t.lastName || ""}`.trim() || "N/A";
 
       // ✅ IMPROVED: Handle booking data properly
-      const packageName = t.packageName || "N/A";
+      const packageID = t.packageID || "N/A";
       const checkinDate = t.checkinDate ? formatDate(t.checkinDate) : "N/A";
       const bookingTotal = t.bookingTotal
         ? `₱${Number(t.bookingTotal).toLocaleString()}`
@@ -462,7 +552,7 @@ async function loadTransactions() {
         <td>${t.transactionID}</td>
         <td>${guestName}</td>
         <td>${t.contactNo || "N/A"}</td>
-        <td>${packageName}</td>
+        <td>${packageID}</td>
         <td>${checkinDate}</td>
         <td class="price">${bookingTotal}</td>
         <td class="price">₱${Number(t.amount).toLocaleString()}</td>
@@ -560,9 +650,8 @@ async function loadFeedbacks() {
       const feedbackCard = document.createElement("div");
       feedbackCard.className = "feedback-card";
 
-      // Star rating
-      const stars =
-        "⭐".repeat(feedback.rating) + "☆".repeat(5 - feedback.rating);
+      // ✅ YELLOW STARS - Same as public feedbacks
+      const stars = this.renderStaticStars(feedback.rating);
 
       feedbackCard.innerHTML = `
         <div class="feedback-header">
@@ -574,8 +663,8 @@ async function loadFeedbacks() {
         <div class="feedback-rating">${stars}</div>
         <div class="feedback-comments">${feedback.comments}</div>
         ${
-          feedback.packageName
-            ? `<div class="feedback-booking">Package: ${feedback.packageName}</div>`
+          feedback.packageID
+            ? `<div class="feedback-booking">Package: ${feedback.packageID}</div>`
             : ""
         }
       `;
@@ -587,6 +676,18 @@ async function loadFeedbacks() {
   }
 }
 
+// ✅ DAGDAG: Star rendering function for admin
+function renderStaticStars(rating) {
+  let stars = "";
+  for (let i = 1; i <= 5; i++) {
+    if (i <= rating) {
+      stars += '<span class="star filled">★</span>'; // Filled YELLOW star
+    } else {
+      stars += '<span class="star empty">☆</span>'; // Outline GRAY star
+    }
+  }
+  return stars;
+}
 // Initialize feedback system
 function initFeedbackSystem() {
   const requestFeedbackBtn = document.getElementById("requestFeedbackBtn");
@@ -675,10 +776,10 @@ async function loadGuestsForFeedback() {
 
     // Populate booking dropdown
     bookings.forEach((booking) => {
-      if (booking.bookingID && booking.packageName) {
+      if (booking.bookingID && booking.packageID) {
         const option = document.createElement("option");
         option.value = booking.bookingID;
-        option.textContent = `${booking.bookingID} - ${booking.packageName}`;
+        option.textContent = `${booking.bookingID} - ${booking.packageID}`;
         bookingSelect.appendChild(option);
       }
     });
@@ -686,4 +787,3 @@ async function loadGuestsForFeedback() {
     console.error("❌ Error loading guests:", err);
   }
 }
-

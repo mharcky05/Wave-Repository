@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - L'Escapade</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #b81d24, #a0181e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .verification-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .verification-icon {
+            font-size: 64px;
+            color: #4a7c59;
+            margin-bottom: 20px;
+        }
+        
+        .verification-title {
+            color: #252f37;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .verification-text {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .email-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #e9ecef;
+            font-weight: bold;
+            color: #2c5530;
+        }
+        
+        .verification-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            letter-spacing: 3px;
+            box-sizing: border-box;
+        }
+        
+        .verification-input:focus {
+            border-color: #4a7c59;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+        }
+        
+        .verify-btn {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .verify-btn:hover {
+            background: #3a6b49;
+        }
+        
+        .verification-footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .resend-link {
+            color: #4a7c59;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+        
+        .success-message {
+            color: #4a7c59;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <div class="verification-icon">📧</div>
+        <h1 class="verification-title">Email Verification</h1>
+        <p class="verification-text">
+            Please check your email for the verification code and enter it below:
+        </p>
+        
+        <div class="email-display" id="emailDisplay">
+            Loading email...
+        </div>
+        
+        <input type="text" 
+               id="verificationToken" 
+               class="verification-input" 
+               placeholder="Enter verification code"
+               maxlength="20">
+        
+        <button class="verify-btn" onclick="verifyEmail()">Verify Email</button>
+        
+        <div class="success-message" id="successMessage">
+            ✅ Email verified successfully! This window will close automatically.
+        </div>
+        
+        <div class="verification-footer">
+            Didn't receive the code? 
+            <span class="resend-link" onclick="resendCode()">Resend Code</span>
+        </div>
+    </div>
+
+    <script>
+        // Get email from URL parameters or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let email = urlParams.get('email') || localStorage.getItem('pendingVerificationEmail');
+        
+        document.getElementById('emailDisplay').textContent = email || 'Email not found';
+        
+        async function verifyEmail() {
+            const token = document.getElementById('verificationToken').value.trim();
+            const email = localStorage.getItem('pendingVerificationEmail');
+            
+            if (!token) {
+                alert('Please enter the verification code');
+                return;
+            }
+            
+            if (!email) {
+                alert('Email not found. Please sign up again.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/auth/verify-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        token: token,
+                    }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.querySelector('.verification-input').style.display = 'none';
+                    document.querySelector('.verify-btn').style.display = 'none';
+                    
+                    // Auto-close after 2 seconds and redirect to login
+                    setTimeout(() => {
+                        localStorage.removeItem('pendingVerificationEmail');
+                        window.close(); // Close verification tab
+                        
+                        // Try to redirect parent window to login
+                        if (window.opener && !window.opener.closed) {
+                            window.opener.location.href = '/index.html#login';
+                        }
+                    }, 2000);
+                } else {
+                    alert(data.message || 'Invalid verification code');
+                }
+            } catch (error) {
+                alert('Verification failed. Please try again.');
+            }
+        }
+        
+        function resendCode() {
+            alert('Resend functionality would be implemented here');
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('verificationToken').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyEmail();
+            }
+        });
+    </script>
+</body>
+</html>

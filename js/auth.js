@@ -6,6 +6,7 @@ const loginModal = document.getElementById("login-modal");
 const signupModal = document.getElementById("signup-modal");
 const accountModal = document.getElementById("account-modal");
 const paymentModal = document.getElementById("payment-modal");
+const feedbackModal = document.getElementById("feedback-modal");
 
 const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
@@ -18,19 +19,63 @@ const closeLogin = document.getElementById("closeLogin");
 const closeSignup = document.getElementById("closeSignup");
 const closeAccount = document.getElementById("closeAccount");
 const closePayment = document.getElementById("closePayment");
+const closeFeedback = document.getElementById("closeFeedback");
 
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
+const feedbackForm = document.getElementById("feedbackForm");
 
 const accName = document.getElementById("acc-name");
 const accEmail = document.getElementById("acc-email");
 const accContact = document.getElementById("acc-contact");
 
 const logoutBtn = document.getElementById("logoutBtn");
+const cancelFeedback = document.getElementById("cancelFeedback");
+
+// ==================== USER TYPE DROPDOWN ====================
+
+// Add user type dropdown to login modal
+function addUserTypeDropdown() {
+  const loginForm = document.getElementById("loginForm");
+  if (!loginForm) return;
+
+  // Check if dropdown already exists
+  if (document.getElementById("userType")) return;
+
+  // Create user type dropdown
+  const userTypeDiv = document.createElement("div");
+  userTypeDiv.className = "form-group";
+  userTypeDiv.innerHTML = `
+        <label for="userType">Login Bilang:</label>
+        <select id="userType" name="userType" class="form-control" required>
+            <option value="guest">Guest</option>
+            <option value="admin">Admin</option>
+        </select>
+    `;
+
+  // Insert before email field
+  const emailField = document.getElementById("login-email");
+  if (emailField && emailField.parentElement) {
+    emailField.parentElement.parentElement.insertBefore(
+      userTypeDiv,
+      emailField.parentElement
+    );
+  }
+}
+
+// Initialize login features
+function initLoginFeatures() {
+  addUserTypeDropdown();
+}
 
 // Modal Event Handlers
-loginBtn?.addEventListener("click", () => showModal(loginModal));
-signupBtn?.addEventListener("click", () => showModal(signupModal));
+loginBtn?.addEventListener("click", () => {
+  showModal(loginModal);
+  initLoginFeatures();
+});
+signupBtn?.addEventListener("click", () => {
+  showModal(signupModal);
+});
 accountBtn?.addEventListener("click", () => {
   showModal(accountModal);
   loadAccountInfo();
@@ -40,12 +85,15 @@ closeLogin?.addEventListener("click", () => closeModal(loginModal));
 closeSignup?.addEventListener("click", () => closeModal(signupModal));
 closeAccount?.addEventListener("click", () => closeModal(accountModal));
 closePayment?.addEventListener("click", () => closeModal(paymentModal));
+closeFeedback?.addEventListener("click", () => closeModal(feedbackModal));
 
 // Close modals when clicking outside
 window.addEventListener("click", (e) => {
-  [loginModal, signupModal, accountModal, paymentModal].forEach((modal) => {
-    if (modal && e.target === modal) closeModal(modal);
-  });
+  [loginModal, signupModal, accountModal, paymentModal, feedbackModal].forEach(
+    (modal) => {
+      if (modal && e.target === modal) closeModal(modal);
+    }
+  );
 });
 
 // Password Visibility Toggle
@@ -65,9 +113,11 @@ signupShow?.addEventListener("change", () => {
   signupCPwd.type = type;
 });
 
-// User Registration
+// User Registration - MODIFIED TO OPEN VERIFICATION PAGE
 signupForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  console.log("🔍 FRONTEND SIGNUP DEBUG START =================");
 
   const firstName = document.getElementById("signup-fname").value.trim();
   const lastName = document.getElementById("signup-lname").value.trim();
@@ -76,9 +126,20 @@ signupForm?.addEventListener("submit", async (e) => {
   const password = document.getElementById("signup-password").value.trim();
   const confirm = document.getElementById("signupc-password").value.trim();
 
-  if (password !== confirm) return alert("Passwords do not match!");
+  console.log("🔍 Form data:", { firstName, lastName, contactNo, email });
+
+  if (password !== confirm) {
+    console.log("❌ Passwords do not match");
+    return alert("Passwords do not match!");
+  }
+
+  // DISABLE THE BUTTON TO PREVENT DOUBLE SUBMISSION
+  const submitBtn = signupForm.querySelector(".submit-btn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Signing Up...";
 
   try {
+    console.log("🔍 Sending signup request...");
     const res = await fetch("http://localhost:3000/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -86,30 +147,48 @@ signupForm?.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
+    console.log("🔍 Signup response:", data);
+
     alert(data.message);
 
     if (res.ok) {
+      // Save email for verification
+      localStorage.setItem("pendingVerificationEmail", email);
+
+      // Close signup modal and reset form
       closeModal(signupModal);
       signupForm.reset();
+
+      // Open verification page in new tab
+      const verificationUrl = `verification.html?email=${encodeURIComponent(
+        email
+      )}`;
+      window.open(verificationUrl, "_blank", "width=500,height=700");
     }
   } catch (err) {
-    console.error(err);
+    console.error("❌ Signup error:", err);
     alert("Signup failed.");
+  } finally {
+    // RE-ENABLE THE BUTTON
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Sign Up";
+    console.log("🔍 FRONTEND SIGNUP DEBUG END =================");
   }
 });
 
-// User Authentication
+// User Authentication - MODIFIED FOR USER TYPE DROPDOWN
 loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value.trim();
+  const userType = document.getElementById("userType")?.value || "guest";
 
   try {
     const res = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, userType }),
     });
 
     const data = await res.json();
@@ -124,7 +203,10 @@ loginForm?.addEventListener("submit", async (e) => {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("guestID", data.user.guestID);
         localStorage.setItem("userEmail", data.user.email);
-        localStorage.setItem("userName", `${data.user.firstName} ${data.user.lastName}`);
+        localStorage.setItem(
+          "userName",
+          `${data.user.firstName} ${data.user.lastName}`
+        );
         localStorage.setItem("userContact", data.user.contactNo);
 
         closeModal(loginModal);
@@ -206,8 +288,6 @@ async function loadNotifications() {
       li.setAttribute("data-notifid", notif.notifID);
       li.setAttribute("data-read", notif.isRead);
 
-      
-
       // ✅ Apply handled state on load
       if (notif.isHandled) {
         li.classList.add("disabled-notif");
@@ -270,7 +350,9 @@ async function loadNotifications() {
               return;
             }
 
-            const latestBookingRes = await fetch(`http://localhost:3000/api/bookings/latest/${guestID}`);
+            const latestBookingRes = await fetch(
+              `http://localhost:3000/api/bookings/latest/${guestID}`
+            );
 
             if (latestBookingRes.ok) {
               const bookingData = await latestBookingRes.json();
@@ -278,30 +360,72 @@ async function loadNotifications() {
             } else {
               showBasicPaymentModal();
             }
-
           } catch (err) {
             console.error("Error fetching booking:", err);
             showBasicPaymentModal();
           }
         }
 
-        // FEEDBACK HANDLER
+        // FEEDBACK HANDLER - SIMPLIFIED (BACKEND AUTO-DETECTS LATEST BOOKING)
         if (notif.message.toLowerCase().includes("feedback")) {
-          console.log("🎯 Feedback notification clicked - attempting to open modal");
+          console.log("🎯 Feedback notification clicked");
           notifPopup.classList.remove("show");
 
-          // slight delay to ensure popup is closed before modal opens
-          setTimeout(() => {
-            const feedbackModal = document.getElementById("feedback-modal");
+          const guestID = localStorage.getItem("guestID");
+          if (!guestID) {
+            alert("Please login to submit feedback");
+            return;
+          }
 
-            if (feedbackModal) {
-              feedbackModal.style.display = "flex";
-              console.log("✅ Feedback modal opened successfully (via notification)");
-            } else {
-              console.error("❌ Feedback modal element not found!");
-              alert("Feedback system unavailable. Please refresh and try again.");
+          // ✅ CHECK IF GUEST CAN SUBMIT FEEDBACK
+          try {
+            const feedbackCheck = await fetch(
+              `http://localhost:3000/api/feedback/check-guest/${guestID}`
+            );
+            const feedbackData = await feedbackCheck.json();
+
+            if (feedbackData.hasSubmittedFeedback) {
+              console.log(
+                "⛔ BLOCKED: Guest has already submitted feedback for latest booking"
+              );
+              alert(
+                "You have already submitted feedback for your latest booking. Thank you!"
+              );
+
+              // Disable the notification and button
+              li.classList.add("disabled-notif");
+              li.setAttribute("data-handled", "1");
+              li.title = "Feedback already submitted";
+
+              // Disable all feedback buttons globally
+              if (window.disableAllFeedbackButtons) {
+                window.disableAllFeedbackButtons();
+              }
+              return;
             }
-          }, 200); // wait 200ms
+
+            // ✅ GUEST CAN SUBMIT FEEDBACK - OPEN MODAL
+            console.log("✅ Guest can submit feedback - opening modal");
+            setTimeout(() => {
+              if (feedbackModal) {
+                showModal(feedbackModal);
+                console.log("✅ Feedback modal opened successfully");
+              } else {
+                console.error("❌ Feedback modal element not found!");
+                alert(
+                  "Feedback system unavailable. Please refresh and try again."
+                );
+              }
+            }, 200);
+          } catch (err) {
+            console.error("❌ Error checking feedback status:", err);
+            // Fallback - open modal anyway
+            setTimeout(() => {
+              if (feedbackModal) {
+                showModal(feedbackModal);
+              }
+            }, 200);
+          }
         }
       });
 
@@ -367,16 +491,40 @@ function showPaymentModalWithActualData(bookingData) {
     summaryBox.innerHTML = `
         <h3>Booking Summary</h3>
         <p><strong>Booking ID:</strong> ${bookingData.bookingID}</p>
-        <p><strong>Package:</strong> ${bookingData.packageName}</p>
-        <p><strong>Check-in:</strong> ${checkinDate} ${bookingData.checkinTime}</p>
-        <p><strong>Check-out:</strong> ${checkoutDate} ${bookingData.checkoutTime}</p>
-        <p><strong>Guests:</strong> ${bookingData.numGuests} + ${bookingData.additionalPax || 0} additional</p>
-        <p><strong>Additional Hours:</strong> ${bookingData.additionalHours || 0} hours</p>
+        <p><strong>Package:</strong> ${bookingData.packageID}</p>
+        <p><strong>Check-in:</strong> ${checkinDate} ${
+      bookingData.checkinTime
+    }</p>
+        <p><strong>Check-out:</strong> ${checkoutDate} ${
+      bookingData.checkoutTime
+    }</p>
+        <p><strong>Guests:</strong> ${bookingData.numGuests} + ${
+      bookingData.additionalPax || 0
+    } additional</p>
+        <p><strong>Additional Hours:</strong> ${
+          bookingData.additionalHours || 0
+        } hours</p>
         <hr>
-        <p><strong>Base Price:</strong> ₱${Number(bookingData.basePrice).toLocaleString()}</p>
-        ${bookingData.additionalPax ? `<p><strong>Additional Pax:</strong> ₱${(bookingData.additionalPax * 150).toLocaleString()}</p>` : ''}
-        ${bookingData.additionalHours ? `<p><strong>Additional Hours:</strong> ₱${(bookingData.additionalHours * 500).toLocaleString()}</p>` : ''}
-        <p><strong>Total Amount:</strong> ₱${Number(totalPrice).toLocaleString()}</p>
+        <p><strong>Base Price:</strong> ₱${Number(
+          bookingData.basePrice
+        ).toLocaleString()}</p>
+        ${
+          bookingData.additionalPax
+            ? `<p><strong>Additional Pax:</strong> ₱${(
+                bookingData.additionalPax * 150
+              ).toLocaleString()}</p>`
+            : ""
+        }
+        ${
+          bookingData.additionalHours
+            ? `<p><strong>Additional Hours:</strong> ₱${(
+                bookingData.additionalHours * 500
+              ).toLocaleString()}</p>`
+            : ""
+        }
+        <p><strong>Total Amount:</strong> ₱${Number(
+          totalPrice
+        ).toLocaleString()}</p>
     `;
   }
 
@@ -404,15 +552,7 @@ function showModal(modal) {
   if (!modal) return;
 
   modal.classList.add("show");
-
-  // 🧠 Use flex centering for certain modals
-  const flexModals = ["login-modal", "signup-modal", "account-modal", "payment-modal"];
-  if (flexModals.includes(modal.id)) {
-    modal.style.display = "flex";
-  } else {
-    modal.style.display = "block";
-  }
-
+  modal.style.display = "flex";
   document.body.style.overflow = "hidden";
 }
 
@@ -422,17 +562,6 @@ function closeModal(modal) {
   modal.style.display = "none";
   document.body.style.overflow = "";
 }
-
-// 🧹 Optional: close modal when clicking outside
-window.addEventListener("click", (e) => {
-  const modals = document.querySelectorAll(".modal");
-  modals.forEach((modal) => {
-    if (e.target === modal) {
-      closeModal(modal);
-    }
-  });
-});
-
 
 function toggleVisibility(el, show) {
   if (el) el.style.display = show ? "inline-block" : "none";
@@ -551,35 +680,24 @@ editProfileForm?.addEventListener("submit", async (e) => {
   }
 });
 
-// ===== FEEDBACK SYSTEM FOR GUEST =====
+// ===== ENHANCED FEEDBACK SYSTEM FOR GUEST =====
 function initFeedbackSystem() {
-  const feedbackModal = document.getElementById("feedback-modal");
-  const closeFeedback = document.getElementById("closeFeedback");
-  const cancelFeedback = document.getElementById("cancelFeedback");
-  const feedbackForm = document.getElementById("feedbackForm");
+  console.log(
+    "🔄 Initializing ENHANCED feedback system with modern star rating..."
+  );
 
-  console.log("🔄 Initializing feedback system...");
-  console.log("Feedback modal:", feedbackModal);
-  console.log("Close button:", closeFeedback);
-  console.log("Cancel button:", cancelFeedback);
-  console.log("Feedback form:", feedbackForm);
-
-  // Close feedback modal
-  if (closeFeedback) {
-    closeFeedback.addEventListener("click", () => {
-      console.log("❌ Closing feedback modal");
-      closeModal(feedbackModal);
-    });
-  }
+  // Initialize star rating interaction
+  initStarRating();
 
   if (cancelFeedback) {
     cancelFeedback.addEventListener("click", () => {
       console.log("❌ Canceling feedback modal");
       closeModal(feedbackModal);
+      resetStarRating();
     });
   }
 
-  // Handle feedback form submission
+  // Handle feedback form submission - SIMPLIFIED (BACKEND AUTO-DETECTS LATEST BOOKING)
   if (feedbackForm) {
     feedbackForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -603,7 +721,27 @@ function initFeedbackSystem() {
         return;
       }
 
+      // ✅ FINAL VALIDATION - CHECK IF GUEST HAS ALREADY SUBMITTED FEEDBACK FOR LATEST BOOKING
       try {
+        const finalCheck = await fetch(
+          `http://localhost:3000/api/feedback/check-guest/${guestID}`
+        );
+        const finalCheckData = await finalCheck.json();
+
+        if (finalCheckData.hasSubmittedFeedback) {
+          alert(
+            "❌ You have already submitted feedback for your latest booking. Thank you!"
+          );
+          closeModal(feedbackModal);
+
+          // Disable all feedback buttons globally
+          if (window.disableAllFeedbackButtons) {
+            window.disableAllFeedbackButtons();
+          }
+          return;
+        }
+
+        // ✅ PROCEED WITH SUBMISSION (BACKEND WILL AUTO-USE LATEST BOOKING)
         console.log("🔄 Submitting feedback to server...");
         const res = await fetch("http://localhost:3000/api/feedback/submit", {
           method: "POST",
@@ -622,11 +760,12 @@ function initFeedbackSystem() {
           alert("✅ Thank you for your feedback!");
           closeModal(feedbackModal);
           feedbackForm.reset();
+          resetStarRating();
 
-          // Reset star ratings
-          document.querySelectorAll('input[name="rating"]').forEach((radio) => {
-            radio.checked = false;
-          });
+          // ✅ DISABLE ALL FEEDBACK BUTTONS AFTER SUCCESSFUL SUBMISSION
+          if (window.disableAllFeedbackButtons) {
+            window.disableAllFeedbackButtons();
+          }
         } else {
           alert(`❌ ${data.message}`);
         }
@@ -636,15 +775,66 @@ function initFeedbackSystem() {
       }
     });
   }
+}
 
-  // Add click outside to close modal
-  if (feedbackModal) {
-    feedbackModal.addEventListener("click", (e) => {
-      if (e.target === feedbackModal) {
-        closeModal(feedbackModal);
+// ===== MODERN STAR RATING SYSTEM =====
+function initStarRating() {
+  const stars = document.querySelectorAll(".star-rating .star");
+
+  stars.forEach((star, index) => {
+    star.addEventListener("click", () => {
+      console.log(`⭐ Star ${5 - index} clicked`);
+      // The radio button will be automatically checked by the HTML structure
+    });
+
+    star.addEventListener("mouseover", () => {
+      // Highlight stars on hover
+      const ratingValue = 5 - index;
+      highlightStars(ratingValue);
+    });
+  });
+
+  // Reset stars when mouse leaves the rating container
+  const starRatingContainer = document.querySelector(".star-rating");
+  if (starRatingContainer) {
+    starRatingContainer.addEventListener("mouseleave", () => {
+      const checkedStar = document.querySelector(
+        'input[name="rating"]:checked'
+      );
+      if (checkedStar) {
+        highlightStars(checkedStar.value);
+      } else {
+        resetStarRating();
       }
     });
   }
+}
+
+function highlightStars(rating) {
+  const stars = document.querySelectorAll(".star-rating .star");
+  stars.forEach((star, index) => {
+    const starValue = 5 - index;
+    if (starValue <= rating) {
+      star.innerHTML = "&#9733;"; // Filled star
+      star.style.color = "#ffc107";
+    } else {
+      star.innerHTML = "&#9734;"; // Outline star
+      star.style.color = "#ddd";
+    }
+  });
+}
+
+function resetStarRating() {
+  const stars = document.querySelectorAll(".star-rating .star");
+  stars.forEach((star) => {
+    star.innerHTML = "&#9734;"; // Outline star
+    star.style.color = "#ddd";
+  });
+
+  // Uncheck all radio buttons
+  document.querySelectorAll('input[name="rating"]').forEach((radio) => {
+    radio.checked = false;
+  });
 }
 
 // Initialize the application

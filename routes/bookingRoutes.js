@@ -7,7 +7,8 @@ const db = require("../db");
 router.post("/book", (req, res) => {
   const {
     guestID,
-    packageName,
+    packageID,
+    packageType,
     checkinDate,
     checkoutDate,
     checkinTime,
@@ -19,8 +20,10 @@ router.post("/book", (req, res) => {
     totalPrice,
   } = req.body;
 
+    console.log("📦 Booking data received:", req.body);
+
   // Basic validation
-  if (!guestID || !packageName || !checkinDate || !checkoutDate || !checkinTime || !checkoutTime) {
+  if (!guestID || !packageType || !checkinDate || !checkoutDate || !checkinTime || !checkoutTime) {
     return res.status(400).json({ message: "Required fields missing." });
   }
 
@@ -68,12 +71,10 @@ router.post("/book", (req, res) => {
       }
 
       // ===== INSERT BOOKING =====
-      const bookingID = "B" + Math.floor(100000 + Math.random() * 900000);
-      
-      // FIXED SQL - 12 parameters only (walang duplicate status)
+      const bookingID = "B" + Math.floor(100000 + Math.random() * 900000);     
       const sql = `
         INSERT INTO tbl_bookings
-        (bookingID, guestID, packageName, checkinDate, checkoutDate,
+        (bookingID, guestID, packageID, checkinDate, checkoutDate,
          checkinTime, checkoutTime, numGuests, additionalPax, additionalHours,
          basePrice, totalPrice, status)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
@@ -84,7 +85,7 @@ router.post("/book", (req, res) => {
         [
           bookingID,
           guestID,
-          packageName,
+          packageID,
           checkinDate,
           checkoutDate,
           checkinTime,

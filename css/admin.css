@@ -196,19 +196,93 @@ tr.completed {
 }
 
 .approve-btn {
-  color: #28a745;
+  background-color: #4caf50;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.approve-btn:hover {
+  background-color: #2d7231;
+  transform: scale(1.05);
+}
+
+.approve-btn:active {
+  transform: scale(0.95);
 }
 
 .decline-btn {
-  color: #dc3545;
+  background-color: #dc3545;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.decline-btn:hover {
+  background-color: #88101c;
+  transform: scale(1.05);
+}
+
+.decline-btn:active {
+  transform: scale(0.95);
 }
 
 .complete-btn {
-  color: #3498db;
+  padding: 0.5rem 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  min-width: 70px;
+}
+
+.complete-btn:hover {
+  background-color: #12496e;
+  transform: scale(1.05);
+}
+
+.complete-btn:active {
+  transform: scale(0.95);
 }
 
 .action-btns button:hover {
   transform: scale(1.15);
+}
+
+.add-btn {
+  padding: 0.5rem 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  min-width: 70px;
+}
+
+.add-btn:hover {
+  background-color: #12496e;
+  transform: scale(1.05);
+}
+
+.add-btn:active {
+  transform: scale(0.95);
 }
 
 /* DISABLED ROWS */
@@ -287,12 +361,14 @@ tr.completed {
   transform: scale(1.05);
 }
 
-.edit-amenity-btn:disabled,
-.delete-amenity-btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  transform: none;
+.admin-table th:nth-child(1) { /* Amenity column */
+  width: 70%;
 }
+
+.admin-table th:nth-child(2) { /* Actions column */
+  width: 30%;
+}
+
 
 /* ===== MODAL AND POPUP STYLES ===== */
 .modal,
@@ -408,6 +484,23 @@ tr.completed {
   font-size: 0.9rem;
 }
 
+/* ✅ YELLOW STARS FOR ADMIN FEEDBACKS */
+.feedback-rating {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  gap: 2px;
+}
+
+.feedback-rating .star {
+  color: #ffc107 !important; /* YELLOW COLOR */
+  text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+}
+
+.feedback-rating .star.empty {
+  color: #ddd !important; /* LIGHT GRAY FOR EMPTY STARS */
+}
+
 .feedback-rating {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
@@ -502,9 +595,9 @@ tr.completed {
   transition: color 0.2s;
 }
 
-.star-rating input:checked~label,
+.star-rating input:checked ~ label,
 .star-rating label:hover,
-.star-rating label:hover~label {
+.star-rating label:hover ~ label {
   color: #ffc107;
 }
 
@@ -531,7 +624,6 @@ tr.completed {
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1000px) {
-
   th,
   td {
     font-size: 0.75rem;
@@ -656,7 +748,8 @@ th {
 tr:hover {
   background-color: #f8f9fa;
   transition: 0.2s ease;
-}
+} 
+
 
 /* Modal overlay */
 .modal {
@@ -676,4 +769,98 @@ tr:hover {
   width: 450px;
   max-width: 90%;
   box-sizing: border-box;
+}
+
+/* ===== MODAL HEADER FIX ===== */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  background-color: #f5f5f5;
+  color: #333;
+  transform: scale(1.1);
+}
+
+/* Modal body and footer improvements */
+.modal-body {
+  margin-bottom: 1.5rem;
+}
+
+.modal-body label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body input,
+.modal-body textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+.modal-body textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.save-btn {
+  background-color: #b81d24;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+  display: block;
+}
+
+.save-btn:hover {
+  background-color: #910f18;
+  transform: translateY(-2px);
 }

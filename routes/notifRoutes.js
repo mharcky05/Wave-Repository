@@ -1,4 +1,3 @@
-// routes/notifRoutes.js
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
@@ -7,10 +6,12 @@ const db = require("../db");
 router.get("/:guestID", async (req, res) => {
   const { guestID } = req.params;
   try {
-    const [rows] = await db.promise().query(
-      "SELECT notifID, guestID, message, isRead, createdAt FROM tbl_notifications WHERE guestID = ? ORDER BY createdAt DESC",
-      [guestID]
-    );
+    const [rows] = await db
+      .promise()
+      .query(
+        "SELECT notifID, guestID, message, isRead, createdAt FROM tbl_notifications WHERE guestID = ? ORDER BY createdAt DESC",
+        [guestID]
+      );
     res.json(rows);
   } catch (err) {
     console.error("❌ Error fetching notifications:", err);
@@ -22,15 +23,16 @@ router.get("/:guestID", async (req, res) => {
 router.patch("/mark-read/:notifID", async (req, res) => {
   const { notifID } = req.params;
   try {
-    const [result] = await db.promise().query(
-      "UPDATE tbl_notifications SET isRead = 1 WHERE notifID = ?",
-      [notifID]
-    );
-    
+    const [result] = await db
+      .promise()
+      .query("UPDATE tbl_notifications SET isRead = 1 WHERE notifID = ?", [
+        notifID,
+      ]);
+
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Notification not found" });
     }
-    
+
     res.json({ success: true, message: "Notification marked as read" });
   } catch (err) {
     console.error("❌ Error marking notification as read:", err);
@@ -38,23 +40,23 @@ router.patch("/mark-read/:notifID", async (req, res) => {
   }
 });
 
-// routes/notiRoutes.js - dagdag ng function for payment notifications
+// 🟢 Payment reminder - FIXED VERSION (removed bookingID)
 router.post("/payment-reminder", (req, res) => {
-    const { guestID, bookingID, message } = req.body;
-    
-    const notiID = "N" + Math.floor(100000 + Math.random() * 900000);
-    const sql = `
-        INSERT INTO tbl_notifications (notiID, guestID, bookingID, message, type, status)
-        VALUES (?, ?, ?, ?, 'payment_reminder', 'unread')
+  const { guestID, message } = req.body;
+
+  const notifID = "N" + Math.floor(100000 + Math.random() * 900000);
+  const sql = `
+        INSERT INTO tbl_notifications (notifID, guestID, message, type, isRead)
+        VALUES (?, ?, ?, 'payment_reminder', 0)
     `;
-    
-    db.query(sql, [notiID, guestID, bookingID, message], (err) => {
-        if (err) {
-            console.error("❌ Notification error:", err);
-            return res.status(500).json({ message: "Notification failed" });
-        }
-        res.json({ message: "Notification sent" });
-    });
-});  
+
+  db.query(sql, [notifID, guestID, message], (err) => {
+    if (err) {
+      console.error("❌ Notification error:", err);
+      return res.status(500).json({ message: "Notification failed" });
+    }
+    res.json({ message: "Notification sent" });
+  });
+});
 
 module.exports = router;

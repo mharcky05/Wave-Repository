@@ -196,6 +196,7 @@
           <div class="package-info">
             <h3>One-Day Package</h3>
             <p class="time">9:00 AM - 7:00 AM</p>
+            <p class="time">7:00 PM - 5:00 PM</p>
             <p class="pax">15 PAX Maximum</p>
 
             <div class="add-ons">
@@ -306,7 +307,7 @@
       <p>&copy; 2025 Lescapade Private Villa. All rights reserved.</p>
     </footer>
 
-    <!-- ===== LOGIN / SIGNUP / ACCOUNT MODALS ===== -->
+    <!-- === LOGIN / SIGNUP / ACCOUNT MODALS === -->
     <div id="overlay" class="overlay"></div>
 
     <!-- LOGIN -->
@@ -326,6 +327,37 @@
             placeholder="Email"
             required
           />
+
+          <!-- USER TYPE DROPDOWN-->
+          <div class="form-group user-type-selector">
+            <label
+              for="userType"
+              style="
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+              "
+              >User Type:</label
+            >
+            <select
+              id="userType"
+              name="userType"
+              class="username"
+              required
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+                background-color: white;
+              "
+            >
+              <option value="guest">Guest</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
 
           <!-- Password -->
           <input
@@ -931,15 +963,15 @@
             <label for="feedbackRating">Rating:</label>
             <div class="star-rating">
               <input type="radio" id="star5" name="rating" value="5" />
-              <label for="star5">⭐</label>
+              <label for="star5" class="star">&#9734;</label>
               <input type="radio" id="star4" name="rating" value="4" />
-              <label for="star4">⭐</label>
+              <label for="star4" class="star">&#9734;</label>
               <input type="radio" id="star3" name="rating" value="3" />
-              <label for="star3">⭐</label>
+              <label for="star3" class="star">&#9734;</label>
               <input type="radio" id="star2" name="rating" value="2" />
-              <label for="star2">⭐</label>
+              <label for="star2" class="star">&#9734;</label>
               <input type="radio" id="star1" name="rating" value="1" />
-              <label for="star1">⭐</label>
+              <label for="star1" class="star">&#9734;</label>
             </div>
           </div>
 
@@ -961,6 +993,12 @@
           </div>
         </form>
       </div>
+    </div>
+
+    <!-- ===== LOADING MODAL ===== -->
+    <div id="loadingModal" class="loading-modal" style="display: none">
+      <div class="loading-spinner"></div>
+      <p class="loading-message">Processing...</p>
     </div>
   </body>
 

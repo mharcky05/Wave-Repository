@@ -1,6 +1,6 @@
-/* ACCOUNT MODAL STYLES */
+/* ===================== ACCOUNT MODAL ===================== */
 
-/* OVERLAY BACKGROUND */
+/* Overlay background for account modal */
 #account-modal {
   display: none;
   position: fixed;
@@ -15,7 +15,7 @@
   backdrop-filter: blur(3px);
 }
 
-/* MODAL CONTAINER */
+/* Modal container box */
 #account-modal .modal-content {
   background: #ffffff;
   border-radius: 20px;
@@ -31,7 +31,7 @@
   transition: all 0.3s ease;
 }
 
-/* CLOSE BUTTON */
+/* Close (X) button */
 #account-modal .close-btn {
   position: absolute;
   top: 12px;
@@ -47,7 +47,7 @@
   transform: scale(1.1);
 }
 
-/* TITLE */
+/* Modal title */
 #account-modal h2 {
   margin-bottom: 20px;
   font-size: 26px;
@@ -57,7 +57,7 @@
   letter-spacing: 0.5px;
 }
 
-/* ACCOUNT CARD */
+/* User account summary card */
 #account-modal .account-card {
   width: 100%;
   background: #f7f9fc;
@@ -66,9 +66,9 @@
   margin-bottom: 25px;
   text-align: center;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
-} 
+}
 
-/* ACCOUNT INFO */
+/* Account information layout */
 #account-modal .account-info {
   font-size: 15px;
   color: #333;
@@ -76,6 +76,7 @@
   width: 100%;
 }
 
+/* Individual info fields */
 #account-modal .account-info p {
   width: 100%;
   background: #f6f6f6;
@@ -90,9 +91,9 @@
   color: #2c3e50;
 }
 
-/* EDIT PROFILE FORM STYLES */
+/* ===================== EDIT PROFILE FORM ===================== */
 
-/* FORM LABELS AND INPUTS */
+/* Labels and inputs */
 #account-modal .account-info label {
   display: block;
   text-align: left;
@@ -109,9 +110,9 @@
   border: 2px solid #e1e5e9;
   border-radius: 8px;
   font-size: 14px;
-  transition: all 0.3s ease;
   background: white;
   margin-bottom: 5px;
+  transition: all 0.3s ease;
 }
 
 #account-modal .account-info input:focus {
@@ -124,7 +125,7 @@
   color: #a0a0a0;
 }
 
-/* BUTTON GROUP */
+/* Button group layout */
 #account-modal .button-group {
   display: flex;
   justify-content: center;
@@ -133,6 +134,7 @@
   width: 100%;
 }
 
+/* Edit profile button */
 #account-modal .edit-btn {
   background: #441514;
   color: #fff;
@@ -142,8 +144,8 @@
   font-size: 14px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
   flex: 1;
+  transition: all 0.3s ease;
 }
 
 #account-modal .edit-btn:hover {
@@ -151,6 +153,7 @@
   transform: translateY(-2px);
 }
 
+/* Logout button */
 #account-modal .logout-btn {
   background: linear-gradient(135deg, #b81d24, #ed444d);
   color: #fff;
@@ -160,8 +163,8 @@
   font-size: 14px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
   flex: 1;
+  transition: all 0.3s ease;
 }
 
 #account-modal .logout-btn:hover {
@@ -169,7 +172,7 @@
   box-shadow: 0 6px 15px rgba(200, 200, 200, 0.4);
 }
 
-/* SAVE AND CANCEL BUTTONS */
+/* Save and Cancel buttons */
 #account-modal .save-btn,
 #account-modal .cancel-btn {
   padding: 12px 24px;
@@ -179,11 +182,11 @@
   border: none;
   cursor: pointer;
   color: #fff;
-  transition: all 0.3s ease;
   flex: 1;
+  transition: all 0.3s ease;
 }
 
-/* SAVE BUTTON */
+/* Save button styling */
 #account-modal .save-btn {
   background: #441514;
 }
@@ -193,7 +196,7 @@
   box-shadow: 0 6px 15px rgba(200, 200, 200, 0.4);
 }
 
-/* CANCEL BUTTON */
+/* Cancel button styling */
 #account-modal .cancel-btn {
   background: linear-gradient(135deg, #6c757d, #a0a0a0);
 }
@@ -203,19 +206,18 @@
   box-shadow: 0 6px 15px rgba(200, 200, 200, 0.4);
 }
 
-/* EDIT FORM SPECIFIC STYLES */
+/* Edit form layout adjustments */
 #account-modal .edit-form .account-card {
   text-align: left;
 }
 
-/* FORM LAYOUT IMPROVEMENTS */
 #account-modal .edit-form .account-info {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-/* ANIMATIONS */
+/* Animation effects */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -238,7 +240,7 @@
   }
 }
 
-/* SMOOTH TRANSITIONS BETWEEN VIEW AND EDIT MODES */
+/* Smooth view/edit transitions */
 #account-view,
 #edit-profile-form {
   transition: all 0.3s ease;
@@ -248,7 +250,9 @@
   width: 100%;
 }
 
-/* FACEBOOK-STYLE NOTIFICATION STYLES */
+/* ===================== NOTIFICATION DROPDOWN ===================== */
+
+/* Notification bell button */
 .notif-btn {
   position: relative;
   background: none;
@@ -257,8 +261,8 @@
   font-size: 22px;
   cursor: pointer;
   margin-right: 12px;
-  display: flex;
   left: 40px;
+  display: flex;
   align-items: center;
   justify-content: center;
   transition: color 0.3s ease;
@@ -268,7 +272,7 @@
   color: #b81d24;
 }
 
-/* BADGE - FACEBOOK STYLE */
+/* Notification badge */
 .notif-badge {
   position: absolute;
   top: -5px;
@@ -288,7 +292,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* POPUP - FACEBOOK STYLE */
+/* Notification popup container */
 .notif-popup {
   position: absolute;
   top: 50px;
@@ -308,6 +312,7 @@
   display: block;
 }
 
+/* Popup arrow */
 .notif-popup::before {
   content: "";
   position: absolute;
@@ -321,7 +326,7 @@
   transform: rotate(45deg);
 }
 
-/* NOTIFICATION HEADER */
+/* Popup header */
 .notif-popup::after {
   content: "Notifications";
   display: block;
@@ -340,7 +345,7 @@
   margin: 0;
 }
 
-/* NOTIFICATION ITEMS - FACEBOOK STYLE */
+/* Notification items */
 .notif-item {
   padding: 12px 16px;
   border-bottom: 1px solid #f0f0f0;
@@ -368,6 +373,7 @@
   background-color: #f5f5f5;
 }
 
+/* Notification text and time */
 .notif-content {
   flex: 1;
   display: flex;
@@ -392,6 +398,7 @@
   font-weight: 400;
 }
 
+/* Empty or disabled state */
 .no-notif {
   padding: 20px;
   text-align: center;
@@ -407,7 +414,19 @@
   cursor: default;
 }
 
-/* PAYMENT MODAL STYLES */
+/* Feedback-type notification */
+.notif-item[data-type="feedback"] {
+  cursor: pointer;
+  background-color: #f7f7ff;
+  border-left: 4px solid #a01c23;
+}
+
+.notif-item[data-type="feedback"]:hover {
+  background-color: #eef3ff;
+}
+
+/* ===================== PAYMENT MODAL ===================== */
+
 #payment-modal {
   display: none;
   position: fixed;
@@ -422,6 +441,7 @@
   backdrop-filter: blur(3px);
 }
 
+/* Payment modal content box */
 #payment-modal .modal-content {
   background: #fff;
   border-radius: 16px;
@@ -434,6 +454,7 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
+/* Payment modal header */
 #payment-modal h2 {
   margin-bottom: 20px;
   font-size: 22px;
@@ -441,6 +462,7 @@
   color: #333;
 }
 
+/* Inputs and buttons */
 #payment-modal input,
 #payment-modal button {
   width: 100%;
@@ -450,6 +472,7 @@
   border: 1px solid #ccc;
 }
 
+/* Submit button styling */
 #payment-modal button {
   background: linear-gradient(135deg, #b81d24, #a01c23);
   color: white;
@@ -464,6 +487,7 @@
   box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
 }
 
+/* Close button for payment modal */
 #payment-modal .close-btn {
   position: absolute;
   top: 12px;
@@ -477,6 +501,7 @@
   color: #d9534f;
 }
 
+/* Generic modal utilities */
 .modal {
   display: none;
   position: fixed;
@@ -496,13 +521,4 @@
 
 .modal.center-flex {
   display: flex;
-}
-
-.notif-item[data-type="feedback"] {
-  cursor: pointer;
-  background-color: #f7f7ff;
-  border-left: 4px solid #a01c23;
-}
-.notif-item[data-type="feedback"]:hover {
-  background-color: #eef3ff;
 }
