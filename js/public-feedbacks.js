@@ -1,3 +1,5 @@
+import { API_URL } from "./config.js";
+
 // public-feedbacks.js - Public Feedback Display System
 class PublicFeedbacks {
   constructor() {
@@ -31,7 +33,7 @@ class PublicFeedbacks {
           '<div class="feedbacks-loading">Loading guest experiences...</div>';
       }
 
-      const res = await fetch("http://localhost:3000/api/feedback");
+      const res = await fetch("${API_URL}/api/feedback");
 
       if (!res.ok) {
         throw new Error("Failed to fetch feedbacks");
