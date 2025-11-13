@@ -1,6 +1,6 @@
 // Authentication and Notification Management System
 // Handles user authentication, notifications, and payment flows
-
+import { API_URL } from "./config.js";
 // DOM Element References
 const loginModal = document.getElementById("login-modal");
 const signupModal = document.getElementById("signup-modal");
@@ -140,7 +140,7 @@ signupForm?.addEventListener("submit", async (e) => {
 
   try {
     console.log("🔍 Sending signup request...");
-    const res = await fetch("http://localhost:3000/auth/signup", {
+    const res = await fetch("${API_URL}/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ firstName, lastName, contactNo, email, password }),
@@ -185,7 +185,7 @@ loginForm?.addEventListener("submit", async (e) => {
   const userType = document.getElementById("userType")?.value || "guest";
 
   try {
-    const res = await fetch("http://localhost:3000/auth/login", {
+    const res = await fetch("${API_URL}/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, userType }),
